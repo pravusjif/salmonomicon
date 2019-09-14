@@ -1,3 +1,4 @@
+import { redView } from "./UI"
 
 
 @Component('behavior')
@@ -25,9 +26,11 @@ export class FollowPlayerSystem {
 
 			PhysicsCast.instance.hitFirst(rayFromPlayer, (e) => {
 				if (e.didHit) {
-				  	log("safe")
+					  log("safe")
+					  redView.visible = false
 				} else {
 					log("WATCHING YOU")
+					redView.visible = true
 				}
 			})
 		}

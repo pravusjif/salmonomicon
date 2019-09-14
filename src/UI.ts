@@ -49,3 +49,12 @@ class HandsMovingSystem implements ISystem {
     }
 }
 engine.addSystem(new HandsMovingSystem(300, 30))
+
+
+
+export const redView = new UIContainerRect(canvas)
+redView.width = `100%`
+redView.height = `100%`
+redView.opacity = 0.1
+redView.isPointerBlocker = false
+redView.color = Color4.Red()
