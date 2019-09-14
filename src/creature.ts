@@ -1,4 +1,5 @@
 import { redView } from "./UI"
+import { pages, pageCounter, resetGame } from "./book"
 
 
 @Component('behavior')
@@ -21,7 +22,10 @@ export class FollowPlayerSystem {
 			let gap = playerPos.subtract(creatureTransform.position)
 			creatureTransform.lookAt(playerPos)
 
-			if (gap.length() < 3 ){ return}
+			if (gap.length() < 3 ){ 
+				resetGame()
+				return
+			}
 
 
 			let direction = gap.normalize().scale(creatureBehavior.speed)
@@ -43,7 +47,4 @@ export class FollowPlayerSystem {
 
 	}
 }
-
-
-
 

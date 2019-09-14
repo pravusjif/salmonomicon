@@ -6,9 +6,9 @@ import utils from "../node_modules/decentraland-ecs-utils/index"
 export class Page {
 }
 
-let pages = engine.getComponentGroup(Page)
+export let pages = engine.getComponentGroup(Page)
 
-let pageCounter = 0
+export let pageCounter:number = 0
 
 let triggerOffset = new Vector3(0, 2, 0)
 
@@ -55,4 +55,12 @@ export function grabPage(page: IEntity){
 	if (pageCounter => pages.entities.length){
 		log("RAAARRWWRR I'm DYING")
 	}
+}
+
+export function resetGame(){
+	for (let page of pages.entities) {
+		page.getComponent(GLTFShape).visible = true
+	}
+	log("YOU LOOSE")
+	pageCounter = pages.entities.length
 }
