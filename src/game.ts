@@ -1,7 +1,7 @@
 import { atlas } from './UI'
 import { Behavior, FollowPlayerSystem } from './creature'
 import {createBuilderScene} from './builderScene'
-
+import { scatterPages } from '././book'
 
 //// creature
 
@@ -18,4 +18,6 @@ creature.addComponent(new Behavior())
 
 
 createBuilderScene()
+
+scatterPages(5)
 

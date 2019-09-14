@@ -139,5 +139,16 @@ export function createBuilderScene(){
 	module_Stone_Curve_01.addComponentOrReplace(transform_12)
 	engine.addEntity(module_Stone_Curve_01)
 
+	const book = new Entity()
+	const gltfShape_9 = new GLTFShape('models/Book_05/Book_05.glb')
+	book.addComponentOrReplace(gltfShape_9)
+	const transform_13 = new Transform({
+	position: new Vector3(25.5, 0, 21.5),
+	rotation: new Quaternion(0, 0, 0, 1),
+	scale: new Vector3(1, 1, 1)
+	})
+	book.addComponentOrReplace(transform_13)
+	engine.addEntity(book)
 
 }
+
