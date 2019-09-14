@@ -18,7 +18,13 @@ export class FollowPlayerSystem {
 		for (let creature of creatures.entities) {
 			let creatureBehavior = creature.getComponent(Behavior)
 			let creatureTransform = creature.getComponent(Transform)
-			let direction = playerPos.subtract(creatureTransform.position).normalize().scale(creatureBehavior.speed)
+			let gap = playerPos.subtract(creatureTransform.position)
+			creatureTransform.lookAt(playerPos)
+
+			if (gap.length() < 3 ){ return}
+
+
+			let direction = gap.normalize().scale(creatureBehavior.speed)
 			//log(direction)
 			creatureTransform.position = creatureTransform.position.add(direction)
 

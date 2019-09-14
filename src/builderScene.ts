@@ -120,9 +120,9 @@ export function createBuilderScene(){
 	const gltfShape_7 = new GLTFShape('models/Module_Stair_Stones_1M/Module_Stair_Stones_1M.glb')
 	module_Stair_Stones_1M.addComponentOrReplace(gltfShape_7)
 	const transform_11 = new Transform({
-	  position: new Vector3(3.5, 0, 26),
+	  position: new Vector3(6, 0, 26),
 	  rotation: new Quaternion(0, 0, 0, 1),
-	  scale: new Vector3(1, 1, 1)
+	  scale: new Vector3(6, 6, 6)
 	})
 	module_Stair_Stones_1M.addComponentOrReplace(transform_11)
 	engine.addEntity(module_Stair_Stones_1M)
