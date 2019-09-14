@@ -1,3 +1,5 @@
+import { atlas } from './UI'
+
 /// --- Set up a system ---
 
 class RotatorSystem {
