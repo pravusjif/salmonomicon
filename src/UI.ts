@@ -21,6 +21,8 @@ class HandsMovingSystem implements ISystem {
     oscillationPivot: number
 
     speedMultiplier: number
+    idleSpeed: number
+    currentSpeed: number
     playerLastPos: Vector3
 
     constructor(speed: number, length: number) {
@@ -28,15 +30,27 @@ class HandsMovingSystem implements ISystem {
         this.oscillationLength = length
 
         this.speedMultiplier = 1
+        this.idleSpeed = 15
+        this.currentSpeed = 0
         this.oscillationPivot = currentLeftHandY
         this.playerLastPos = Camera.instance.position.clone()
     }
 
     update(dt: number) {
-        if(this.oscillationSpeed == 0 || this.playerLastPos.equals(Camera.instance.position)) return
+        if(this.playerLastPos.equals(Camera.instance.position)) {
+            this.currentSpeed = this.idleSpeed
 
-        // currentLeftHandY += this.oscillationSpeed * dt * this.speedMultiplier * (Vector3.DistanceSquared(this.playerLastPos, Camera.instance.position))
-        currentLeftHandY += this.oscillationSpeed * dt * this.speedMultiplier * (Vector3.Distance(this.playerLastPos, Camera.instance.position))
+            if(this.currentSpeed == 0) return
+
+            currentLeftHandY += this.currentSpeed * dt * this.speedMultiplier
+        }
+        else {
+            this.currentSpeed = this.oscillationSpeed
+
+            if(this.currentSpeed == 0) return
+
+            currentLeftHandY += this.currentSpeed * dt * this.speedMultiplier * (Vector3.Distance(this.playerLastPos, Camera.instance.position))
+        }
 
         if(Math.abs(currentLeftHandY - this.oscillationPivot) >= this.oscillationLength / 2) {
             currentLeftHandY = this.oscillationPivot + (this.oscillationLength / 2) * this.speedMultiplier
