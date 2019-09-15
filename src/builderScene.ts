@@ -1,6 +1,20 @@
 
 
 export function createBuilderScene(){
+
+	// trees
+	const trees = new Entity()
+	trees.addComponentOrReplace(new GLTFShape('models/Trees.glb'))
+	trees.addComponentOrReplace(new Transform({
+		position: new Vector3(32, 0, 32),
+		scale: new Vector3(1, 1, 1)
+	  }))
+	engine.addEntity(trees)	
+
+
+
+
+	/// builder stuff
 	const scene = new Entity()
 	const transform = new Transform({
 	  position: new Vector3(0, 0, 0),
@@ -39,9 +53,9 @@ export function createBuilderScene(){
 	const gltfShape_3 = new GLTFShape('models/FloorBaseDirt_01/FloorBaseDirt_01.glb')
 	floorBaseDirt_01.addComponentOrReplace(gltfShape_3)
 	const transform_4 = new Transform({
-	  position: new Vector3(8, 0, 8),
+	  position: new Vector3(32, 0, 32),
 	  rotation: new Quaternion(0, 0, 0, 1),
-	  scale: new Vector3(1, 1, 1)
+	  scale: new Vector3(4, 2, 4)
 	})
 	floorBaseDirt_01.addComponentOrReplace(transform_4)
 	engine.addEntity(floorBaseDirt_01)

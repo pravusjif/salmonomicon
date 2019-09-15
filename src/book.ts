@@ -79,7 +79,7 @@ const book = new Entity()
 const gltfShape_9 = new GLTFShape('models/Book_05/Book_05.glb')
 book.addComponentOrReplace(gltfShape_9)
 const transform_13 = new Transform({
-position: new Vector3(25.5, 0, 21.5),
+position: new Vector3(21.5, 0, 21.5),
 rotation: new Quaternion(0, 0, 0, 1),
 scale: new Vector3(1, 1, 1)
 })
