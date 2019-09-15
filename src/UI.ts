@@ -37,20 +37,19 @@ class HandsMovingSystem implements ISystem {
     }
 
     update(dt: number) {
-        if(this.playerLastPos.equals(Camera.instance.position)) {
-            this.currentSpeed = this.idleSpeed
+        // if(this.playerLastPos.equals(Camera.instance.position)) {
+        //     this.currentSpeed = this.idleSpeed
 
-            if(this.currentSpeed == 0) return
+        //     if(this.currentSpeed == 0) return
 
-            currentLeftHandY += this.currentSpeed * dt * this.speedMultiplier
-        }
-        else {
+        //     currentLeftHandY += this.currentSpeed * dt * this.speedMultiplier
+        // } else {
             this.currentSpeed = this.oscillationSpeed
 
             if(this.currentSpeed == 0) return
 
             currentLeftHandY += this.currentSpeed * dt * this.speedMultiplier * (Vector3.Distance(this.playerLastPos, Camera.instance.position))
-        }
+        // }
 
         if(Math.abs(currentLeftHandY - this.oscillationPivot) >= this.oscillationLength / 2) {
             currentLeftHandY = this.oscillationPivot + (this.oscillationLength / 2) * this.speedMultiplier
