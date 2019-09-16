@@ -58,6 +58,16 @@ export class FollowPlayerSystem {
 				this.waitingForMonsterRay = true
 			}
 
+			let cameraForward = PhysicsCast.instance.getRayFromCamera(1).direction
+			if(Math.abs(Vector3.GetAngleBetweenVectors(new Vector3(cameraForward.x, cameraForward.y, cameraForward.z), creatureTransform.position.subtract(this.playerPos), Vector3.Up())) < 0.4) {
+				// log("MONSTER WATCHED")
+				this.creatureBeingWatched = true
+				creatureBehavior.speed += 0.0025
+			} else {
+				// log("MONSTER NOT WATCHED")
+				this.creatureBeingWatched = false
+			}
+
 			/* if(!this.waitingForCameraRay) {
 				const rayFromCamera: Ray = PhysicsCast.instance.getRayFromCamera(gapModule)
 
