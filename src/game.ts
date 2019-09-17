@@ -2,6 +2,7 @@ import { atlas } from './UI'
 import { Behavior, FollowPlayerSystem } from './creature'
 import {createBuilderScene} from './builderScene'
 import { scatterPages } from '././book'
+import { spawnMica } from '././mica'
 
 //// creature
 
@@ -20,4 +21,7 @@ creature.addComponent(new Behavior())
 createBuilderScene()
 
 scatterPages(5)
+
+
+spawnMica()
 
