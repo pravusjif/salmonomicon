@@ -67,6 +67,8 @@ export class FollowPlayerSystem {
 				if(this.watchingPlayer){
 					this.creatureBeingWatched = true
 					creatureBehavior.speed += 0.0025
+				} else {
+					creatureBehavior.speed = creatureBehavior.originalSpeed
 				}
 				
 			} else {

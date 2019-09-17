@@ -110,7 +110,7 @@ rayMaterial.alpha = 0.2
 rayMaterial.hasAlpha = true
 //rayMaterial.transparencyMode = 2
 //rayMaterial.disableLighting = true
-rayMaterial.albedoColor = new Color3(1, 4, 2)
+rayMaterial.albedoColor = new Color4(1, 4, 2, 0.1)
 
 const rayCubeObject = new Entity()
 rayCubeObject.setParent(book)
