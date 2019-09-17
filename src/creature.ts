@@ -20,6 +20,7 @@ export class FollowPlayerSystem {
 	waitingForMonsterRay: boolean = false
 	waitingForCameraRay: boolean = false
 	creatureBeingWatched: boolean = false
+	watchingPlayer: boolean = false
 
 	update(dt: number) {
 		this.playerPos = camera.position.clone()
@@ -49,9 +50,11 @@ export class FollowPlayerSystem {
 					if (e.didHit) {
 						//   log("safe")
 						  redView.visible = false
+						  this.watchingPlayer = false
 					} else {
 						// log("WATCHING YOU")
 						redView.visible = true
+						this.watchingPlayer = true
 					}
 				})
 
@@ -61,8 +64,11 @@ export class FollowPlayerSystem {
 			let cameraForward = PhysicsCast.instance.getRayFromCamera(1).direction
 			if(Math.abs(Vector3.GetAngleBetweenVectors(new Vector3(cameraForward.x, cameraForward.y, cameraForward.z), creatureTransform.position.subtract(this.playerPos), Vector3.Up())) < 0.4) {
 				// log("MONSTER WATCHED")
-				this.creatureBeingWatched = true
-				creatureBehavior.speed += 0.0025
+				if(this.watchingPlayer){
+					this.creatureBeingWatched = true
+					creatureBehavior.speed += 0.0025
+				}
+				
 			} else {
 				// log("MONSTER NOT WATCHED")
 				this.creatureBeingWatched = false
