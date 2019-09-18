@@ -102,3 +102,17 @@ export class FollowPlayerSystem {
 	}
 }
 
+
+export function spawnCreature(){
+
+	let creature = new Entity()
+	engine.addEntity(creature)
+	creature.addComponent(new GLTFShape("models/Chobi.glb"))
+	creature.addComponent(new Transform({
+		position: new Vector3(20, 0, 20),
+		scale: new Vector3(1.5, 1.5, 1.5)
+	}))
+	creature.addComponent(new Behavior())
+
+	return creature
+}

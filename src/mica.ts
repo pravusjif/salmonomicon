@@ -31,7 +31,7 @@ export function spawnMica(){
 
 	let micaRay: Ray = {
 		origin: micaPos,
-		direction: Vector3.Forward().rotate(mica.getComponent(Transform).rotation),
+		direction: Vector3.Forward().multiply(mica.getComponent(Transform).rotation),
 		distance: 20
 	}
 
@@ -59,14 +59,17 @@ export function spawnMica(){
 	engine.addEntity(laserR)
 
 
-	class MicaSpinningLaser {
+	class MicaSpinningLaser implements ISystem {
 
 		update(dt: number) {
-			micaRay.direction = Vector3.Forward().rotate(mica.getComponent(Transform).rotation)
+			micaRay.direction = Vector3.Forward().multiply(mica.getComponent(Transform).rotation)
+			//micaRay.direction = Vector3.Forward().rotate(mica.getComponent(Transform).rotation)
 			PhysicsCast.instance.hitFirst(micaRay, (e) => {
-				log("hit? ", e.didHit)
+				
 				let hitPoint = new Vector3(e.hitPoint.x, e.hitPoint.y, e.hitPoint.z)
-				micaRay = PhysicsCast.instance.getRayFromPositions(micaPos, hitPoint)
+				let laserLen = Vector3.Distance(micaPos, hitPoint)
+				log("hit? ", e.didHit, " laserLen: ", laserLen)
+				//micaRay = PhysicsCast.instance.getRayFromPositions(micaPos, hitPoint)
 			})
 		}	
 	}
