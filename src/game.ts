@@ -6,11 +6,10 @@ import { spawnMica } from '././mica'
 
 //// creature
 
-engine.addSystem(new FollowPlayerSystem())
 
 
 let creature = spawnCreature()
-
+engine.addSystem(new FollowPlayerSystem())
 
 
 createBuilderScene()
