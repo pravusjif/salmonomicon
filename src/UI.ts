@@ -100,3 +100,64 @@ beingWatchedText.vAlign = "top"
 beingWatchedText.hAlign = "center"
 beingWatchedText.vTextAlign = "center"
 beingWatchedText.hTextAlign = "center"
+
+@Component('animatedUI')
+export class AnimatedUIImage {
+    imageComponent: UIImage
+    index: number = 0
+    size: Vector2
+    gridDimensions: Vector2
+    gridPosition: Vector2
+    secondsBetweenFrames: number = 0.5
+    waitingTime: number = 0
+
+    getSpritesAmount()
+    {
+        return this.gridDimensions.x * this.gridDimensions.y
+    }
+}
+const handAnimationEntity = new Entity()
+const handAnimation = new AnimatedUIImage()
+handAnimation.imageComponent = leftHandImage
+handAnimation.gridDimensions = new Vector2(4, 2)
+handAnimation.gridPosition = new Vector2(25, 715)
+handAnimation.size = new Vector2(102, 102)
+handAnimationEntity.addComponent(handAnimation)
+engine.addEntity(handAnimationEntity)
+
+class AnimatedUISystem implements ISystem {
+    animations: ComponentGroup = engine.getComponentGroup(AnimatedUIImage)
+
+    update(dt: number) {
+        for (let animationEntity of this.animations.entities) {
+            let animationData = animationEntity.getComponent(AnimatedUIImage)
+            if(animationData.waitingTime > 0) {
+                animationData.waitingTime -= dt
+
+                if(animationData.waitingTime > 0)
+                    continue
+            }
+
+            // let spriteRow = Math.floor((animationData.gridPosition.x + (animationData.size.x * animationData.index)) / (animationData.gridDimensions.x * animationData.size.x))
+            let spriteRow = Math.floor((animationData.size.x * animationData.index) / (animationData.gridDimensions.x * animationData.size.x))
+            let spriteColumn = Math.floor((animationData.index / (animationData.gridDimensions.x * spriteRow + 1)))
+            let spriteYPosition = animationData.gridPosition.y + animationData.size.y * spriteRow
+            // let spriteXPosition = (animationData.gridPosition.x + (animationData.size.x * animationData.index)) - (animationData.size.y * spriteRow)
+            let spriteXPosition = animationData.gridPosition.x + animationData.size.x * spriteColumn
+
+            animationData.imageComponent.sourceWidth = animationData.size.x
+            animationData.imageComponent.sourceHeight = animationData.size.y
+            animationData.imageComponent.sourceLeft = spriteXPosition
+            animationData.imageComponent.sourceTop = spriteYPosition
+            animationData.imageComponent.width = animationData.imageComponent.sourceWidth * 4
+            animationData.imageComponent.height = animationData.imageComponent.sourceHeight * 4
+
+            animationData.index++;
+            if(animationData.index == animationData.getSpritesAmount())
+                animationData.index = 0
+
+            animationData.waitingTime = animationData.secondsBetweenFrames
+        }
+    }
+}
+engine.addSystem(new AnimatedUISystem())
