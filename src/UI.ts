@@ -4,6 +4,7 @@ const canvas = new UICanvas()
 export const atlas = new Texture("textures/blood-27051.png")
 let currentHandsY: number = -20
 const handsPanel = new UIContainerRect(canvas)
+handsPanel.isPointerBlocker = false
 handsPanel.width = '100%'
 handsPanel.height = '100%'
 handsPanel.positionY = currentHandsY
@@ -54,19 +55,11 @@ class HandsMovingSystem implements ISystem {
     }
 
     update(dt: number) {
-        // if(this.playerLastPos.equals(Camera.instance.position)) {
-        //     this.currentSpeed = this.idleSpeed
+        this.currentSpeed = this.oscillationSpeed
 
-        //     if(this.currentSpeed == 0) return
+        if(this.currentSpeed == 0) return
 
-        //     currentLeftHandY += this.currentSpeed * dt * this.speedMultiplier
-        // } else {
-            this.currentSpeed = this.oscillationSpeed
-
-            if(this.currentSpeed == 0) return
-
-            currentHandsY += this.currentSpeed * dt * this.speedMultiplier * (Vector3.Distance(this.playerLastPos, Camera.instance.position))
-        // }
+        currentHandsY += this.currentSpeed * dt * this.speedMultiplier * (Vector3.Distance(this.playerLastPos, Camera.instance.position))
 
         if(Math.abs(currentHandsY - this.oscillationPivot) >= this.oscillationLength / 2) {
             currentHandsY = this.oscillationPivot + (this.oscillationLength / 2) * this.speedMultiplier
@@ -74,22 +67,16 @@ class HandsMovingSystem implements ISystem {
             this.speedMultiplier *= -1
         }
 
-        // leftHandImage.positionY = currentHandsY
-        // rightHandImage.positionY = currentHandsY
         handsPanel.positionY = currentHandsY
         this.playerLastPos = Camera.instance.position.clone()
     }
 }
 engine.addSystem(new HandsMovingSystem(300, 30))
 
-
-
 export const redView = new UIContainerRect(canvas)
 redView.width = `100%`
 redView.height = `100%`
-// redView.opacity = 0.1
 redView.isPointerBlocker = false
-// redView.color = Color4.Red()
 const beingWatchedText = new UIText(redView)
 beingWatchedText.value = "You feel like someone's watching you..."
 beingWatchedText.color = Color4.Red()
@@ -100,64 +87,3 @@ beingWatchedText.vAlign = "top"
 beingWatchedText.hAlign = "center"
 beingWatchedText.vTextAlign = "center"
 beingWatchedText.hTextAlign = "center"
-
-@Component('animatedUI')
-export class AnimatedUIImage {
-    imageComponent: UIImage
-    index: number = 0
-    size: Vector2
-    gridDimensions: Vector2
-    gridPosition: Vector2
-    secondsBetweenFrames: number = 0.5
-    waitingTime: number = 0
-
-    getSpritesAmount()
-    {
-        return this.gridDimensions.x * this.gridDimensions.y
-    }
-}
-const handAnimationEntity = new Entity()
-const handAnimation = new AnimatedUIImage()
-handAnimation.imageComponent = leftHandImage
-handAnimation.gridDimensions = new Vector2(4, 2)
-handAnimation.gridPosition = new Vector2(25, 715)
-handAnimation.size = new Vector2(102, 102)
-handAnimationEntity.addComponent(handAnimation)
-engine.addEntity(handAnimationEntity)
-
-class AnimatedUISystem implements ISystem {
-    animations: ComponentGroup = engine.getComponentGroup(AnimatedUIImage)
-
-    update(dt: number) {
-        for (let animationEntity of this.animations.entities) {
-            let animationData = animationEntity.getComponent(AnimatedUIImage)
-            if(animationData.waitingTime > 0) {
-                animationData.waitingTime -= dt
-
-                if(animationData.waitingTime > 0)
-                    continue
-            }
-
-            // let spriteRow = Math.floor((animationData.gridPosition.x + (animationData.size.x * animationData.index)) / (animationData.gridDimensions.x * animationData.size.x))
-            let spriteRow = Math.floor((animationData.size.x * animationData.index) / (animationData.gridDimensions.x * animationData.size.x))
-            let spriteColumn = Math.floor((animationData.index / (animationData.gridDimensions.x * spriteRow + 1)))
-            let spriteYPosition = animationData.gridPosition.y + animationData.size.y * spriteRow
-            // let spriteXPosition = (animationData.gridPosition.x + (animationData.size.x * animationData.index)) - (animationData.size.y * spriteRow)
-            let spriteXPosition = animationData.gridPosition.x + animationData.size.x * spriteColumn
-
-            animationData.imageComponent.sourceWidth = animationData.size.x
-            animationData.imageComponent.sourceHeight = animationData.size.y
-            animationData.imageComponent.sourceLeft = spriteXPosition
-            animationData.imageComponent.sourceTop = spriteYPosition
-            animationData.imageComponent.width = animationData.imageComponent.sourceWidth * 4
-            animationData.imageComponent.height = animationData.imageComponent.sourceHeight * 4
-
-            animationData.index++;
-            if(animationData.index == animationData.getSpritesAmount())
-                animationData.index = 0
-
-            animationData.waitingTime = animationData.secondsBetweenFrames
-        }
-    }
-}
-engine.addSystem(new AnimatedUISystem())
