@@ -1,5 +1,5 @@
 import { atlas } from './UI'
-import { Behavior, FollowPlayerSystem, spawnCreature } from './creature'
+import { CreatureComponent, CreatureSystem, spawnCreature } from './creature'
 import {createBuilderScene} from './builderScene'
 import { scatterPages } from '././book'
 import { spawnMica } from '././mica'
@@ -8,8 +8,7 @@ import { spawnMica } from '././mica'
 
 
 
-let creature = spawnCreature()
-engine.addSystem(new FollowPlayerSystem())
+
 
 
 createBuilderScene()

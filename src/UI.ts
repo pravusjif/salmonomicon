@@ -77,6 +77,7 @@ export const redView = new UIContainerRect(canvas)
 redView.width = `100%`
 redView.height = `100%`
 redView.isPointerBlocker = false
+redView.visible = false
 const beingWatchedText = new UIText(redView)
 beingWatchedText.value = "You feel like someone's watching you..."
 beingWatchedText.color = Color4.Red()

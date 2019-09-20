@@ -1,6 +1,7 @@
 
 
 import utils from "../node_modules/decentraland-ecs-utils/index"
+import { creatureComponent, CreatureState } from "./creature";
 
 
 @Component('page')
@@ -72,20 +73,7 @@ export function resetGame(){
 	hasAllPages = false
 }
 
-
-// book of salmonomicon
-
-const book = new Entity()
-const gltfShape_9 = new GLTFShape('models/Book_05/Book_05.glb')
-book.addComponentOrReplace(gltfShape_9)
-const transform_13 = new Transform({
-position: new Vector3(8.5, 1, 7.5),
-rotation: new Quaternion(0, 0, 0, 1),
-scale: new Vector3(1, 1, 1)
-})
-book.addComponentOrReplace(transform_13)
-
-book.addComponent(new utils.TriggerComponent(
+/* book.addComponent(new utils.TriggerComponent(
 	new utils.TriggerBoxShape(new Vector3(1,8,1), triggerOffset),
 	0, //layer
 	0, //triggeredByLayer
@@ -98,9 +86,7 @@ book.addComponent(new utils.TriggerComponent(
 	 },
 	 null,
 	 false
-))
-
-engine.addEntity(book)
+)) */
 
 // book's glow
 /* const rayMaterial = new Material()
@@ -133,8 +119,26 @@ const pedestal = new Entity()
 const pedestalGLTFShape = new GLTFShape('models/Pedestal_01/Pedestal_01.glb')
 pedestal.addComponentOrReplace(pedestalGLTFShape)
 const transform_10 = new Transform({
-  position: new Vector3(8.5, -0.1, 7.5),
+  position: new Vector3(31.5, -0.1, 15),
   scale: new Vector3(0.4, 0.4, 0.4)
 })
 pedestal.addComponentOrReplace(transform_10)
 engine.addEntity(pedestal)
+
+// book of salmonomicon
+const book = new Entity()
+const gltfShape_9 = new GLTFShape('models/Book_05/Book_05.glb')
+book.addComponentOrReplace(gltfShape_9)
+const transform_13 = new Transform({
+position: new Vector3(0, 2.75, 0),
+rotation: new Quaternion(0, 0, 0, 1),
+scale: new Vector3(2, 2, 2)
+})
+book.addComponentOrReplace(transform_13)
+const bookComplete = false
+book.addComponentOrReplace(new OnClick(()=>{
+	if(!bookComplete && creatureComponent.currentState == CreatureState.Dormant)
+		creatureComponent.currentState = CreatureState.Hunting
+}))
+book.setParent(pedestal)
+engine.addEntity(book)
