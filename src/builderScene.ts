@@ -11,8 +11,14 @@ export function createBuilderScene(){
 	  }))
 	engine.addEntity(trees)	
 
-
-
+	const trees2 = new Entity()
+	trees2.addComponentOrReplace(new GLTFShape('models/Trees.glb'))
+	trees2.addComponentOrReplace(new Transform({
+		position: new Vector3(32, 0, 32),
+		scale: new Vector3(1, 1, 1),
+		rotation: Quaternion.Euler(0, 90, 0)
+	  }))
+	engine.addEntity(trees2)
 
 	/// builder stuff
 	const scene = new Entity()
@@ -93,7 +99,7 @@ export function createBuilderScene(){
 	floorBaseDirt_01_4.addComponentOrReplace(transform_7)
 	engine.addEntity(floorBaseDirt_01_4)
 	
-	const module_Stone_Curve_02 = new Entity()
+/* 	const module_Stone_Curve_02 = new Entity()
 	module_Stone_Curve_02.setParent(scene)
 	const gltfShape_4 = new GLTFShape('models/Module_Stone_Curve_02/Module_Stone_Curve_02.glb')
 	module_Stone_Curve_02.addComponentOrReplace(gltfShape_4)
@@ -115,21 +121,9 @@ export function createBuilderScene(){
 	  scale: new Vector3(1, 1, 1)
 	})
 	module_Stone_Straight_Window_02.addComponentOrReplace(transform_9)
-	engine.addEntity(module_Stone_Straight_Window_02)
+	engine.addEntity(module_Stone_Straight_Window_02) */
 	
-	const pedestal_01 = new Entity()
-	pedestal_01.setParent(scene)
-	const gltfShape_6 = new GLTFShape('models/Pedestal_01/Pedestal_01.glb')
-	pedestal_01.addComponentOrReplace(gltfShape_6)
-	const transform_10 = new Transform({
-	  position: new Vector3(8.5, 0, 7.5),
-	  rotation: new Quaternion(0, 0, 0, 1),
-	  scale: new Vector3(1, 1, 1)
-	})
-	pedestal_01.addComponentOrReplace(transform_10)
-	engine.addEntity(pedestal_01)
-	
-	const module_Stair_Stones_1M = new Entity()
+/* 	const module_Stair_Stones_1M = new Entity()
 	module_Stair_Stones_1M.setParent(scene)
 	const gltfShape_7 = new GLTFShape('models/Module_Stair_Stones_1M/Module_Stair_Stones_1M.glb')
 	module_Stair_Stones_1M.addComponentOrReplace(gltfShape_7)
@@ -151,7 +145,7 @@ export function createBuilderScene(){
 	  scale: new Vector3(1, 1, 1)
 	})
 	module_Stone_Curve_01.addComponentOrReplace(transform_12)
-	engine.addEntity(module_Stone_Curve_01)
+	engine.addEntity(module_Stone_Curve_01) */
 
 }
 

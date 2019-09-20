@@ -79,7 +79,7 @@ const book = new Entity()
 const gltfShape_9 = new GLTFShape('models/Book_05/Book_05.glb')
 book.addComponentOrReplace(gltfShape_9)
 const transform_13 = new Transform({
-position: new Vector3(21.5, 0, 21.5),
+position: new Vector3(8.5, 1, 7.5),
 rotation: new Quaternion(0, 0, 0, 1),
 scale: new Vector3(1, 1, 1)
 })
@@ -103,13 +103,11 @@ book.addComponent(new utils.TriggerComponent(
 engine.addEntity(book)
 
 // book's glow
-const rayMaterial = new Material()
+/* const rayMaterial = new Material()
 rayMaterial.metallic = 1
 rayMaterial.roughness = 0.5
 rayMaterial.alpha = 0.2
 rayMaterial.hasAlpha = true
-//rayMaterial.transparencyMode = 2
-//rayMaterial.disableLighting = true
 rayMaterial.albedoColor = new Color4(1, 4, 2, 0.1)
 
 const rayCubeObject = new Entity()
@@ -129,4 +127,14 @@ rayObjectTransform.scale.y = 20
 rayObjectTransform.scale.z = 0.5
 rayObjectTransform.position.y = 10
 
-engine.addEntity(rayCubeObject)
+engine.addEntity(rayCubeObject) */
+
+const pedestal = new Entity()
+const pedestalGLTFShape = new GLTFShape('models/Pedestal_01/Pedestal_01.glb')
+pedestal.addComponentOrReplace(pedestalGLTFShape)
+const transform_10 = new Transform({
+  position: new Vector3(8.5, -0.1, 7.5),
+  scale: new Vector3(0.4, 0.4, 0.4)
+})
+pedestal.addComponentOrReplace(transform_10)
+engine.addEntity(pedestal)

@@ -17,5 +17,5 @@ createBuilderScene()
 scatterPages(5)
 
 
-spawnMica()
+// spawnMica()
 
