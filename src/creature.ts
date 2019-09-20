@@ -15,13 +15,22 @@ export class CreatureComponent {
 	spawningSpeed: number = 0.2
 	initialPosition: Vector3 = new Vector3(32, -1.5, 20)
 	targetYPosition: number = 4
+	trappedPosition: Vector3 = new Vector3(24, 1, 24)
 	rotationSpeed: number = 15
 	currentState: CreatureState = CreatureState.Dormant
+	laserL: IEntity = null
+	laserR: IEntity = null
 }
 
 let creatures = engine.getComponentGroup(CreatureComponent)
 let camera = Camera.instance
 camera.rotation.toRotationMatrix
+
+
+const rayMaterial = new Material()
+rayMaterial.metallic = 1
+rayMaterial.roughness = 0.5
+rayMaterial.albedoColor = new Color3(30, 1, 1)
 
 
 export class CreatureSystem {
@@ -31,6 +40,8 @@ export class CreatureSystem {
 	creatureBeingWatched: boolean = false
 	watchingPlayer: boolean = false
 
+
+
 	update(dt: number) {
 		this.playerPos = camera.position.clone()
 
@@ -39,14 +50,15 @@ export class CreatureSystem {
 			let creatureTransform = creature.getComponent(Transform)
 
 			switch (creatureComponent.currentState) {
+
+				////// HUNTING  ///////
 				case CreatureState.Hunting:
 					if(creatureTransform.position.y < creatureComponent.targetYPosition) {
 						creatureTransform.position.y += creatureComponent.spawningSpeed * dt
 
 						if(creatureTransform.position.y > creatureComponent.targetYPosition)
 							creatureTransform.position.y = creatureComponent.targetYPosition
-						else
-							continue
+						else continue
 					}
 
 					let gap = this.playerPos.subtract(creatureTransform.position)
@@ -101,18 +113,77 @@ export class CreatureSystem {
 					}
 					break;
 
+				//////  TRAPPED //////
 				case CreatureState.Trapped:
-						let trappedPosition = new Vector3(creatureComponent.initialPosition.x, creatureComponent.targetYPosition, creatureComponent.initialPosition.z)
-						if(creatureTransform.position != trappedPosition) {
-							creatureTransform.position = trappedPosition
-							creatureTransform.rotation = Quaternion.Identity
+						
+						if (creatureTransform.position.y != creatureComponent.trappedPosition.y) {
+
+							creatureTransform.position = creatureComponent.trappedPosition
+							//creatureTransform.rotation = Quaternion.Identity
+							log("settingPos")
+
+							let laserL = new Entity()
+							laserL.addComponent(new BoxShape())
+							laserL.getComponent(BoxShape).withCollisions = false
+							laserL.addComponent(new Transform({
+								scale: new Vector3(0.05 ,0.05, 10 ),
+								position: new Vector3(-0.065, 0.55, 5)
+							}))
+							laserL.addComponent(rayMaterial)
+							laserL.setParent(creature)
+							creatureComponent.laserL = laserL
+						
+							engine.addEntity(laserL)
+						
+						
+							let laserR = new Entity()
+							laserR.addComponent(new BoxShape())
+							laserR.getComponent(BoxShape).withCollisions = false
+							laserR.addComponent(new Transform({
+								scale: new Vector3(0.05 ,0.05, 10 ),
+								position: new Vector3(0.065, 0.55, 5)
+							}))
+							laserR.addComponent(rayMaterial)
+							laserR.setParent(creature)
+							creatureComponent.laserR = laserR
+							engine.addEntity(laserR)
 						}
 
 						creatureTransform.rotate(Vector3.Up(), dt * creatureComponent.rotationSpeed)
-						
+
+						let newRay: Ray = {
+							origin: creatureTransform.position,
+							direction: Vector3.Forward().rotate(creatureTransform.rotation),
+							distance: 10
+						}
+			
+						PhysicsCast.instance.hitFirst(newRay, (e) => {
+							if (e.didHit){
+			
+								//debugCube.getComponent(Transform).position.set(e.hitPoint.x, e.hitPoint.y, e.hitPoint.z)
+								let hitPoint = new Vector3(e.hitPoint.x, e.hitPoint.y, e.hitPoint.z)
+								let laserLen = Vector3.Distance(creatureTransform.position, hitPoint)
+								creatureComponent.laserL.getComponent(Transform).scale.z = laserLen
+								creatureComponent.laserR.getComponent(Transform).scale.z = laserLen
+								creatureComponent.laserL.getComponent(Transform).position.z = laserLen/2
+								creatureComponent.laserR.getComponent(Transform).position.z = laserLen/2
+								log(" laserLen: ", laserLen, " id: ", e.entity.entityId)
+							} else {
+								let laserLen = 10
+								creatureComponent.laserL.getComponent(Transform).scale.z = laserLen
+								creatureComponent.laserR.getComponent(Transform).scale.z = laserLen
+								creatureComponent.laserL.getComponent(Transform).position.z = laserLen/2
+								creatureComponent.laserR.getComponent(Transform).position.z = laserLen/2
+
+							}
+						})
+
+
+
 					break;
 
-				default: // Dormant & Vanished
+				////// DORMANT & VANISHED  //////
+				default: 
 					if(creatureTransform.position.y > creatureComponent.initialPosition.y) {
 						creatureTransform.position.y -= creatureComponent.spawningSpeed * dt
 

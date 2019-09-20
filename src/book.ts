@@ -2,6 +2,7 @@
 
 import utils from "../node_modules/decentraland-ecs-utils/index"
 import { creatureComponent, CreatureState } from "./creature";
+import { pageCounterUI } from "./UI";
 
 
 @Component('page')
@@ -17,13 +18,13 @@ let triggerOffset = new Vector3(0, 2, 0)
 
 
 // add pages in random places
-export function scatterPages(pages: number){
-	for (let i = 0; i < pages; i ++){
+export function scatterPages(totalPages: number){
+	for (let i = 0; i < totalPages; i ++){
 
-		let randomX = Math.random()*32
-		let randomZ = Math.random()*32
+		let randomX = Math.random()*20 + 5
+		let randomZ = Math.random()*20 + 5
 
-		let pos = new Vector3(randomX, 0, randomZ)
+		let pos = new Vector3(randomX, 0.3, randomZ)
 
 		let page = new Entity()
 		page.addComponent(new GLTFShape('models/PapyrusOpen_01/PapyrusOpen_01.glb'))
@@ -39,9 +40,8 @@ export function scatterPages(pages: number){
 			0, //triggeredByLayer
 			null, //onTriggerEnter
 			null, //onTriggerExit
-			() => {  //onCameraEnter
-				grabPage(page)
-				page.removeComponent(utils.TriggerComponent)				
+			() => {  //onCameraEnter	
+				grabPage(page, totalPages)			
 			 },
 			 null,
 			 false
@@ -51,14 +51,21 @@ export function scatterPages(pages: number){
 }
 
 // when player grabs a page
-export function grabPage(page: IEntity){
+export function grabPage(page: IEntity, totalPages: number){
+	
+	page.getComponent(utils.TriggerComponent).enabled = false
+
+	if (pageCounter == 0){
+		pageCounterUI.visible = true
+	}
 	pageCounter += 1
+	pageCounterUI.value = pageCounter.toString()
 	log("grabbed page ", pageCounter)
 	page.getComponent(GLTFShape).visible = false
 	//engine.removeEntity(page)
 
-	if (pageCounter => pages.entities.length){
-		log("RAAARRWWRR I'm DYING")
+	if (pageCounter >= totalPages){
+		log("YOU HAVE ALL PAGES: ", totalPages )
 		hasAllPages = true
 	}
 }
@@ -67,10 +74,14 @@ export function grabPage(page: IEntity){
 export function resetGame(){
 	for (let page of pages.entities) {
 		page.getComponent(GLTFShape).visible = true
+		page.getComponent(utils.TriggerComponent).enabled = true
 	}
 	log("YOU LOOSE")
 	pageCounter = pages.entities.length
 	hasAllPages = false
+
+	pageCounter = 0
+	pageCounterUI.value = pageCounter.toString()
 }
 
 /* book.addComponent(new utils.TriggerComponent(
@@ -135,10 +146,13 @@ rotation: new Quaternion(0, 0, 0, 1),
 scale: new Vector3(2, 2, 2)
 })
 book.addComponentOrReplace(transform_13)
-const bookComplete = false
+
 book.addComponentOrReplace(new OnClick(()=>{
-	if(!bookComplete && creatureComponent.currentState == CreatureState.Dormant)
+	if(!hasAllPages && creatureComponent.currentState == CreatureState.Dormant){
 		creatureComponent.currentState = CreatureState.Hunting
+	} else if (hasAllPages && creatureComponent.currentState == CreatureState.Hunting){
+		creatureComponent.currentState = CreatureState.Trapped
+	}
 }))
 book.setParent(pedestal)
 engine.addEntity(book)

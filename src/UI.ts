@@ -78,6 +78,7 @@ redView.width = `100%`
 redView.height = `100%`
 redView.isPointerBlocker = false
 redView.visible = false
+
 const beingWatchedText = new UIText(redView)
 beingWatchedText.value = "You feel like someone's watching you..."
 beingWatchedText.color = Color4.Red()
@@ -88,3 +89,17 @@ beingWatchedText.vAlign = "top"
 beingWatchedText.hAlign = "center"
 beingWatchedText.vTextAlign = "center"
 beingWatchedText.hTextAlign = "center"
+
+
+export const pageCounterUI = new UIText(canvas)
+pageCounterUI.isPointerBlocker = false
+pageCounterUI.visible = false
+pageCounterUI.value = ""
+pageCounterUI.color = Color4.Red()
+pageCounterUI.outlineColor = Color4.Yellow()
+pageCounterUI.fontSize = 30
+pageCounterUI.outlineWidth = 0.1
+pageCounterUI.vAlign = "bottom"
+pageCounterUI.hAlign = "left"
+pageCounterUI.vTextAlign = "center"
+pageCounterUI.hTextAlign = "center"
