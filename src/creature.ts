@@ -4,8 +4,8 @@ import { pages, pageCounter, resetGame } from "./book"
 
 @Component('behavior')
 export class Behavior {
-  speed: number = 0.02
-  originalSpeed: number = 0.02
+	speed: number = 0.02
+	originalSpeed: number = 0.02
 }
 
 let creatures = engine.getComponentGroup(Behavior)
@@ -24,7 +24,7 @@ export class FollowPlayerSystem {
 
 	update(dt: number) {
 		this.playerPos = camera.position.clone()
-		
+
 		for (let creature of creatures.entities) {
 			let creatureBehavior = creature.getComponent(Behavior)
 			let creatureTransform = creature.getComponent(Transform)
@@ -32,25 +32,28 @@ export class FollowPlayerSystem {
 			creatureTransform.lookAt(this.playerPos)
 
 			let gapModule = gap.length()
-			if (gapModule < 3 ){ 
+			if (gapModule < 3) {
 				resetGame()
 				return
 			}
 
 			let currentSpeed = this.creatureBeingWatched ? creatureBehavior.speed : creatureBehavior.originalSpeed
 			let direction = gap.normalize().scale(currentSpeed)
-			
-			creatureTransform.position = creatureTransform.position.add(direction)
 
-			if(!this.waitingForMonsterRay) {
+			creatureTransform.position = creatureTransform.position.add(direction)
+			if (creatureTransform.position.y < 4) {
+				creatureTransform.position.y = 4
+			}
+
+			if (!this.waitingForMonsterRay) {
 				const rayToPlayer: Ray = PhysicsCast.instance.getRayFromPositions(creatureTransform.position, this.playerPos)
 
 				PhysicsCast.instance.hitFirst(rayToPlayer, (e) => {
 					this.waitingForMonsterRay = false
 					if (e.didHit) {
 						//   log("safe")
-						  redView.visible = false
-						  this.watchingPlayer = false
+						redView.visible = false
+						this.watchingPlayer = false
 					} else {
 						// log("WATCHING YOU")
 						redView.visible = true
@@ -62,15 +65,15 @@ export class FollowPlayerSystem {
 			}
 
 			let cameraForward = PhysicsCast.instance.getRayFromCamera(1).direction
-			if(Math.abs(Vector3.GetAngleBetweenVectors(new Vector3(cameraForward.x, cameraForward.y, cameraForward.z), creatureTransform.position.subtract(this.playerPos), Vector3.Up())) < 0.4) {
+			if (Math.abs(Vector3.GetAngleBetweenVectors(new Vector3(cameraForward.x, cameraForward.y, cameraForward.z), creatureTransform.position.subtract(this.playerPos), Vector3.Up())) < 0.4) {
 				// log("MONSTER WATCHED")
-				if(this.watchingPlayer){
+				if (this.watchingPlayer) {
 					this.creatureBeingWatched = true
 					creatureBehavior.speed += 0.0025
 				} else {
 					creatureBehavior.speed = creatureBehavior.originalSpeed
 				}
-				
+
 			} else {
 				// log("MONSTER NOT WATCHED")
 				this.creatureBeingWatched = false
@@ -103,7 +106,7 @@ export class FollowPlayerSystem {
 }
 
 
-export function spawnCreature(){
+export function spawnCreature() {
 
 	let creature = new Entity()
 	engine.addEntity(creature)
