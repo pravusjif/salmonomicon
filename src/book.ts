@@ -25,7 +25,12 @@ export let pagePositions: pagePos[] = [
 	{pos: new Vector3(18,1.5,18), rot: new Vector3(0,0, 90) },
 	{pos: new Vector3(19,1.5,12), rot: new Vector3(0,0, 90) },
 	{pos: new Vector3(15,1.5,8), rot: new Vector3(0,0, 90) },
-	{pos: new Vector3(24,1.5,8), rot: new Vector3(0,0, 90) }
+	{pos: new Vector3(24,1.5,8), rot: new Vector3(0,0, 90) },
+	{pos: new Vector3(18,1.5,10), rot: new Vector3(0,0, 90) },
+	{pos: new Vector3(12,1.5,20), rot: new Vector3(0,0, 90) },
+	{pos: new Vector3(15,1.5,20), rot: new Vector3(0,0, 90) },
+	{pos: new Vector3(17,1.5,22), rot: new Vector3(0,0, 90) },
+	{pos: new Vector3(8,1.5,8), rot: new Vector3(0,0, 90) }
 ]
 
 
@@ -40,7 +45,7 @@ export function scatterPages(totalPages: number){
 		let index = Math.round(Math.random() * pagePositions.length)
 
 		while (usedPositions.indexOf(index) > -1 ){
-			index = Math.round(Math.random() * pagePositions.length)
+			index = Math.floor(Math.random() * pagePositions.length)
 		}
 
 		usedPositions.push(index)

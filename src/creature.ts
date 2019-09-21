@@ -154,27 +154,39 @@ export class CreatureSystem {
 						let newRay: Ray = {
 							origin: creatureTransform.position,
 							direction: Vector3.Forward().rotate(creatureTransform.rotation),
-							distance: 10
+							distance: 15
 						}
 			
 						PhysicsCast.instance.hitFirst(newRay, (e) => {
+							let laserLen: number
+
 							if (e.didHit){
 			
 								//debugCube.getComponent(Transform).position.set(e.hitPoint.x, e.hitPoint.y, e.hitPoint.z)
 								let hitPoint = new Vector3(e.hitPoint.x, e.hitPoint.y, e.hitPoint.z)
-								let laserLen = Vector3.Distance(creatureTransform.position, hitPoint)
+								laserLen = Vector3.Distance(creatureTransform.position, hitPoint)
 								creatureComponent.laserL.getComponent(Transform).scale.z = laserLen
 								creatureComponent.laserR.getComponent(Transform).scale.z = laserLen
 								creatureComponent.laserL.getComponent(Transform).position.z = laserLen/2
 								creatureComponent.laserR.getComponent(Transform).position.z = laserLen/2
-								log(" laserLen: ", laserLen, " id: ", e.entity.entityId)
+								//log(" laserLen: ", laserLen, " id: ", e.entity.entityId)
 							} else {
-								let laserLen = 10
+								laserLen = 15
 								creatureComponent.laserL.getComponent(Transform).scale.z = laserLen
 								creatureComponent.laserR.getComponent(Transform).scale.z = laserLen
 								creatureComponent.laserL.getComponent(Transform).position.z = laserLen/2
 								creatureComponent.laserR.getComponent(Transform).position.z = laserLen/2
 
+							}
+
+							const rayToPlayer: Ray = PhysicsCast.instance.getRayFromPositions(creatureTransform.position, this.playerPos)
+							let angle = Vector3.GetAngleBetweenVectors(
+								new Vector3(rayToPlayer.direction.x, rayToPlayer.direction.y, rayToPlayer.direction.z),
+								new Vector3(newRay.direction.x, newRay.direction.y, newRay.direction.z)
+								, Vector3.Up()
+								)
+							if (Math.abs(angle) < 0.2 && rayToPlayer.distance < laserLen){
+								log("PLAYER HIT,  angle: ", angle )
 							}
 						})
 
