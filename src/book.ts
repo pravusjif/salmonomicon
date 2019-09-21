@@ -3,6 +3,7 @@
 import utils from "../node_modules/decentraland-ecs-utils/index"
 import { creatureComponent, CreatureState } from "./creature";
 import { pageCounterUI, pagesUI } from "./UI";
+import { addCandles } from "./candles";
 
 
 @Component('page')
@@ -81,6 +82,7 @@ export class Page extends Entity {
 			pageCounterUI.value = ""
 			pagesUI.value = "You have them all!"
 			pagesUI.positionX = 75
+			book.activateGlow()
 		}
 	}
 }
@@ -110,28 +112,6 @@ export function scatterPages(totalPages: number){
 }
 
 
-// // when player grabs a page
-// export function grabPage(page: IEntity, totalPages: number){
-	
-// 	if (pageCounter == 0){
-// 		pageCounterUI.visible = true
-// 		pagesUI.visible = true
-// 	}
-// 	pageCounter += 1
-// 	pageCounterUI.value = pageCounter.toString()
-// 	log("grabbed page ", pageCounter)
-// 	page.getComponent(GLTFShape).visible = false
-// 	//engine.removeEntity(page)
-
-// 	if (pageCounter >= totalPages){
-// 		log("YOU HAVE ALL PAGES: ", totalPages )
-// 		hasAllPages = true
-// 		pageCounterUI.value = ""
-// 		pagesUI.value = "You have them all!"
-// 		pagesUI.positionX = 75
-// 	}
-// }
-
 // when creature kills player
 export function resetGame(){
 	for (let page of pages.entities) {
@@ -144,35 +124,18 @@ export function resetGame(){
 
 	pageCounter = 0
 	pageCounterUI.value = pageCounter.toString()
+	book.activateGlow()
 }
 
 
 // book's glow
-/* const rayMaterial = new Material()
+const rayMaterial = new Material()
 rayMaterial.metallic = 1
 rayMaterial.roughness = 0.5
 rayMaterial.alpha = 0.2
 rayMaterial.hasAlpha = true
-rayMaterial.albedoColor = new Color4(1, 4, 2, 0.1)
+rayMaterial.albedoColor = new Color4(2, 2, 3, 0.1)
 
-const rayCubeObject = new Entity()
-rayCubeObject.setParent(book)
-const rayBoxShape = new BoxShape()
-const rayObjectTransform = new Transform()
-
-rayBoxShape.withCollisions = false
-rayCubeObject.addComponent(rayBoxShape)
-rayCubeObject.addComponentOrReplace(rayMaterial)
-rayCubeObject.addComponentOrReplace(rayObjectTransform)
-
-// This is just to show a ray-like object to represent
-// the casted ray
-rayObjectTransform.scale.x = 0.5
-rayObjectTransform.scale.y = 20
-rayObjectTransform.scale.z = 0.5
-rayObjectTransform.position.y = 10
-
-engine.addEntity(rayCubeObject) */
 
 const pedestal = new Entity()
 const pedestalGLTFShape = new GLTFShape('models/Pedestal_01/Pedestal_01.glb')
@@ -184,23 +147,70 @@ const transform_10 = new Transform({
 pedestal.addComponentOrReplace(transform_10)
 engine.addEntity(pedestal)
 
+
 // book of salmonomicon
-export const book = new Entity()
-const gltfShape_9 = new GLTFShape('models/Book_05/Book_05.glb')
-book.addComponentOrReplace(gltfShape_9)
-const transform_13 = new Transform({
-position: new Vector3(0, 2.75, -0.55),
-rotation: new Quaternion(0, 0, 0, 1),
-scale: new Vector3(2, 2, 2)
-})
-book.addComponentOrReplace(transform_13)
+
+export class Book extends Entity {
+	glow: BoxShape
+	constructor(
+	  transform: TranformConstructorArgs,
+	  model: GLTFShape
+	) {
+	  super()
+	  this.addComponent(model)
+	  this.addComponent(new Transform(transform))
+	  engine.addEntity(this)
+	  this.setParent(pedestal)
+
+	  // glow
+	  const rayCubeObject = new Entity()
+	  rayCubeObject.setParent(this)
+	  let rayShape = new BoxShape()
+	  rayCubeObject.addComponent(rayShape )
+	  this.glow = rayShape
+	  this.glow.withCollisions = false
+	  this.glow.visible = true
+	  rayCubeObject.addComponent(new Transform({
+		position: new Vector3(0, 10, 0),
+		scale: new Vector3(0.5, 20, 0.5)
+	  }))
+	  rayCubeObject.addComponentOrReplace(rayMaterial)
+	  engine.addEntity(rayCubeObject) 
+	}
+	public invokeCreature(): void {
+		creatureComponent.currentState = CreatureState.Hunting
+		scatterPages(5)
+		this.removeGlow()
+	}
+	public trapCreature(): void {
+		creatureComponent.currentState = CreatureState.Trapped
+		addCandles()
+		this.removeGlow()
+	}
+
+	public activateGlow(): void {
+		this.glow.visible = true
+	}
+
+	public removeGlow(): void {
+		this.glow.visible = false
+	}
+
+}
+
+
+export const book = new Book(
+	{ position: new Vector3(0, 2.75, -0.55),
+	  rotation: new Quaternion(0, 0, 0, 1),
+	  scale: new Vector3(2, 2, 2)
+	},
+	new GLTFShape('models/Book_05/Book_05.glb')
+)
 
 book.addComponentOrReplace(new OnClick(()=>{
 	if(!hasAllPages && creatureComponent.currentState == CreatureState.Dormant){
-		creatureComponent.currentState = CreatureState.Hunting
+		book.invokeCreature()
 	} else if (hasAllPages && creatureComponent.currentState == CreatureState.Hunting){
-		creatureComponent.currentState = CreatureState.Trapped
+		book.trapCreature()
 	}
 }))
-book.setParent(pedestal)
-engine.addEntity(book)

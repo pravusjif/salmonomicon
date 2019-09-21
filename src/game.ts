@@ -13,9 +13,9 @@ import { addCandles } from './candles'
 
 createBuilderScene()
 
-scatterPages(5)
+//scatterPages(5)
 
 
 // spawnMica()
 
-addCandles()
+//addCandles()
