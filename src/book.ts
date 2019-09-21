@@ -2,7 +2,7 @@
 
 import utils from "../node_modules/decentraland-ecs-utils/index"
 import { creatureComponent, CreatureState } from "./creature";
-import { pageCounterUI } from "./UI";
+import { pageCounterUI, pagesUI } from "./UI";
 
 
 @Component('page')
@@ -16,21 +16,47 @@ export let hasAllPages: boolean = false
 
 let triggerOffset = new Vector3(0, 2, 0)
 
+export class pagePos { pos: Vector3, rot: Vector3 }
+
+export let pagePositions: pagePos[] = [
+	{pos: new Vector3(22,1.5,7), rot: new Vector3(0,0, 90) },
+	{pos: new Vector3(15,1.5,15), rot: new Vector3(0,0, 90) },
+	{pos: new Vector3(17,1.5,9), rot: new Vector3(0,0, 90) },
+	{pos: new Vector3(18,1.5,18), rot: new Vector3(0,0, 90) },
+	{pos: new Vector3(19,1.5,12), rot: new Vector3(0,0, 90) },
+	{pos: new Vector3(15,1.5,8), rot: new Vector3(0,0, 90) },
+	{pos: new Vector3(24,1.5,8), rot: new Vector3(0,0, 90) }
+]
+
+
+
+
 
 // add pages in random places
 export function scatterPages(totalPages: number){
+	let usedPositions: number[] = []
 	for (let i = 0; i < totalPages; i ++){
 
-		let randomX = Math.random()*20 + 5
-		let randomZ = Math.random()*20 + 5
+		let index = Math.round(Math.random() * pagePositions.length)
 
-		let pos = new Vector3(randomX, 0.3, randomZ)
+		while (usedPositions.indexOf(index) > -1 ){
+			index = Math.round(Math.random() * pagePositions.length)
+		}
+
+		usedPositions.push(index)
+
+
+		// let randomX = Math.random()*10 + 10
+		// let randomZ = Math.random()*10 + 10
+
+		//let pos = usedPositions[index].pos
+		//let pos = new Vector3(randomX, 1, randomZ)
 
 		let page = new Entity()
 		page.addComponent(new GLTFShape('models/PapyrusOpen_01/PapyrusOpen_01.glb'))
 		page.addComponentOrReplace(new Transform({
-			position: pos,
-			rotation: new Quaternion(0, 0, 0, 1),
+			position: pagePositions[index].pos,
+			rotation: pagePositions[index].rot.toQuaternion(),
 			scale: new Vector3(1, 1, 1)
 		  }))
 		page.addComponent(new Page())
@@ -43,7 +69,9 @@ export function scatterPages(totalPages: number){
 			() => {  //onCameraEnter	
 				grabPage(page, totalPages)			
 			 },
-			 null,
+			 () => {
+				page.getComponent(utils.TriggerComponent).enabled = false
+			 },
 			 false
 		))
 		engine.addEntity(page)
@@ -53,10 +81,11 @@ export function scatterPages(totalPages: number){
 // when player grabs a page
 export function grabPage(page: IEntity, totalPages: number){
 	
-	page.getComponent(utils.TriggerComponent).enabled = false
+	
 
 	if (pageCounter == 0){
 		pageCounterUI.visible = true
+		pagesUI.visible = true
 	}
 	pageCounter += 1
 	pageCounterUI.value = pageCounter.toString()
@@ -67,6 +96,9 @@ export function grabPage(page: IEntity, totalPages: number){
 	if (pageCounter >= totalPages){
 		log("YOU HAVE ALL PAGES: ", totalPages )
 		hasAllPages = true
+		pageCounterUI.value = ""
+		pagesUI.value = "You have them all!"
+		pagesUI.positionX = 75
 	}
 }
 
