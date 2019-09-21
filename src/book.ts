@@ -6,10 +6,10 @@ import { pageCounterUI, pagesUI } from "./UI";
 
 
 @Component('page')
-export class Page {
+export class PageComponent {
 }
 
-export let pages = engine.getComponentGroup(Page)
+export let pages = engine.getComponentGroup(PageComponent)
 
 export let pageCounter:number = 0
 export let hasAllPages: boolean = false
@@ -34,8 +34,56 @@ export let pagePositions: pagePos[] = [
 ]
 
 
+export class Page extends Entity {
+	constructor(
+	  transform: TranformConstructorArgs,
+	  model: GLTFShape,
+	  totalPages: number,
+	  isPicked: boolean = false,
 
+	) {
+	  super();
+	  this.addComponent(model);
+	  this.addComponent(new Transform(transform));
+	  engine.addEntity(this);
 
+	  this.addComponent(new PageComponent())  //???
+	  this.addComponent(new utils.TriggerComponent(
+		new utils.TriggerBoxShape(new Vector3(2,2,2), triggerOffset),
+		0, //layer
+		0, //triggeredByLayer
+		null, //onTriggerEnter
+		null, //onTriggerExit
+		() => {  //onCameraEnter	
+			this.grab(totalPages)			
+		 },
+		 () => {
+			this.getComponent(utils.TriggerComponent).enabled = false
+		 },
+		 false
+	))
+	}
+
+	public grab(totalPages: number): void {
+		if (pageCounter == 0){
+			pageCounterUI.visible = true
+			pagesUI.visible = true
+		}
+		pageCounter += 1
+		pageCounterUI.value = pageCounter.toString()
+		log("grabbed page ", pageCounter)
+		this.getComponent(GLTFShape).visible = false
+		//engine.removeEntity(page)
+	
+		if (pageCounter >= totalPages){
+			log("YOU HAVE ALL PAGES: ", totalPages )
+			hasAllPages = true
+			pageCounterUI.value = ""
+			pagesUI.value = "You have them all!"
+			pagesUI.positionX = 75
+		}
+	}
+}
 
 // add pages in random places
 export function scatterPages(totalPages: number){
@@ -49,63 +97,40 @@ export function scatterPages(totalPages: number){
 		}
 
 		usedPositions.push(index)
-
-
-		// let randomX = Math.random()*10 + 10
-		// let randomZ = Math.random()*10 + 10
-
-		//let pos = usedPositions[index].pos
-		//let pos = new Vector3(randomX, 1, randomZ)
-
-		let page = new Entity()
-		page.addComponent(new GLTFShape('models/PapyrusOpen_01/PapyrusOpen_01.glb'))
-		page.addComponentOrReplace(new Transform({
-			position: pagePositions[index].pos,
-			rotation: pagePositions[index].rot.toQuaternion(),
-			scale: new Vector3(1, 1, 1)
-		  }))
-		page.addComponent(new Page())
-		page.addComponent(new utils.TriggerComponent(
-			new utils.TriggerBoxShape(new Vector3(2,2,2), triggerOffset),
-			0, //layer
-			0, //triggeredByLayer
-			null, //onTriggerEnter
-			null, //onTriggerExit
-			() => {  //onCameraEnter	
-				grabPage(page, totalPages)			
-			 },
-			 () => {
-				page.getComponent(utils.TriggerComponent).enabled = false
-			 },
-			 false
-		))
-		engine.addEntity(page)
+		let newPage = new Page(
+			{
+				position: pagePositions[index].pos,
+				rotation: pagePositions[index].rot.toQuaternion()
+			},
+			new GLTFShape('models/PapyrusOpen_01/PapyrusOpen_01.glb'),
+			totalPages,
+			false
+		)
 	}
 }
 
-// when player grabs a page
-export function grabPage(page: IEntity, totalPages: number){
-	
-	
 
-	if (pageCounter == 0){
-		pageCounterUI.visible = true
-		pagesUI.visible = true
-	}
-	pageCounter += 1
-	pageCounterUI.value = pageCounter.toString()
-	log("grabbed page ", pageCounter)
-	page.getComponent(GLTFShape).visible = false
-	//engine.removeEntity(page)
+// // when player grabs a page
+// export function grabPage(page: IEntity, totalPages: number){
+	
+// 	if (pageCounter == 0){
+// 		pageCounterUI.visible = true
+// 		pagesUI.visible = true
+// 	}
+// 	pageCounter += 1
+// 	pageCounterUI.value = pageCounter.toString()
+// 	log("grabbed page ", pageCounter)
+// 	page.getComponent(GLTFShape).visible = false
+// 	//engine.removeEntity(page)
 
-	if (pageCounter >= totalPages){
-		log("YOU HAVE ALL PAGES: ", totalPages )
-		hasAllPages = true
-		pageCounterUI.value = ""
-		pagesUI.value = "You have them all!"
-		pagesUI.positionX = 75
-	}
-}
+// 	if (pageCounter >= totalPages){
+// 		log("YOU HAVE ALL PAGES: ", totalPages )
+// 		hasAllPages = true
+// 		pageCounterUI.value = ""
+// 		pagesUI.value = "You have them all!"
+// 		pagesUI.positionX = 75
+// 	}
+// }
 
 // when creature kills player
 export function resetGame(){
@@ -121,20 +146,6 @@ export function resetGame(){
 	pageCounterUI.value = pageCounter.toString()
 }
 
-/* book.addComponent(new utils.TriggerComponent(
-	new utils.TriggerBoxShape(new Vector3(1,8,1), triggerOffset),
-	0, //layer
-	0, //triggeredByLayer
-	null, //onTriggerEnter
-	null, //onTriggerExit
-	() => {  //onCameraEnter
-		if (hasAllPages){
-			log("YOU WIN!")
-		}			
-	 },
-	 null,
-	 false
-)) */
 
 // book's glow
 /* const rayMaterial = new Material()
