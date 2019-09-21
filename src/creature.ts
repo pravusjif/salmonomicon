@@ -185,7 +185,7 @@ export class CreatureSystem {
 								new Vector3(newRay.direction.x, newRay.direction.y, newRay.direction.z)
 								, Vector3.Up()
 								)
-							if (Math.abs(angle) < 0.2 && rayToPlayer.distance < laserLen){
+							if (Math.abs(angle) < 0.2	 && rayToPlayer.distance < laserLen){
 								log("PLAYER HIT,  angle: ", angle )
 							}
 						})
@@ -218,33 +218,5 @@ creatureEntity.addComponent(new Transform({
 export let creatureComponent = new CreatureComponent()
 creatureEntity.addComponent(creatureComponent)
 
-/* const rayMaterial = new Material()
-rayMaterial.metallic = 1
-rayMaterial.roughness = 0.5
-rayMaterial.albedoColor = new Color3(30, 1, 1)
-let laserL = new Entity()
-laserL.addComponent(new BoxShape())
-laserL.getComponent(BoxShape).withCollisions = false
-laserL.addComponent(new Transform({
-	scale: new Vector3(0.1 ,0.1, 20 ),
-	position: new Vector3(-0.2, 1.2, 10)
-}))
-laserL.addComponent(rayMaterial)
-laserL.setParent(mica)
-
-engine.addEntity(laserL)
-
-
-let laserR = new Entity()
-laserR.addComponent(new BoxShape())
-laserR.getComponent(BoxShape).withCollisions = false
-laserR.addComponent(new Transform({
-	scale: new Vector3(0.1 ,0.1, 20 ),
-	position: new Vector3(0.2, 1.2, 10)
-}))
-laserR.addComponent(rayMaterial)
-laserR.setParent(mica)
-
-engine.addEntity(laserR) */
 
 engine.addSystem(new CreatureSystem())
