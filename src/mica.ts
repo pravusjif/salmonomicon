@@ -48,13 +48,13 @@ class MicaComponent {
 			new DialogueLine("Hi! Im Mika, nice to meet you", 4),
 			new DialogueLine("I've been cursed and lost my body", 3),
 			new DialogueLine("Will you help me please?", 2),
-			new DialogueLine("I just need you to retrieve 3 missing pages from my book, the Salmonomicon", 4),
-			new DialogueLine("Just take me with you and I'll point you to the right direction", -1)
+			new DialogueLine("I must retrieve pages from my book, the Salmonomicon", 4),
+			new DialogueLine("Take me with you, I'll lead the way!", -1)
 		]
 
 		this.detectingPagesDialogueLines = [
-			new DialogueLine("The only thing I didn't mention is that there's a creature, bound to this curse, that will try to stop us from retrieving the pages", 4),
-			new DialogueLine("DON'T look at it directly or you'll make it faster.", 4),
+			new DialogueLine("Oh, by the way, look out for the creature that's bound to this curse, it will try to kill you", 4),
+			new DialogueLine("DON'T look at it directly, or he will come at you faster!", 4),
 			new DialogueLine("And whatever you do... DO NOT LET HIM GET TO YOU", 4),
 			new DialogueLine("", -1)
 		]
@@ -65,7 +65,7 @@ class MicaComponent {
 			new DialogueLine("Klaatu... Barada... AHEM-Cof!-Cof!-oktu!", 6),
 			new DialogueLine("Oh shait! It seems it worked half-way", 3),
 			new DialogueLine("The creature is trapped in the pentagram, but...", 3),
-			new DialogueLine("You have to lit the 3 candles to finish sendin him to the other side!", -1),
+			new DialogueLine("You have to light the 3 candles to finish sending him back!", -1),
 		]
 	}
 
