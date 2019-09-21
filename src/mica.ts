@@ -1,4 +1,5 @@
 import utils from "../node_modules/decentraland-ecs-utils/index"
+import { book } from "./book"
 
 export enum MicaState {
 	AskingForHelp,
@@ -17,8 +18,10 @@ class DialogueLine {
 	}
 }
 
+@Component('MicaComponent')
 class MicaComponent {
-	currentState: MicaState = MicaState.AskingForHelp
+	private currentState: MicaState = MicaState.AskingForHelp
+
 	currentDialogueIndex: number = 0
 	
 	helpDialogueLines: DialogueLine[]
@@ -65,25 +68,64 @@ class MicaComponent {
 			new DialogueLine("You have to lit the 3 candles to finish sendin him to the other side!", -1),
 		]
 	}
+
+	getCurrentState() : MicaState {
+		return this.currentState
+	}
+
+	setState(newState: MicaState) {
+		if(this.currentState == newState) return
+
+		this.currentDialogueIndex = 0
+		this.currentState = newState
+	}
 }
 
-let micaPos = new Vector3(20, 0.75, 20)
-let mica = new Entity()
+let micaHeadEntity = new Entity()
 
 export let micaComponent = new MicaComponent()
-mica.addComponent(micaComponent)
+micaHeadEntity.addComponent(micaComponent)
 
-mica.addComponent(new GLTFShape("models/Mika_Head.glb"))
-mica.addComponent(new Transform({
-	position: micaPos
+micaHeadEntity.addComponent(new GLTFShape("models/Mika_Head.glb"))
+micaHeadEntity.addComponent(new Transform({
+	position: new Vector3(0, 0, 0.75),
+	rotation: Quaternion.Euler(0,180,0),
+	scale: new Vector3(0.5, 0.5, 0.5)
 }))
-engine.addEntity(mica)
+micaHeadEntity.setParent(book)
+engine.addEntity(micaHeadEntity)
+
+let micaTextEntity = new Entity()
+
+let micaTextShape = new TextShape()
+micaTextShape.billboard = true
+micaTextShape.fontSize = 3
+// micaTextShape.resizeToFit = true
+micaTextShape.color = Color3.Yellow()
+micaTextEntity.addComponent(micaTextShape)
+micaTextEntity.addComponent(new Transform({
+position: new Vector3(0, 2.25, 0)
+}))
+micaTextEntity.setParent(micaHeadEntity)
+engine.addEntity(micaTextEntity)
 
 class MicaDialogueSystem implements ISystem {
-	update(dt: number) {
-		switch (micaComponent.currentState) {
-			case MicaState.AskingForHelp:
+	currentWaitingTime: number = 0
 
+	update(dt: number) {
+		switch (micaComponent.getCurrentState()) {
+			case MicaState.AskingForHelp:
+				if(this.currentWaitingTime > 0) {
+					this.currentWaitingTime -= dt
+
+					if(this.currentWaitingTime > 0) return
+				}
+
+				// random index
+				micaComponent.currentDialogueIndex = Math.floor(Scalar.RandomRange(0, micaComponent.helpDialogueLines.length))
+				
+				this.currentWaitingTime = micaComponent.helpDialogueLines[micaComponent.currentDialogueIndex].readingTimeInSeconds
+				micaTextShape.value = micaComponent.helpDialogueLines[micaComponent.currentDialogueIndex].text
 				
 				break;
 
