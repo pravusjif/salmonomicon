@@ -137,11 +137,11 @@ pedestal.addComponentOrReplace(transform_10)
 engine.addEntity(pedestal)
 
 // book of salmonomicon
-const book = new Entity()
+export const book = new Entity()
 const gltfShape_9 = new GLTFShape('models/Book_05/Book_05.glb')
 book.addComponentOrReplace(gltfShape_9)
 const transform_13 = new Transform({
-position: new Vector3(0, 2.75, 0),
+position: new Vector3(0, 2.75, -0.55),
 rotation: new Quaternion(0, 0, 0, 1),
 scale: new Vector3(2, 2, 2)
 })
