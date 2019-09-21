@@ -2,8 +2,8 @@
 
 import utils from "../node_modules/decentraland-ecs-utils/index"
 import { creature, CreatureState } from "./creature";
-import { pageCounterUI, pagesUI } from "./UI";
-import { addCandles } from "./candles";
+import { pageCounterUI, pagesUI, dieScreen } from "./UI";
+import { addCandles, candlesOnCounter, candles } from "./candles";
 
 
 @Component('page')
@@ -112,19 +112,31 @@ export function scatterPages(totalPages: number){
 }
 
 
-// when creature kills player
+// RESET GAME
 export function resetGame(){
+	log("YOU LOOSE")
+	dieScreen()
 	for (let page of pages.entities) {
-		page.getComponent(GLTFShape).visible = true
+		page.getComponent(GLTFShape).visible = false
 		page.getComponent(utils.TriggerComponent).enabled = true
 	}
-	log("YOU LOOSE")
 	pageCounter = pages.entities.length
 	hasAllPages = false
-
 	pageCounter = 0
 	pageCounterUI.value = pageCounter.toString()
 	book.activateGlow()
+
+	candlesOnCounter = 0
+	for (let candle of candles) {
+		engine.removeEntity(candle)
+	}
+
+	creature.currentState = CreatureState.Dormant
+	if (creature.laserL){
+		creature.laserOff()
+	}
+
+	// RESET MIKA STATE 
 }
 
 

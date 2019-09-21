@@ -1,4 +1,4 @@
-import { redView } from "./UI"
+import { wrapper } from "./UI"
 import { pages, pageCounter, resetGame } from "./book"
 
 export enum CreatureState {
@@ -63,10 +63,10 @@ export class Creature extends Entity {
 		PhysicsCast.instance.hitFirst(rayToPlayer, (e) => {
 			this.waitingForRay = false
 			if (e.didHit) {
-				redView.visible = false
+				wrapper.visible = false
 				creature.watchingPlayer = false
 			} else {
-				redView.visible = true
+				wrapper.visible = true
 				creature.watchingPlayer = true
 			}
 		})
