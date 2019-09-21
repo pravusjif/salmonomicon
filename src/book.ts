@@ -16,7 +16,7 @@ export let hasAllPages: boolean = false
 
 let triggerOffset = new Vector3(0, 2, 0)
 
-export class pagePos { pos: Vector3, rot: Vector3 }
+export class pagePos { pos: Vector3 ; rot: Vector3 }
 
 export let pagePositions: pagePos[] = [
 	{pos: new Vector3(22,1.5,7), rot: new Vector3(0,0, 90) },
