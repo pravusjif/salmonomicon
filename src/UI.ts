@@ -133,11 +133,13 @@ pageCounterUI.positionX = 60
 
 export function dieScreen(){
 
-	redView.visible = true
-	book.addComponent(new decentralandEcsUtils.Delay(2000,
-		() => {
-			redView.visible = false
-		}
-		))
+redView.visible = true
+let dummyEnt = new Entity()
+engine.addEntity(dummyEnt)
+dummyEnt.addComponent(new decentralandEcsUtils.Delay(2000,
+	() => {
+		redView.visible = false
+	}
+))
 
 }

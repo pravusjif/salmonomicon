@@ -123,18 +123,22 @@ export function resetGame(){
 	pageCounter = pages.entities.length
 	hasAllPages = false
 	pageCounter = 0
+	pagesUI.value = "Pages:"
+	pagesUI.positionX = 0
 	pageCounterUI.value = pageCounter.toString()
 	book.activateGlow()
 
-	candlesOnCounter = 0
+	//candlesOnCounter = 0
 	for (let candle of candles) {
+		candle.turnOff()
 		engine.removeEntity(candle)
 	}
-
+	
+	creature.laserOff()
 	creature.currentState = CreatureState.Dormant
-	if (creature.laserL){
-		creature.laserOff()
-	}
+
+
+
 
 	// RESET MIKA STATE 
 }
@@ -220,9 +224,11 @@ export const book = new Book(
 )
 
 book.addComponentOrReplace(new OnClick(()=>{
-	if(!hasAllPages && creature.currentState == CreatureState.Dormant){
+	if(!hasAllPages){
 		book.invokeCreature()
 	} else if (hasAllPages && creature.currentState == CreatureState.Hunting){
 		book.trapCreature()
+	} else if (	creature.currentState == CreatureState.Vanished){
+		resetGame()
 	}
 }))

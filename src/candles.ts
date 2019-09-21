@@ -1,6 +1,9 @@
 import { creature, CreatureState } from "./creature";
 
 export class Candle extends Entity {
+  isOn:boolean = false
+  onModel: GLTFShape
+  offModel: GLTFShape
   constructor(
 	transform: TranformConstructorArgs,
 	onModel: GLTFShape,
@@ -19,23 +22,35 @@ export class Candle extends Entity {
     onEntity.addComponent(onModel)
     onEntity.setParent(this)
 
-    onModel.visible = false;
+	onModel.visible = false;
+	this.isOn = isOn
+	this.onModel = onModel
+	this.offModel = offModel
 
 
     this.addComponent(
 	  new OnPointerDown(e => {
 		if (e.hit.length > 4 || isOn) return
-
-		isOn = true
-		onModel.visible = true
-		offModel.visible = false
-		candleCounter += 1
-		if (candleCounter == candlePositions.length) {
-			log("YOU WIN")
-			creature.currentState = CreatureState.Vanished
-		}
+		  this.turnOn()
 	  })
-    );
+    )
+  }
+  public turnOn () :void {
+	this.isOn = true
+	this.onModel.visible = true
+	this.offModel.visible = false
+	candlesOnCounter += 1
+	if (candlesOnCounter == candles.length) {
+		log("YOU WIN")
+		creature.currentState = CreatureState.Vanished
+	}
+  }
+
+  public turnOff () :void {
+	this.isOn = false
+	this.onModel.visible = false
+	this.offModel.visible = true
+	candlesOnCounter = 0
   }
 }
 
@@ -45,18 +60,25 @@ let candlePositions: TranformConstructorArgs [] = [
 	{position: new Vector3(25, 1, 20)},
 ]
 
-let candleCounter: number = 0
+export let candlesOnCounter: number = 0
 
+export let candles: Candle[] = []
 
 
 export function addCandles(){
-
-	for (let i = 0 ; i < candlePositions.length; i ++){
-		const candle1 = new Candle(
-			candlePositions[i],
-			new GLTFShape("models/Candles/Candle_02.glb"),
-			new GLTFShape("models/Candles/Candle_01.glb"),
-			false
-		)
-	}
+	if (candles.length > 1){
+		for (let i = 0 ; i < candles.length; i ++){
+			engine.addEntity(candles[i])
+		}
+	}else {
+		for (let i = 0 ; i < candlePositions.length; i ++){
+			const newCandle = new Candle(
+				candlePositions[i],
+				new GLTFShape("models/Candles/Candle_02.glb"),
+				new GLTFShape("models/Candles/Candle_01.glb"),
+				false
+			)
+			candles.push(newCandle)
+		}
+	}	
 }

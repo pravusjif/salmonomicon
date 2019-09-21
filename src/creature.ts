@@ -64,10 +64,10 @@ export class Creature extends Entity {
 			this.waitingForRay = false
 			if (e.didHit) {
 				wrapper.visible = false
-				creature.watchingPlayer = false
+				this.watchingPlayer = false
 			} else {
 				wrapper.visible = true
-				creature.watchingPlayer = true
+				this.watchingPlayer = true
 			}
 		})
 	}	
@@ -93,29 +93,34 @@ export class Creature extends Entity {
 
 	public startLaser(): void {
 
-		let laserL = new Entity()
-		laserL.addComponent(new BoxShape())
-		laserL.getComponent(BoxShape).withCollisions = false
-		laserL.addComponent(new Transform({
-			scale: new Vector3(0.05 ,0.05, 10 ),
-			position: new Vector3(-0.065, 0.55, 5)
-		}))
-		laserL.addComponent(rayMaterial)
-		laserL.setParent(this)
-		this.laserL = laserL
-		engine.addEntity(laserL)
-
-		let laserR = new Entity()
-		laserR.addComponent(new BoxShape())
-		laserR.getComponent(BoxShape).withCollisions = false
-		laserR.addComponent(new Transform({
-			scale: new Vector3(0.05 ,0.05, 10 ),
-			position: new Vector3(0.065, 0.55, 5)
-		}))
-		laserR.addComponent(rayMaterial)
-		laserR.setParent(this)
-		this.laserR = laserR
-		engine.addEntity(laserR)
+		if (this.laserL){
+			this.laserL.getComponent(GLTFShape).visible = true
+			this.laserR.getComponent(GLTFShape).visible = true
+		} else {
+			let laserL = new Entity()
+			laserL.addComponent(new BoxShape())
+			laserL.getComponent(BoxShape).withCollisions = false
+			laserL.addComponent(new Transform({
+				scale: new Vector3(0.05 ,0.05, 10 ),
+				position: new Vector3(-0.065, 0.55, 5)
+			}))
+			laserL.addComponent(rayMaterial)
+			laserL.setParent(this)
+			this.laserL = laserL
+			engine.addEntity(laserL)
+	
+			let laserR = new Entity()
+			laserR.addComponent(new BoxShape())
+			laserR.getComponent(BoxShape).withCollisions = false
+			laserR.addComponent(new Transform({
+				scale: new Vector3(0.05 ,0.05, 10 ),
+				position: new Vector3(0.065, 0.55, 5)
+			}))
+			laserR.addComponent(rayMaterial)
+			laserR.setParent(this)
+			this.laserR = laserR
+			engine.addEntity(laserR)
+		}
 	}
 
     public checkLaser(playerPos: Vector3): void {
@@ -145,17 +150,24 @@ export class Creature extends Entity {
 				)
 			if (Math.abs(angle) < 0.2	 && rayToPlayer.distance < laserLen){
 				log("PLAYER HIT,  angle: ", angle )
+				resetGame()
 			}
 		})
 	}
 
 	public drawLaserLength(laserLen: number): void {
-		creature.laserL.getComponent(Transform).scale.z = laserLen
-		creature.laserR.getComponent(Transform).scale.z = laserLen
-		creature.laserL.getComponent(Transform).position.z = laserLen/2
-		creature.laserR.getComponent(Transform).position.z = laserLen/2
+		this.laserL.getComponent(Transform).scale.z = laserLen
+		this.laserR.getComponent(Transform).scale.z = laserLen
+		this.laserL.getComponent(Transform).position.z = laserLen/2
+		this.laserR.getComponent(Transform).position.z = laserLen/2
 	}
 
+	public laserOff () :void {
+		if (this.currentState == CreatureState.Trapped){
+			this.laserL.getComponent(GLTFShape).visible = false
+			this.laserR.getComponent(GLTFShape).visible = false
+		}	
+	}
 }
 
 
