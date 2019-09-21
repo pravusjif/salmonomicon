@@ -1,4 +1,4 @@
-import { creatureComponent, CreatureState } from "./creature";
+import { creature, CreatureState } from "./creature";
 
 export class Candle extends Entity {
   constructor(
@@ -32,7 +32,7 @@ export class Candle extends Entity {
 		candleCounter += 1
 		if (candleCounter == candlePositions.length) {
 			log("YOU WIN")
-			creatureComponent.currentState = CreatureState.Vanished
+			creature.currentState = CreatureState.Vanished
 		}
 	  })
     );

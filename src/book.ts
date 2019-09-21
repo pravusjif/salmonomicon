@@ -1,7 +1,7 @@
 
 
 import utils from "../node_modules/decentraland-ecs-utils/index"
-import { creatureComponent, CreatureState } from "./creature";
+import { creature, CreatureState } from "./creature";
 import { pageCounterUI, pagesUI } from "./UI";
 import { addCandles } from "./candles";
 
@@ -178,12 +178,12 @@ export class Book extends Entity {
 	  engine.addEntity(rayCubeObject) 
 	}
 	public invokeCreature(): void {
-		creatureComponent.currentState = CreatureState.Hunting
+		creature.currentState = CreatureState.Hunting
 		scatterPages(5)
 		this.removeGlow()
 	}
 	public trapCreature(): void {
-		creatureComponent.currentState = CreatureState.Trapped
+		creature.currentState = CreatureState.Trapped
 		addCandles()
 		this.removeGlow()
 	}
@@ -208,9 +208,9 @@ export const book = new Book(
 )
 
 book.addComponentOrReplace(new OnClick(()=>{
-	if(!hasAllPages && creatureComponent.currentState == CreatureState.Dormant){
+	if(!hasAllPages && creature.currentState == CreatureState.Dormant){
 		book.invokeCreature()
-	} else if (hasAllPages && creatureComponent.currentState == CreatureState.Hunting){
+	} else if (hasAllPages && creature.currentState == CreatureState.Hunting){
 		book.trapCreature()
 	}
 }))
