@@ -91,6 +91,21 @@ beingWatchedText.vTextAlign = "center"
 beingWatchedText.hTextAlign = "center"
 
 
+
+
+export const pagesUI = new UIText(canvas)
+pagesUI.isPointerBlocker = false
+pagesUI.visible = false
+pagesUI.value = "Pages:"
+pagesUI.color = Color4.Red()
+pagesUI.outlineColor = Color4.Yellow()
+pagesUI.fontSize = 30
+pagesUI.outlineWidth = 0.1
+pagesUI.vAlign = "bottom"
+pagesUI.hAlign = "left"
+pagesUI.vTextAlign = "center"
+pagesUI.hTextAlign = "center"
+
 export const pageCounterUI = new UIText(canvas)
 pageCounterUI.isPointerBlocker = false
 pageCounterUI.visible = false
@@ -103,3 +118,4 @@ pageCounterUI.vAlign = "bottom"
 pageCounterUI.hAlign = "left"
 pageCounterUI.vTextAlign = "center"
 pageCounterUI.hTextAlign = "center"
+pageCounterUI.positionX = 60
