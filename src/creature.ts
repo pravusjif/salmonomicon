@@ -150,6 +150,10 @@ export class Creature extends Entity {
 	}
 
     public checkLaser(playerPos: Vector3): void {
+		if (!this.laserL || !this.laserR) return
+		if (this.waitingForRay) return
+		this.waitingForRay = true
+
 		let newRay: Ray = {
 			origin: this.transform.position,
 			direction: Vector3.Forward().rotate(this.transform.rotation),
@@ -158,6 +162,7 @@ export class Creature extends Entity {
 
 		PhysicsCast.instance.hitFirst(newRay, (e) => {
 			let laserLen: number
+			let playerSafe: boolean = false
 			if (e.didHit){
 				//debugCube.getComponent(Transform).position.set(e.hitPoint.x, e.hitPoint.y, e.hitPoint.z)
 				let hitPoint = new Vector3(e.hitPoint.x, e.hitPoint.y, e.hitPoint.z)
@@ -169,21 +174,29 @@ export class Creature extends Entity {
 				this.drawLaserLength(laserLen)
 			}
 			const rayToPlayer: Ray = PhysicsCast.instance.getRayFromPositions(this.transform.position, playerPos)
+			PhysicsCast.instance.hitFirst(rayToPlayer, (e) => {
+				if(e.didHit){
+					playerSafe = true
+				}
+			})
+
 			let angle = Vector3.GetAngleBetweenVectors(
 				new Vector3(rayToPlayer.direction.x, rayToPlayer.direction.y, rayToPlayer.direction.z),
 				new Vector3(newRay.direction.x, newRay.direction.y, newRay.direction.z)
 				, Vector3.Up()
 				)
-			if (Math.abs(angle) < 0.2	 && rayToPlayer.distance < laserLen){
-				log("PLAYER HIT,  angle: ", angle )
+			if (Math.abs(angle) < 0.2	 && rayToPlayer.distance < laserLen + 0.3 && !playerSafe){
+				log("PLAYER HIT,  laserLen: ", laserLen, " player distance: ",  rayToPlayer.distance)
 				resetGame()
 			}
+			log(laserLen)
+			this.waitingForRay = false
 		})
 	}
 
 	public drawLaserLength(laserLen: number): void {
-		this.laserL.getComponent(Transform).scale.z = laserLen
-		this.laserR.getComponent(Transform).scale.z = laserLen
+		this.laserL.getComponent(Transform).scale.z = laserLen - 0.3
+		this.laserR.getComponent(Transform).scale.z = laserLen - 0.3
 		this.laserL.getComponent(Transform).position.z = laserLen/2 + 0.3
 		this.laserR.getComponent(Transform).position.z = laserLen/2 + 0.3
 	}

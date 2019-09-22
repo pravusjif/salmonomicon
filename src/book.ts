@@ -212,9 +212,9 @@ export class Book extends Entity {
 		creature.invokeAnim.playing = true
 		creature.attackAnim.playing = false
 		creature.searchAnim.playing = false
+		creature.waitingForRay = false
 		scatterPages(5)
 		this.removeGlow()
-
 	}
 	public trapCreature(): void {
 		creature.currentState = CreatureState.Trapped
@@ -223,6 +223,7 @@ export class Book extends Entity {
 		this.removeGlow()
 		creature.transform.position = creature.trappedPosition
 		creature.transform.rotation = Quaternion.Euler(0,0,0)
+		creature.waitingForRay = false
 	}
 
 	public activateGlow(): void {
