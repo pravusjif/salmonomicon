@@ -89,33 +89,47 @@ export class Page extends Entity {
 
 // add pages in random places
 export function scatterPages(totalPages: number){
-	let usedPositions: number[] = []
-	for (let i = 0; i < totalPages; i ++){
-
-		let index = Math.round(Math.random() * pagePositions.length)
-
-		while (usedPositions.indexOf(index) > -1 ){
-			index = Math.floor(Math.random() * pagePositions.length)
+	pageCounter = 0
+	pageCounterUI.value = ""
+	if (pages.entities.length > 1 ){
+		for (let page of pages.entities){
+			page.getComponent(GLTFShape).visible = true
+			page.getComponent(utils.TriggerComponent).enabled = true
 		}
-
-		usedPositions.push(index)
-		let newPage = new Page(
-			{
-				position: pagePositions[index].pos,
-				rotation: pagePositions[index].rot.toQuaternion()
-			},
-			new GLTFShape('models/PapyrusOpen_01/PapyrusOpen_01.glb'),
-			totalPages,
-			false
-		)
-	}
+	}else {
+		let usedPositions: number[] = []
+		for (let i = 0; i < totalPages; i ++){
+	
+			let index = Math.floor(Math.random() * pagePositions.length)
+	
+			while (usedPositions.indexOf(index) > -1 ){
+				index = Math.floor(Math.random() * pagePositions.length)
+			}
+			usedPositions.push(index)
+			let newPage = new Page(
+				{
+					position: pagePositions[index].pos,
+					rotation: pagePositions[index].rot.toQuaternion()
+				},
+				new GLTFShape('models/PapyrusOpen_01/PapyrusOpen_01.glb'),
+				totalPages,
+				false
+			)
+		}
+	}	
 }
 
 
 // RESET GAME
 export function resetGame(){
-	log("YOU LOOSE")
-	dieScreen()
+	
+	if (creature.currentState != CreatureState.Vanished &&
+		creature.currentState != CreatureState.Dormant
+		){
+		log("YOU LOOSE")
+		dieScreen()
+	}
+	
 	for (let page of pages.entities) {
 		page.getComponent(GLTFShape).visible = false
 		page.getComponent(utils.TriggerComponent).enabled = true

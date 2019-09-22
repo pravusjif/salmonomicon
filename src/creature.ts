@@ -116,15 +116,15 @@ export class Creature extends Entity {
 	public startLaser(): void {
 
 		if (this.laserL){
-			this.laserL.getComponent(GLTFShape).visible = true
-			this.laserR.getComponent(GLTFShape).visible = true
+			this.laserL.getComponent(BoxShape).visible = true
+			this.laserR.getComponent(BoxShape).visible = true
 		} else {
 			let laserL = new Entity()
 			laserL.addComponent(new BoxShape())
 			laserL.getComponent(BoxShape).withCollisions = false
 			laserL.addComponent(new Transform({
 				scale: new Vector3(0.05 ,0.05, 10 ),
-				position: new Vector3(-0.065, 0.55, 5)
+				position: new Vector3(-0.065, 0.55, 5.2)
 			}))
 			laserL.addComponent(rayMaterial)
 			laserL.setParent(this)
@@ -136,7 +136,7 @@ export class Creature extends Entity {
 			laserR.getComponent(BoxShape).withCollisions = false
 			laserR.addComponent(new Transform({
 				scale: new Vector3(0.05 ,0.05, 10 ),
-				position: new Vector3(0.065, 0.55, 5)
+				position: new Vector3(0.065, 0.55, 5.2)
 			}))
 			laserR.addComponent(rayMaterial)
 			laserR.setParent(this)
@@ -184,14 +184,14 @@ export class Creature extends Entity {
 	public drawLaserLength(laserLen: number): void {
 		this.laserL.getComponent(Transform).scale.z = laserLen
 		this.laserR.getComponent(Transform).scale.z = laserLen
-		this.laserL.getComponent(Transform).position.z = laserLen/2
-		this.laserR.getComponent(Transform).position.z = laserLen/2
+		this.laserL.getComponent(Transform).position.z = laserLen/2 + 0.3
+		this.laserR.getComponent(Transform).position.z = laserLen/2 + 0.3
 	}
 
 	public laserOff () :void {
 		if (this.currentState == CreatureState.Trapped){
-			this.laserL.getComponent(GLTFShape).visible = false
-			this.laserR.getComponent(GLTFShape).visible = false
+			this.laserL.getComponent(BoxShape).visible = false
+			this.laserR.getComponent(BoxShape).visible = false
 		}	
 		this.invokeAnim.playing = true
 		this.attackAnim.playing = false

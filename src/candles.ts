@@ -42,6 +42,7 @@ export class Candle extends Entity {
 	candlesOnCounter += 1
 	if (candlesOnCounter == candles.length) {
 		log("YOU WIN")
+		creature.laserOff()
 		creature.currentState = CreatureState.Vanished
 	}
   }
