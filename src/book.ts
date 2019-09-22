@@ -218,8 +218,11 @@ export class Book extends Entity {
 	}
 	public trapCreature(): void {
 		creature.currentState = CreatureState.Trapped
+		creature.startLaser()
 		addCandles()
 		this.removeGlow()
+		creature.transform.position = creature.trappedPosition
+		creature.transform.rotation = Quaternion.Euler(0,0,0)
 	}
 
 	public activateGlow(): void {

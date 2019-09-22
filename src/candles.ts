@@ -75,8 +75,8 @@ export function addCandles(){
 		for (let i = 0 ; i < candlePositions.length; i ++){
 			const newCandle = new Candle(
 				candlePositions[i],
-				new GLTFShape("models/Candles/Candle_02.glb"),
-				new GLTFShape("models/Candles/Candle_01.glb"),
+				new GLTFShape("models/Candle_On/Candle_02.glb"),
+				new GLTFShape("models/Candle_Off/Candle_01.glb"),
 				false
 			)
 			candles.push(newCandle)

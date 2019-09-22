@@ -251,14 +251,9 @@ export class CreatureSystem {
 					break;
 
 				//////  TRAPPED //////
-				case CreatureState.Trapped:
-						
-						if (creatureTransform.position.y != creature.trappedPosition.y) {
-							creatureTransform.position = creature.trappedPosition
-							creature.startLaser()		
-						}
-						creatureTransform.rotate(Vector3.Up(), dt * creature.rotationSpeed)
-						creature.checkLaser(this.playerPos)
+				case CreatureState.Trapped:	
+					creatureTransform.rotate(Vector3.Up(), dt * creature.rotationSpeed)
+					creature.checkLaser(this.playerPos)
 					break;
 
 				////// DORMANT & VANISHED  //////
