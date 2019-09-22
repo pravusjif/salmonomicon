@@ -39,6 +39,9 @@ export class Creature extends Entity {
 	beingWatched: boolean = false
 	watchingPlayer: boolean = false
 	waitingForRay: boolean = false
+	invokeAnim: AnimationState
+	searchAnim: AnimationState
+	attackAnim: AnimationState
 
 	constructor(
 		transform: TranformConstructorArgs,
@@ -53,6 +56,15 @@ export class Creature extends Entity {
 	  engine.addEntity(this)
 	  this.currentState = currentState
 	  this.transform = this.getComponent(Transform)
+
+	  // animations
+	  this.invokeAnim = new AnimationState("Invoke")
+	  this.searchAnim = new AnimationState("Search")
+	  this.attackAnim = new AnimationState("Attack")
+	  this.addComponent(new Animator()).addClip(this.invokeAnim)
+	  this.getComponent(Animator).addClip(this.searchAnim)
+	  this.getComponent(Animator).addClip(this.attackAnim)
+	  this.invokeAnim.play()
 	} 
 
 	public watchForPlayer(playerPos: Vector3): void {
@@ -82,13 +94,23 @@ export class Creature extends Entity {
 			if (this.watchingPlayer) {
 				this.beingWatched = true
 				this.speed *= 1.1
+				this.invokeAnim.playing = false
+				this.attackAnim.playing = true
+				this.searchAnim.playing = false
 			} else {
 				this.speed = this.originalSpeed
+				this.invokeAnim.playing = false
+				this.attackAnim.playing = false
+				this.searchAnim.playing = true
 			}
 
 		} else {
 			this.beingWatched = false
+			this.invokeAnim.playing = false
+			this.attackAnim.playing = false
+			this.searchAnim.playing = true
 		}
+		
 	}
 
 	public startLaser(): void {
@@ -121,6 +143,10 @@ export class Creature extends Entity {
 			this.laserR = laserR
 			engine.addEntity(laserR)
 		}
+
+		this.invokeAnim.playing = false
+		this.attackAnim.playing = false
+		this.searchAnim.playing = true
 	}
 
     public checkLaser(playerPos: Vector3): void {
@@ -167,6 +193,9 @@ export class Creature extends Entity {
 			this.laserL.getComponent(GLTFShape).visible = false
 			this.laserR.getComponent(GLTFShape).visible = false
 		}	
+		this.invokeAnim.playing = true
+		this.attackAnim.playing = false
+		this.searchAnim.playing = false
 	}
 }
 

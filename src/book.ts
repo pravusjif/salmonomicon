@@ -195,8 +195,12 @@ export class Book extends Entity {
 	}
 	public invokeCreature(): void {
 		creature.currentState = CreatureState.Hunting
+		creature.invokeAnim.playing = true
+		creature.attackAnim.playing = false
+		creature.searchAnim.playing = false
 		scatterPages(5)
 		this.removeGlow()
+
 	}
 	public trapCreature(): void {
 		creature.currentState = CreatureState.Trapped
