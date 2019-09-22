@@ -114,6 +114,7 @@ pagesUI.vAlign = "bottom"
 pagesUI.hAlign = "left"
 pagesUI.vTextAlign = "center"
 pagesUI.hTextAlign = "center"
+pagesUI.positionY = 100
 
 export const pageCounterUI = new UIText(canvas)
 pageCounterUI.isPointerBlocker = false
@@ -127,7 +128,9 @@ pageCounterUI.vAlign = "bottom"
 pageCounterUI.hAlign = "left"
 pageCounterUI.vTextAlign = "center"
 pageCounterUI.hTextAlign = "center"
+
 pageCounterUI.positionX = 60
+pageCounterUI.positionY = 100
 
 
 
