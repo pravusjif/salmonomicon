@@ -1,9 +1,9 @@
 
 
 import utils from "../node_modules/decentraland-ecs-utils/index"
-import { creatureComponent, CreatureState } from "./creature";
-import { pageCounterUI, pagesUI } from "./UI";
-import { addCandles } from "./candles";
+import { creature, CreatureState } from "./creature";
+import { pageCounterUI, pagesUI, dieScreen } from "./UI";
+import { addCandles, candlesOnCounter, candles } from "./candles";
 
 
 @Component('page')
@@ -89,42 +89,72 @@ export class Page extends Entity {
 
 // add pages in random places
 export function scatterPages(totalPages: number){
-	let usedPositions: number[] = []
-	for (let i = 0; i < totalPages; i ++){
-
-		let index = Math.round(Math.random() * pagePositions.length)
-
-		while (usedPositions.indexOf(index) > -1 ){
-			index = Math.floor(Math.random() * pagePositions.length)
+	pageCounter = 0
+	pageCounterUI.value = ""
+	if (pages.entities.length > 1 ){
+		for (let page of pages.entities){
+			page.getComponent(GLTFShape).visible = true
+			page.getComponent(utils.TriggerComponent).enabled = true
 		}
-
-		usedPositions.push(index)
-		let newPage = new Page(
-			{
-				position: pagePositions[index].pos,
-				rotation: pagePositions[index].rot.toQuaternion()
-			},
-			new GLTFShape('models/PapyrusOpen_01/PapyrusOpen_01.glb'),
-			totalPages,
-			false
-		)
-	}
+	}else {
+		let usedPositions: number[] = []
+		for (let i = 0; i < totalPages; i ++){
+	
+			let index = Math.floor(Math.random() * pagePositions.length)
+	
+			while (usedPositions.indexOf(index) > -1 ){
+				index = Math.floor(Math.random() * pagePositions.length)
+			}
+			usedPositions.push(index)
+			let newPage = new Page(
+				{
+					position: pagePositions[index].pos,
+					rotation: pagePositions[index].rot.toQuaternion()
+				},
+				new GLTFShape('models/PapyrusOpen_01/PapyrusOpen_01.glb'),
+				totalPages,
+				false
+			)
+		}
+	}	
 }
 
 
-// when creature kills player
+// RESET GAME
 export function resetGame(){
+	
+	if (creature.currentState != CreatureState.Vanished &&
+		creature.currentState != CreatureState.Dormant
+		){
+		log("YOU LOOSE")
+		dieScreen()
+	}
+	
 	for (let page of pages.entities) {
-		page.getComponent(GLTFShape).visible = true
+		page.getComponent(GLTFShape).visible = false
 		page.getComponent(utils.TriggerComponent).enabled = true
 	}
-	log("YOU LOOSE")
 	pageCounter = pages.entities.length
 	hasAllPages = false
-
 	pageCounter = 0
+	pagesUI.value = "Pages:"
+	pagesUI.positionX = 0
 	pageCounterUI.value = pageCounter.toString()
 	book.activateGlow()
+
+	//candlesOnCounter = 0
+	for (let candle of candles) {
+		candle.turnOff()
+		engine.removeEntity(candle)
+	}
+	
+	creature.laserOff()
+	creature.currentState = CreatureState.Dormant
+
+
+
+
+	// RESET MIKA STATE 
 }
 
 
@@ -178,14 +208,22 @@ export class Book extends Entity {
 	  engine.addEntity(rayCubeObject) 
 	}
 	public invokeCreature(): void {
-		creatureComponent.currentState = CreatureState.Hunting
+		creature.currentState = CreatureState.Hunting
+		creature.invokeAnim.playing = true
+		creature.attackAnim.playing = false
+		creature.searchAnim.playing = false
+		creature.waitingForRay = false
 		scatterPages(5)
 		this.removeGlow()
 	}
 	public trapCreature(): void {
-		creatureComponent.currentState = CreatureState.Trapped
+		creature.currentState = CreatureState.Trapped
+		creature.startLaser()
 		addCandles()
 		this.removeGlow()
+		creature.transform.position = creature.trappedPosition
+		creature.transform.rotation = Quaternion.Euler(0,0,0)
+		creature.waitingForRay = false
 	}
 
 	public activateGlow(): void {
@@ -208,9 +246,11 @@ export const book = new Book(
 )
 
 book.addComponentOrReplace(new OnClick(()=>{
-	if(!hasAllPages && creatureComponent.currentState == CreatureState.Dormant){
+	if(!hasAllPages){
 		book.invokeCreature()
-	} else if (hasAllPages && creatureComponent.currentState == CreatureState.Hunting){
+	} else if (hasAllPages && creature.currentState == CreatureState.Hunting){
 		book.trapCreature()
+	} else if (	creature.currentState == CreatureState.Vanished){
+		resetGame()
 	}
 }))

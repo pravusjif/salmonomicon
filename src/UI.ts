@@ -1,3 +1,5 @@
+import { book } from "./book"
+import decentralandEcsUtils from "../node_modules/decentraland-ecs-utils/index"
 
 const canvas = new UICanvas()
 
@@ -73,13 +75,20 @@ class HandsMovingSystem implements ISystem {
 }
 engine.addSystem(new HandsMovingSystem(300, 30))
 
+export const wrapper = new UIContainerRect(canvas)
+wrapper.width = `100%`
+wrapper.height = `100%`
+wrapper.isPointerBlocker = false
+wrapper.visible = false
+
 export const redView = new UIContainerRect(canvas)
 redView.width = `100%`
 redView.height = `100%`
 redView.isPointerBlocker = false
 redView.visible = false
+redView.color = new Color4(0.8, 0, 0, 0.5)
 
-const beingWatchedText = new UIText(redView)
+const beingWatchedText = new UIText(wrapper)
 beingWatchedText.value = "You feel like someone's watching you..."
 beingWatchedText.color = Color4.Red()
 beingWatchedText.outlineColor = Color4.Yellow()
@@ -105,6 +114,7 @@ pagesUI.vAlign = "bottom"
 pagesUI.hAlign = "left"
 pagesUI.vTextAlign = "center"
 pagesUI.hTextAlign = "center"
+pagesUI.positionY = 100
 
 export const pageCounterUI = new UIText(canvas)
 pageCounterUI.isPointerBlocker = false
@@ -118,4 +128,21 @@ pageCounterUI.vAlign = "bottom"
 pageCounterUI.hAlign = "left"
 pageCounterUI.vTextAlign = "center"
 pageCounterUI.hTextAlign = "center"
+
 pageCounterUI.positionX = 60
+pageCounterUI.positionY = 100
+
+
+
+export function dieScreen(){
+
+redView.visible = true
+let dummyEnt = new Entity()
+engine.addEntity(dummyEnt)
+dummyEnt.addComponent(new decentralandEcsUtils.Delay(2000,
+	() => {
+		redView.visible = false
+	}
+))
+
+}

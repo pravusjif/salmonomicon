@@ -1,4 +1,4 @@
-import { redView } from "./UI"
+import { wrapper } from "./UI"
 import { pages, pageCounter, resetGame } from "./book"
 
 export enum CreatureState {
@@ -10,19 +10,9 @@ export enum CreatureState {
 
 @Component('behavior')
 export class CreatureComponent {
-	speed: number = 0.3
-	originalSpeed: number = 0.3
-	spawningSpeed: number = 0.2
-	initialPosition: Vector3 = new Vector3(32, -1.5, 20)
-	targetYPosition: number = 4
-	trappedPosition: Vector3 = new Vector3(24, 1, 24)
-	rotationSpeed: number = 15
-	currentState: CreatureState = CreatureState.Dormant
-	laserL: IEntity = null
-	laserR: IEntity = null
 }
 
-let creatures = engine.getComponentGroup(CreatureComponent)
+
 let camera = Camera.instance
 camera.rotation.toRotationMatrix
 
@@ -32,37 +22,226 @@ rayMaterial.metallic = 1
 rayMaterial.roughness = 0.5
 rayMaterial.albedoColor = new Color3(30, 1, 1)
 
+// creature class
+
+export class Creature extends Entity {
+	speed: number = 0.3
+	originalSpeed: number = 0.3
+	spawningSpeed: number = 0.2
+	initialPosition: Vector3 = new Vector3(32, -1.5, 20)
+	targetYPosition: number = 4
+	trappedPosition: Vector3 = new Vector3(24, 1, 24)
+	rotationSpeed: number = 15
+	currentState: CreatureState = CreatureState.Dormant
+	transform: Transform
+	laserL: IEntity = null
+	laserR: IEntity = null
+	beingWatched: boolean = false
+	watchingPlayer: boolean = false
+	waitingForRay: boolean = false
+	invokeAnim: AnimationState
+	searchAnim: AnimationState
+	attackAnim: AnimationState
+
+	constructor(
+		transform: TranformConstructorArgs,
+		model: GLTFShape,
+		speed: number = 0.3,
+		currentState: CreatureState = CreatureState.Dormant
+	) {
+	  super();
+	  this.addComponent(model)
+	  this.addComponent(new Transform(transform))
+	  this.addComponent(new CreatureComponent())
+	  engine.addEntity(this)
+	  this.currentState = currentState
+	  this.transform = this.getComponent(Transform)
+
+	  // animations
+	  this.invokeAnim = new AnimationState("Invoke")
+	  this.searchAnim = new AnimationState("Search")
+	  this.attackAnim = new AnimationState("Attack")
+	  this.addComponent(new Animator()).addClip(this.invokeAnim)
+	  this.getComponent(Animator).addClip(this.searchAnim)
+	  this.getComponent(Animator).addClip(this.attackAnim)
+	  this.invokeAnim.play()
+	} 
+
+	public watchForPlayer(playerPos: Vector3): void {
+		if (this.waitingForRay) return
+		this.waitingForRay = true
+		const rayToPlayer: Ray = PhysicsCast.instance.getRayFromPositions(this.transform.position, playerPos)
+
+		PhysicsCast.instance.hitFirst(rayToPlayer, (e) => {
+			this.waitingForRay = false
+			if (e.didHit) {
+				wrapper.visible = false
+				this.watchingPlayer = false
+			} else {
+				wrapper.visible = true
+				this.watchingPlayer = true
+			}
+		})
+	}	
+
+	public adjustSpeed(cameraForward: ReadOnlyVector3, playerPos: Vector3): void {
+
+		let viewAngle = Math.abs(Vector3.GetAngleBetweenVectors(
+			new Vector3(cameraForward.x, cameraForward.y, cameraForward.z), 
+			this.transform.position.subtract(playerPos), Vector3.Up())
+			)
+		if (viewAngle < 0.4) {
+			if (this.watchingPlayer) {
+				this.beingWatched = true
+				this.speed *= 1.1
+				this.invokeAnim.playing = false
+				this.attackAnim.playing = true
+				this.searchAnim.playing = false
+			} else {
+				this.speed = this.originalSpeed
+				this.invokeAnim.playing = false
+				this.attackAnim.playing = false
+				this.searchAnim.playing = true
+			}
+
+		} else {
+			this.beingWatched = false
+			this.invokeAnim.playing = false
+			this.attackAnim.playing = false
+			this.searchAnim.playing = true
+		}
+		
+	}
+
+	public startLaser(): void {
+
+		if (this.laserL){
+			this.laserL.getComponent(BoxShape).visible = true
+			this.laserR.getComponent(BoxShape).visible = true
+		} else {
+			let laserL = new Entity()
+			laserL.addComponent(new BoxShape())
+			laserL.getComponent(BoxShape).withCollisions = false
+			laserL.addComponent(new Transform({
+				scale: new Vector3(0.05 ,0.05, 10 ),
+				position: new Vector3(-0.065, 0.55, 5.2)
+			}))
+			laserL.addComponent(rayMaterial)
+			laserL.setParent(this)
+			this.laserL = laserL
+			engine.addEntity(laserL)
+	
+			let laserR = new Entity()
+			laserR.addComponent(new BoxShape())
+			laserR.getComponent(BoxShape).withCollisions = false
+			laserR.addComponent(new Transform({
+				scale: new Vector3(0.05 ,0.05, 10 ),
+				position: new Vector3(0.065, 0.55, 5.2)
+			}))
+			laserR.addComponent(rayMaterial)
+			laserR.setParent(this)
+			this.laserR = laserR
+			engine.addEntity(laserR)
+		}
+
+		this.invokeAnim.playing = false
+		this.attackAnim.playing = false
+		this.searchAnim.playing = true
+	}
+
+    public checkLaser(playerPos: Vector3): void {
+		if (!this.laserL || !this.laserR) return
+		if (this.waitingForRay) return
+		this.waitingForRay = true
+
+		let newRay: Ray = {
+			origin: this.transform.position,
+			direction: Vector3.Forward().rotate(this.transform.rotation),
+			distance: 15
+		}
+
+		PhysicsCast.instance.hitFirst(newRay, (e) => {
+			let laserLen: number
+			let playerSafe: boolean = false
+			if (e.didHit){
+				//debugCube.getComponent(Transform).position.set(e.hitPoint.x, e.hitPoint.y, e.hitPoint.z)
+				let hitPoint = new Vector3(e.hitPoint.x, e.hitPoint.y, e.hitPoint.z)
+				laserLen = Vector3.Distance(this.transform.position, hitPoint)
+				this.drawLaserLength(laserLen)
+				//log(" laserLen: ", laserLen, " id: ", e.entity.entityId)
+			} else {
+				laserLen = 15
+				this.drawLaserLength(laserLen)
+			}
+			const rayToPlayer: Ray = PhysicsCast.instance.getRayFromPositions(this.transform.position, playerPos)
+			PhysicsCast.instance.hitFirst(rayToPlayer, (e) => {
+				if(e.didHit){
+					playerSafe = true
+				}
+			})
+
+			let angle = Vector3.GetAngleBetweenVectors(
+				new Vector3(rayToPlayer.direction.x, rayToPlayer.direction.y, rayToPlayer.direction.z),
+				new Vector3(newRay.direction.x, newRay.direction.y, newRay.direction.z)
+				, Vector3.Up()
+				)
+			if (Math.abs(angle) < 0.2	 && rayToPlayer.distance < laserLen + 0.3 && !playerSafe){
+				log("PLAYER HIT,  laserLen: ", laserLen, " player distance: ",  rayToPlayer.distance)
+				resetGame()
+			}
+			log(laserLen)
+			this.waitingForRay = false
+		})
+	}
+
+	public drawLaserLength(laserLen: number): void {
+		this.laserL.getComponent(Transform).scale.z = laserLen - 0.3
+		this.laserR.getComponent(Transform).scale.z = laserLen - 0.3
+		this.laserL.getComponent(Transform).position.z = laserLen/2 + 0.3
+		this.laserR.getComponent(Transform).position.z = laserLen/2 + 0.3
+	}
+
+	public laserOff () :void {
+		if (this.currentState == CreatureState.Trapped){
+			this.laserL.getComponent(BoxShape).visible = false
+			this.laserR.getComponent(BoxShape).visible = false
+		}	
+		this.invokeAnim.playing = true
+		this.attackAnim.playing = false
+		this.searchAnim.playing = false
+	}
+}
+
+
 
 export class CreatureSystem {
 	playerPos: Vector3
 	waitingForMonsterRay: boolean = false
 	waitingForCameraRay: boolean = false
-	creatureBeingWatched: boolean = false
-	watchingPlayer: boolean = false
-
-
 
 	update(dt: number) {
 		this.playerPos = camera.position.clone()
 
-		for (let creature of creatures.entities) {
-			let creatureComponent = creature.getComponent(CreatureComponent)
+		for (let creature of creatures) {
+
+			//let creatureComponent = creature.getComponent(CreatureComponent)
 			let creatureTransform = creature.getComponent(Transform)
 
-			switch (creatureComponent.currentState) {
+			switch (creature.currentState) {
 
 				////// HUNTING  ///////
 				case CreatureState.Hunting:
-					if(creatureTransform.position.y < creatureComponent.targetYPosition) {
-						creatureTransform.position.y += creatureComponent.spawningSpeed * dt
+					if(creatureTransform.position.y < creature.targetYPosition) {
+						creatureTransform.position.y += creature.spawningSpeed * dt
 
-						if(creatureTransform.position.y > creatureComponent.targetYPosition)
-							creatureTransform.position.y = creatureComponent.targetYPosition
+						if(creatureTransform.position.y > creature.targetYPosition)
+							creatureTransform.position.y = creature.targetYPosition
 						else continue
 					}
 
-					let gap = this.playerPos.subtract(creatureTransform.position)
 					creatureTransform.lookAt(this.playerPos)
+
+					let gap = this.playerPos.subtract(creatureTransform.position)
 
 					let gapModule = gap.length()
 					if (gapModule < 3) {
@@ -70,137 +249,33 @@ export class CreatureSystem {
 						return
 					}
 
-					let currentSpeed = this.creatureBeingWatched ? creatureComponent.speed : creatureComponent.originalSpeed
-					let direction = gap.normalize().scale(currentSpeed * dt)
+					let direction = gap.normalize().scale(creature.speed * dt)
 
 					creatureTransform.position = creatureTransform.position.add(direction)
 					if (creatureTransform.position.y < 4) {
 						creatureTransform.position.y = 4
 					}
 
-					if (!this.waitingForMonsterRay) {
-						const rayToPlayer: Ray = PhysicsCast.instance.getRayFromPositions(creatureTransform.position, this.playerPos)
-
-						PhysicsCast.instance.hitFirst(rayToPlayer, (e) => {
-							this.waitingForMonsterRay = false
-							if (e.didHit) {
-								//   log("safe")
-								redView.visible = false
-								this.watchingPlayer = false
-							} else {
-								// log("WATCHING YOU")
-								redView.visible = true
-								this.watchingPlayer = true
-							}
-						})
-
-						this.waitingForMonsterRay = true
-					}
+					creature.watchForPlayer(this.playerPos)
 
 					let cameraForward = PhysicsCast.instance.getRayFromCamera(1).direction
-					if (Math.abs(Vector3.GetAngleBetweenVectors(new Vector3(cameraForward.x, cameraForward.y, cameraForward.z), creatureTransform.position.subtract(this.playerPos), Vector3.Up())) < 0.4) {
-						// log("MONSTER WATCHED")
-						if (this.watchingPlayer) {
-							this.creatureBeingWatched = true
-							creatureComponent.speed *= 1.1
-						} else {
-							creatureComponent.speed = creatureComponent.originalSpeed
-						}
+					creature.adjustSpeed(cameraForward, this.playerPos)
 
-					} else {
-						// log("MONSTER NOT WATCHED")
-						this.creatureBeingWatched = false
-					}
 					break;
 
 				//////  TRAPPED //////
-				case CreatureState.Trapped:
-						
-						if (creatureTransform.position.y != creatureComponent.trappedPosition.y) {
-
-							creatureTransform.position = creatureComponent.trappedPosition
-							//creatureTransform.rotation = Quaternion.Identity
-							log("settingPos")
-
-							let laserL = new Entity()
-							laserL.addComponent(new BoxShape())
-							laserL.getComponent(BoxShape).withCollisions = false
-							laserL.addComponent(new Transform({
-								scale: new Vector3(0.05 ,0.05, 10 ),
-								position: new Vector3(-0.065, 0.55, 5)
-							}))
-							laserL.addComponent(rayMaterial)
-							laserL.setParent(creature)
-							creatureComponent.laserL = laserL
-						
-							engine.addEntity(laserL)
-						
-						
-							let laserR = new Entity()
-							laserR.addComponent(new BoxShape())
-							laserR.getComponent(BoxShape).withCollisions = false
-							laserR.addComponent(new Transform({
-								scale: new Vector3(0.05 ,0.05, 10 ),
-								position: new Vector3(0.065, 0.55, 5)
-							}))
-							laserR.addComponent(rayMaterial)
-							laserR.setParent(creature)
-							creatureComponent.laserR = laserR
-							engine.addEntity(laserR)
-						}
-
-						creatureTransform.rotate(Vector3.Up(), dt * creatureComponent.rotationSpeed)
-
-						let newRay: Ray = {
-							origin: creatureTransform.position,
-							direction: Vector3.Forward().rotate(creatureTransform.rotation),
-							distance: 15
-						}
-			
-						PhysicsCast.instance.hitFirst(newRay, (e) => {
-							let laserLen: number
-
-							if (e.didHit){
-			
-								//debugCube.getComponent(Transform).position.set(e.hitPoint.x, e.hitPoint.y, e.hitPoint.z)
-								let hitPoint = new Vector3(e.hitPoint.x, e.hitPoint.y, e.hitPoint.z)
-								laserLen = Vector3.Distance(creatureTransform.position, hitPoint)
-								creatureComponent.laserL.getComponent(Transform).scale.z = laserLen
-								creatureComponent.laserR.getComponent(Transform).scale.z = laserLen
-								creatureComponent.laserL.getComponent(Transform).position.z = laserLen/2
-								creatureComponent.laserR.getComponent(Transform).position.z = laserLen/2
-								//log(" laserLen: ", laserLen, " id: ", e.entity.entityId)
-							} else {
-								laserLen = 15
-								creatureComponent.laserL.getComponent(Transform).scale.z = laserLen
-								creatureComponent.laserR.getComponent(Transform).scale.z = laserLen
-								creatureComponent.laserL.getComponent(Transform).position.z = laserLen/2
-								creatureComponent.laserR.getComponent(Transform).position.z = laserLen/2
-
-							}
-
-							const rayToPlayer: Ray = PhysicsCast.instance.getRayFromPositions(creatureTransform.position, this.playerPos)
-							let angle = Vector3.GetAngleBetweenVectors(
-								new Vector3(rayToPlayer.direction.x, rayToPlayer.direction.y, rayToPlayer.direction.z),
-								new Vector3(newRay.direction.x, newRay.direction.y, newRay.direction.z)
-								, Vector3.Up()
-								)
-							if (Math.abs(angle) < 0.2	 && rayToPlayer.distance < laserLen){
-								log("PLAYER HIT,  angle: ", angle )
-							}
-						})
-
-
-
+				case CreatureState.Trapped:	
+					creatureTransform.rotate(Vector3.Up(), dt * creature.rotationSpeed)
+					creature.checkLaser(this.playerPos)
 					break;
 
 				////// DORMANT & VANISHED  //////
 				default: 
-					if(creatureTransform.position.y > creatureComponent.initialPosition.y) {
-						creatureTransform.position.y -= creatureComponent.spawningSpeed * dt
+					if(creatureTransform.position.y > creature.initialPosition.y) {
+						creatureTransform.position.y -= creature.spawningSpeed * dt
 
-						if(creatureTransform.position.y < creatureComponent.initialPosition.y)
-							creatureTransform.position.y = creatureComponent.initialPosition.y
+						if(creatureTransform.position.y < creature.initialPosition.y)
+							creatureTransform.position.y = creature.initialPosition.y
 					}
 					break;
 			}
@@ -208,15 +283,19 @@ export class CreatureSystem {
 	}
 }
 
-export let creatureEntity = new Entity()
-engine.addEntity(creatureEntity)
-creatureEntity.addComponent(new GLTFShape("models/Chobi.glb"))
-creatureEntity.addComponent(new Transform({
-	position: new Vector3(31, -1.5, 25),
-	scale: new Vector3(1.5, 1.5, 1.5)
-}))
-export let creatureComponent = new CreatureComponent()
-creatureEntity.addComponent(creatureComponent)
-
-
 engine.addSystem(new CreatureSystem())
+
+
+
+// Instance creature
+export let creature = new Creature(
+	{
+		position: new Vector3(31, -1.5, 25),
+		scale: new Vector3(1.5, 1.5, 1.5)
+	},
+	new GLTFShape("models/Chobi.glb")
+)
+
+let creatures: Creature[] = [creature]
+
+
