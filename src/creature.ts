@@ -302,3 +302,18 @@ export let creature = new Creature(
 let creatures: Creature[] = [creature]
 
 
+export let invokeSound = new AudioSource(new AudioClip("sounds/creature-summoned2.wav"))
+export let invokePlace = new Entity()
+invokePlace.addComponent(new Transform({
+	position: creature.initialPosition
+}))
+engine.addEntity(invokePlace)
+invokePlace.addComponent(invokeSound)
+
+export let trapSound = new AudioSource(new AudioClip("sounds/creature-trapped.wav"))
+export let trapPlace = new Entity()
+trapPlace.addComponent(new Transform({
+	position: creature.trappedPosition
+}))
+engine.addEntity(trapPlace)
+trapPlace.addComponent(trapSound)

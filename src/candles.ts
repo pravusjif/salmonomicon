@@ -1,4 +1,4 @@
-import { creature, CreatureState } from "./creature";
+import { creature, CreatureState, trapPlace } from "./creature";
 
 export class Candle extends Entity {
   isOn:boolean = false
@@ -44,6 +44,7 @@ export class Candle extends Entity {
 		log("YOU WIN")
 		creature.laserOff()
 		creature.currentState = CreatureState.Vanished
+		trapPlace.getComponent(AudioSource).playOnce()
 	}
   }
 
