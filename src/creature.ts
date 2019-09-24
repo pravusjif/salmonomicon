@@ -293,6 +293,7 @@ engine.addSystem(new CreatureSystem())
 export let creature = new Creature(
 	{
 		position: new Vector3(31, -1.5, 25),
+		rotation: Quaternion.Euler(0, 180, 8),
 		scale: new Vector3(1.5, 1.5, 1.5)
 	},
 	new GLTFShape("models/Chobi.glb")
