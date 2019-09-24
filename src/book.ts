@@ -119,6 +119,11 @@ export function scatterPages(totalPages: number){
 	}	
 }
 
+export function startGame(){
+	if(creature.currentState != CreatureState.Dormant) return
+
+	book.invokeCreature()
+}
 
 // RESET GAME
 export function resetGame(){
@@ -246,11 +251,7 @@ export const book = new Book(
 )
 
 book.addComponentOrReplace(new OnClick(()=>{
-	if(!hasAllPages){
-		book.invokeCreature()
-	} else if (hasAllPages && creature.currentState == CreatureState.Hunting){
+	if (hasAllPages && creature.currentState == CreatureState.Hunting){
 		book.trapCreature()
-	} else if (	creature.currentState == CreatureState.Vanished){
-		resetGame()
 	}
 }))

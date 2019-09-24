@@ -1,8 +1,10 @@
 import utils from "../node_modules/decentraland-ecs-utils/index"
-import { book } from "./book"
+import { book, resetGame, startGame } from "./book"
+import { creature, CreatureState } from "./creature"
 
 export enum MicaState {
 	AskingForHelp,
+	GameStart,
 	DetectingPages,
 	ReadingFinalPassage,
 	Reincarnated // nice to have: Mica with a newly spawned body, but it's a woman's body and he says something like "Well... it's better than not having a body at all!"
@@ -45,8 +47,8 @@ class MicaComponent {
 		]
 
 		this.gameStartDialogueLines = [
-			new DialogueLine("Hi! Im Mika, nice to meet you", 4),
-			new DialogueLine("I've been cursed and lost my body", 3),
+			new DialogueLine("Hi! I'm Mika, nice to meet you", 4),
+			new DialogueLine("I've been cursed and lost my body", 4),
 			new DialogueLine("Will you help me please?", 2),
 			new DialogueLine("I must retrieve pages from my book, the Salmonomicon", 4),
 			new DialogueLine("Take me with you, I'll lead the way!", -1)
@@ -81,18 +83,39 @@ class MicaComponent {
 	}
 }
 
+let camera = Camera.instance
 let micaHeadEntity = new Entity()
 
 export let micaComponent = new MicaComponent()
 micaHeadEntity.addComponent(micaComponent)
 
 micaHeadEntity.addComponent(new GLTFShape("models/Mika_Head.glb"))
-micaHeadEntity.addComponent(new Transform({
-	position: new Vector3(0, 0, 0.75),
+export let micaTransform = new Transform({
+	position: new Vector3(31.5, 1.3, 15.3),
 	rotation: Quaternion.Euler(0,180,0),
 	scale: new Vector3(0.5, 0.5, 0.5)
+})
+micaHeadEntity.addComponent(micaTransform)
+micaHeadEntity.addComponentOrReplace(new OnClick(()=>{
+	if(Vector3.Distance(micaTransform.position, camera.position) > 3) return
+
+	let currentState = micaComponent.getCurrentState()
+	
+	switch (currentState) {
+		case MicaState.AskingForHelp:
+				micaComponent.setState(MicaState.GameStart)
+			break;
+		case MicaState.GameStart:
+			if(creature.currentState == CreatureState.Dormant && micaComponent.currentDialogueIndex == micaComponent.gameStartDialogueLines.length){
+				startGame()
+			}
+			break;
+	}
+
+	// if (creature.currentState == CreatureState.Vanished){
+	// 	resetGame()
+	// }
 }))
-micaHeadEntity.setParent(book)
 engine.addEntity(micaHeadEntity)
 
 let micaTextEntity = new Entity()
@@ -104,29 +127,50 @@ micaTextShape.fontSize = 3
 micaTextShape.color = Color3.Yellow()
 micaTextEntity.addComponent(micaTextShape)
 micaTextEntity.addComponent(new Transform({
-position: new Vector3(0, 2.25, 0)
+position: new Vector3(0, 1.25, 0)
 }))
 micaTextEntity.setParent(micaHeadEntity)
 engine.addEntity(micaTextEntity)
 
 class MicaDialogueSystem implements ISystem {
 	currentWaitingTime: number = 0
+	waitingState: MicaState
 
 	update(dt: number) {
-		switch (micaComponent.getCurrentState()) {
+		let currentState = micaComponent.getCurrentState()
+
+		if(this.currentWaitingTime > 0) {
+			if(currentState != this.waitingState) {
+				// Reset waiting time if we changed states
+				this.currentWaitingTime = 0
+			} else {
+				this.currentWaitingTime -= dt
+	
+				if(this.currentWaitingTime > 0) return
+			}
+		} else if (this.currentWaitingTime == -1) {
+			return
+		}
+		
+		switch (currentState) {
 			case MicaState.AskingForHelp:
-				if(this.currentWaitingTime > 0) {
-					this.currentWaitingTime -= dt
-
-					if(this.currentWaitingTime > 0) return
-				}
-
 				// random index
 				micaComponent.currentDialogueIndex = Math.floor(Scalar.RandomRange(0, micaComponent.helpDialogueLines.length))
 				
 				this.currentWaitingTime = micaComponent.helpDialogueLines[micaComponent.currentDialogueIndex].readingTimeInSeconds
+				this.waitingState = currentState
+				
 				micaTextShape.value = micaComponent.helpDialogueLines[micaComponent.currentDialogueIndex].text
 				
+				break;
+
+			case MicaState.GameStart:
+				this.currentWaitingTime = micaComponent.gameStartDialogueLines[micaComponent.currentDialogueIndex].readingTimeInSeconds
+				this.waitingState = currentState
+
+				micaTextShape.value = micaComponent.gameStartDialogueLines[micaComponent.currentDialogueIndex].text
+				
+				micaComponent.currentDialogueIndex++;
 				break;
 
 			case MicaState.DetectingPages:
