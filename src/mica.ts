@@ -1,6 +1,7 @@
 import utils from "../node_modules/decentraland-ecs-utils/index"
 import { book, resetGame, startGame } from "./book"
 import { creature, CreatureState } from "./creature"
+import { grabMicasHead, releaseLeftHand } from "./micaUI"
 
 export enum MicaState {
 	AskingForHelp,
@@ -192,6 +193,8 @@ export function hideMicasHead() {
 	micaTextShape.visible = false
 	micaTextShape.value = ""
 	micaHeadShape.visible = false
+
+	grabMicasHead()
 }
 
 export function resetMicasHead() {
@@ -199,4 +202,6 @@ export function resetMicasHead() {
 	micaHeadShape.visible = true
 
 	micaComponent.setState(MicaState.AskingForHelp)
+
+	releaseLeftHand()
 }

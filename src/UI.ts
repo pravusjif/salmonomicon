@@ -4,6 +4,7 @@ import decentralandEcsUtils from "../node_modules/decentraland-ecs-utils/index"
 const canvas = new UICanvas()
 
 export const atlas = new Texture("textures/blood-27051.png")
+export const atlas2 = new Texture("textures/HeadSprites.png")
 let currentHandsY: number = -20
 const handsPanel = new UIContainerRect(canvas)
 handsPanel.isPointerBlocker = false
@@ -11,7 +12,7 @@ handsPanel.width = '100%'
 handsPanel.height = '100%'
 handsPanel.positionY = currentHandsY
 
-const leftHandImage = new UIImage(handsPanel, atlas)
+export const leftHandImage = new UIImage(handsPanel, atlas)
 leftHandImage.hAlign = 'left'
 leftHandImage.vAlign = 'bottom'
 leftHandImage.positionX = '15%'
@@ -20,8 +21,8 @@ leftHandImage.sourceWidth = 95
 leftHandImage.sourceHeight = 125
 leftHandImage.sourceLeft = 462
 leftHandImage.sourceTop = 566
-leftHandImage.width = leftHandImage.sourceWidth * 4
-leftHandImage.height = leftHandImage.sourceHeight * 4
+leftHandImage.width = leftHandImage.sourceWidth * 3
+leftHandImage.height = leftHandImage.sourceHeight * 3
 
 const rightHandImage = new UIImage(handsPanel, atlas)
 rightHandImage.hAlign = 'right'
@@ -32,8 +33,8 @@ rightHandImage.sourceWidth = 102
 rightHandImage.sourceHeight = 130
 rightHandImage.sourceLeft = 791
 rightHandImage.sourceTop = 559
-rightHandImage.width = rightHandImage.sourceWidth * 4
-rightHandImage.height = rightHandImage.sourceHeight * 4
+rightHandImage.width = rightHandImage.sourceWidth * 3
+rightHandImage.height = rightHandImage.sourceHeight * 3
 
 class HandsMovingSystem implements ISystem {
     oscillationSpeed: number
