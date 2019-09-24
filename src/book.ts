@@ -4,6 +4,7 @@ import utils from "../node_modules/decentraland-ecs-utils/index"
 import { creature, CreatureState } from "./creature";
 import { pageCounterUI, pagesUI, dieScreen } from "./UI";
 import { addCandles, candlesOnCounter, candles } from "./candles";
+import { resetMicasHead, hideMicasHead } from "./mica";
 
 
 @Component('page')
@@ -123,6 +124,8 @@ export function startGame(){
 	if(creature.currentState != CreatureState.Dormant) return
 
 	book.invokeCreature()
+
+	hideMicasHead()
 }
 
 // RESET GAME
@@ -156,10 +159,8 @@ export function resetGame(){
 	creature.laserOff()
 	creature.currentState = CreatureState.Dormant
 
-
-
-
 	// RESET MIKA STATE 
+	resetMicasHead()
 }
 
 

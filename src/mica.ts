@@ -89,8 +89,10 @@ let micaHeadEntity = new Entity()
 export let micaComponent = new MicaComponent()
 micaHeadEntity.addComponent(micaComponent)
 
-micaHeadEntity.addComponent(new GLTFShape("models/Mika_Head.glb"))
-export let micaTransform = new Transform({
+let micaHeadShape = new GLTFShape("models/Mika_Head.glb")
+
+micaHeadEntity.addComponent(micaHeadShape)
+let micaTransform = new Transform({
 	position: new Vector3(31.5, 1.3, 15.3),
 	rotation: Quaternion.Euler(0,180,0),
 	scale: new Vector3(0.5, 0.5, 0.5)
@@ -185,3 +187,16 @@ class MicaDialogueSystem implements ISystem {
 }
 
 engine.addSystem(new MicaDialogueSystem())
+
+export function hideMicasHead() {
+	micaTextShape.visible = false
+	micaTextShape.value = ""
+	micaHeadShape.visible = false
+}
+
+export function resetMicasHead() {
+	micaTextShape.visible = true
+	micaHeadShape.visible = true
+
+	micaComponent.setState(MicaState.AskingForHelp)
+}
