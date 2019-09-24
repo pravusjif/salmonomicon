@@ -166,7 +166,7 @@ export class Creature extends Entity {
 			if (e.didHit){
 				//debugCube.getComponent(Transform).position.set(e.hitPoint.x, e.hitPoint.y, e.hitPoint.z)
 				let hitPoint = new Vector3(e.hitPoint.x, e.hitPoint.y, e.hitPoint.z)
-				laserLen = Vector3.Distance(this.transform.position, hitPoint)
+				laserLen = Vector3.Distance(this.transform.position, hitPoint) - 2
 				this.drawLaserLength(laserLen)
 				//log(" laserLen: ", laserLen, " id: ", e.entity.entityId)
 			} else {
@@ -177,28 +177,30 @@ export class Creature extends Entity {
 			PhysicsCast.instance.hitFirst(rayToPlayer, (e) => {
 				if(e.didHit){
 					playerSafe = true
+				} else {
+					let angle = Vector3.GetAngleBetweenVectors(
+						new Vector3(rayToPlayer.direction.x, rayToPlayer.direction.y, rayToPlayer.direction.z),
+						new Vector3(newRay.direction.x, newRay.direction.y, newRay.direction.z)
+						, Vector3.Up()
+						)
+					if (Math.abs(angle) < 0.2	 && rayToPlayer.distance < laserLen + 0.5){
+						log("PLAYER HIT,  laserLen: ", laserLen, " player distance: ",  rayToPlayer.distance)
+						resetGame()
+					}
 				}
 			})
 
-			let angle = Vector3.GetAngleBetweenVectors(
-				new Vector3(rayToPlayer.direction.x, rayToPlayer.direction.y, rayToPlayer.direction.z),
-				new Vector3(newRay.direction.x, newRay.direction.y, newRay.direction.z)
-				, Vector3.Up()
-				)
-			if (Math.abs(angle) < 0.2	 && rayToPlayer.distance < laserLen + 0.3 && !playerSafe){
-				log("PLAYER HIT,  laserLen: ", laserLen, " player distance: ",  rayToPlayer.distance)
-				resetGame()
-			}
-			log(laserLen)
+			
+			//log(laserLen)
 			this.waitingForRay = false
 		})
 	}
 
 	public drawLaserLength(laserLen: number): void {
-		this.laserL.getComponent(Transform).scale.z = laserLen - 0.3
-		this.laserR.getComponent(Transform).scale.z = laserLen - 0.3
-		this.laserL.getComponent(Transform).position.z = laserLen/2 + 0.3
-		this.laserR.getComponent(Transform).position.z = laserLen/2 + 0.3
+		this.laserL.getComponent(Transform).scale.z = laserLen
+		this.laserR.getComponent(Transform).scale.z = laserLen
+		this.laserL.getComponent(Transform).position.z = laserLen/2 + 0.5
+		this.laserR.getComponent(Transform).position.z = laserLen/2 + 0.5
 	}
 
 	public laserOff () :void {
