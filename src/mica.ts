@@ -88,7 +88,7 @@ micaHeadEntity.addComponent(micaComponent)
 
 micaHeadEntity.addComponent(new GLTFShape("models/Mika_Head.glb"))
 micaHeadEntity.addComponent(new Transform({
-	position: new Vector3(0, 0, 0.75),
+	position: new Vector3(0, 0.3, 1),
 	rotation: Quaternion.Euler(0,180,0),
 	scale: new Vector3(0.5, 0.5, 0.5)
 }))
