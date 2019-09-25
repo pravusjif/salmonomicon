@@ -23,7 +23,7 @@ createBuilderScene()
 
 
 let crickets1 = new AmbientSound(
-	{position: new Vector3(8, 1, 8)},
+	{position: new Vector3(10, 1, 10)},
 	"sounds/crickets1.wav",
 	0,
 	true
@@ -46,7 +46,7 @@ let crickets1 = new AmbientSound(
 
 
 let owl1 = new AmbientSound(
-	{position: new Vector3(15, 4, 8)},
+	{position: new Vector3(15, 4, 22)},
 	"sounds/owl1.mp3",
 	30000
 )

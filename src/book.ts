@@ -1,7 +1,7 @@
 
 
 import utils from "../node_modules/decentraland-ecs-utils/index"
-import { creature, CreatureState } from "./creature";
+import { creature, CreatureState, invokeSound, invokePlace, trapPlace, trapSound } from "./creature";
 import { pageCounterUI, pagesUI, dieScreen } from "./UI";
 import { addCandles, candlesOnCounter, candles } from "./candles";
 import { resetMicasHead, hideMicasHead } from "./mica";
@@ -221,6 +221,7 @@ export class Book extends Entity {
 		creature.waitingForRay = false
 		scatterPages(5)
 		this.removeGlow()
+		invokeSound.playOnce()
 	}
 	public trapCreature(): void {
 		creature.currentState = CreatureState.Trapped
@@ -230,6 +231,7 @@ export class Book extends Entity {
 		creature.transform.position = creature.trappedPosition
 		creature.transform.rotation = Quaternion.Euler(0,0,0)
 		creature.waitingForRay = false
+		trapSound.playOnce()
 	}
 
 	public activateGlow(): void {
