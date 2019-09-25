@@ -60,6 +60,8 @@ let candlePositions: TranformConstructorArgs [] = [
 	{position: new Vector3(25, 1, 25)},
 	{position: new Vector3(20, 1, 25)},
 	{position: new Vector3(25, 1, 20)},
+	{position: new Vector3(20, 1, 20)},
+	{position: new Vector3(23, 1, 20)},
 ]
 
 export let candlesOnCounter: number = 0

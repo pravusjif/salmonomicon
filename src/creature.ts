@@ -31,7 +31,7 @@ export class Creature extends Entity {
 	initialPosition: Vector3 = new Vector3(32, -1.5, 20)
 	targetYPosition: number = 4
 	trappedPosition: Vector3 = new Vector3(24, 1, 24)
-	rotationSpeed: number = 15
+	rotationSpeed: number = 40
 	currentState: CreatureState = CreatureState.Dormant
 	transform: Transform
 	laserL: IEntity = null

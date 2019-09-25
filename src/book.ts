@@ -205,7 +205,7 @@ export class Book extends Entity {
 	  rayCubeObject.addComponent(rayShape )
 	  this.glow = rayShape
 	  this.glow.withCollisions = false
-	  this.glow.visible = true
+	  this.glow.visible = false
 	  rayCubeObject.addComponent(new Transform({
 		position: new Vector3(0, 10, 0),
 		scale: new Vector3(0.5, 20, 0.5)

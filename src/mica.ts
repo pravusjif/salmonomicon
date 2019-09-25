@@ -99,8 +99,8 @@ let micaTransform = new Transform({
 	scale: new Vector3(0.5, 0.5, 0.5)
 })
 micaHeadEntity.addComponent(micaTransform)
-micaHeadEntity.addComponentOrReplace(new OnClick(()=>{
-	if(Vector3.Distance(micaTransform.position, camera.position) > 3) return
+micaHeadEntity.addComponentOrReplace(new OnPointerDown(e=>{
+	if(e.hit.length > 3) return
 
 	let currentState = micaComponent.getCurrentState()
 	
