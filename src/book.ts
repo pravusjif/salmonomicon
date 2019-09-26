@@ -217,11 +217,15 @@ export class Book extends Entity {
 	  engine.addEntity(rayCubeObject) 
 	}
 	public invokeCreature(): void {
+		if(creature.currentState == CreatureState.Hunting) return
+
 		creature.getInvoked()
 		scatterPages(5)
 		this.removeGlow()		
 	}
 	public trapCreature(): void {
+		if(creature.currentState == CreatureState.Trapped) return
+
 		creature.getTrapped()
 		addCandles()
 		this.removeGlow()
@@ -248,7 +252,7 @@ export const book = new Book(
 
 book.addComponentOrReplace(new OnClick(()=>{
 	if (hasAllPages && creature.currentState == CreatureState.Hunting){
-		book.trapCreature()
+		// book.trapCreature()
 		releaseMicasHead()
 	}
 }))

@@ -71,7 +71,7 @@ export class MicaComponent {
 			new DialogueLine("Klaatu... Barada... AHEM-Cof!-Cof!-oktu!", 6),
 			new DialogueLine("Oh shait! It seems it worked half-way", 3),
 			new DialogueLine("The creature is trapped in the pentagram, but...", 3),
-			new DialogueLine("You have to light the 3 candles to finish sending him back!", -1),
+			new DialogueLine("You have to light the candles to finish sending him back!", -1),
 		]
 	}
 
@@ -84,6 +84,8 @@ export class MicaComponent {
 
 		this.currentDialogueIndex = 0
 		this.currentState = newState
+
+		micaDialogueSystem.waitingState = 0
 	}
 }
 
@@ -111,15 +113,20 @@ micaHeadEntity.addComponentOrReplace(new OnPointerDown(e=>{
 		case MicaState.AskingForHelp:
 				micaComponent.setState(MicaState.GameStart)
 			break;
-		case MicaState.GameStart:
-			if(creature.currentState == CreatureState.Dormant){
-				if(micaComponent.currentDialogueIndex == micaComponent.gameStartDialogueLines.length){
-					startGame()
-				} else {
+			case MicaState.GameStart:
+				if(creature.currentState == CreatureState.Dormant){
+					if(micaComponent.currentDialogueIndex == micaComponent.gameStartDialogueLines.length-1){
+						startGame()
+					} else if(micaDialogueSystem.waitingState != -1){
+						micaDialogueSystem.waitingState = 0
+					}
+				}
+				break;
+			case MicaState.ReadingFinalPassage:
+				if(creature.currentState == CreatureState.Hunting && micaDialogueSystem.waitingState != -1){
 					micaDialogueSystem.waitingState = 0
 				}
-			}
-			break;
+				break;
 	}
 
 	// if (creature.currentState == CreatureState.Vanished){
@@ -137,8 +144,11 @@ micaTextShape.fontSize = 3
 micaTextShape.color = Color3.Yellow()
 micaTextEntity.addComponent(micaTextShape)
 micaTextEntity.addComponent(new Transform({
-position: new Vector3(0, 1.25, 0)
+	position: new Vector3(0, 1.25, 0)
 }))
+// micaTextEntity.addComponent(new Transform({
+// position: new Vector3(0, 1.25, 0)
+// }))
 micaTextEntity.setParent(micaHeadEntity)
 engine.addEntity(micaTextEntity)
 
@@ -158,9 +168,10 @@ class MicaDialogueSystem implements ISystem {
 	
 				if(this.currentWaitingTime > 0) return
 			}
-		} else if (this.currentWaitingTime == -1) {
-			return
-		}
+		} 
+		// else if (this.currentWaitingTime == -1) {
+		// 	return
+		// }
 		
 		switch (currentState) {
 			case MicaState.AskingForHelp:
@@ -175,12 +186,19 @@ class MicaDialogueSystem implements ISystem {
 				break;
 
 			case MicaState.GameStart:
-				this.currentWaitingTime = micaComponent.gameStartDialogueLines[micaComponent.currentDialogueIndex].readingTimeInSeconds
-				this.waitingState = currentState
+				if(micaComponent.currentDialogueIndex < micaComponent.gameStartDialogueLines.length-1){
+					this.currentWaitingTime = micaComponent.gameStartDialogueLines[micaComponent.currentDialogueIndex].readingTimeInSeconds
+					this.waitingState = currentState
+	
+					micaTextShape.value = micaComponent.gameStartDialogueLines[micaComponent.currentDialogueIndex].text
+					
+					// if(micaComponent.currentDialogueIndex)
+					micaComponent.currentDialogueIndex++;
 
-				micaTextShape.value = micaComponent.gameStartDialogueLines[micaComponent.currentDialogueIndex].text
-				
-				micaComponent.currentDialogueIndex++;
+				} else {
+					this.waitingState = currentState
+					micaTextShape.value = micaComponent.gameStartDialogueLines[micaComponent.currentDialogueIndex].text
+				}
 				break;
 
 			case MicaState.DetectingPages:
@@ -188,7 +206,20 @@ class MicaDialogueSystem implements ISystem {
 				break;
 		
 			case MicaState.ReadingFinalPassage:
-		
+				if(micaComponent.currentDialogueIndex < micaComponent.finalPassageDialogueLines.length-1){
+					this.currentWaitingTime = micaComponent.finalPassageDialogueLines[micaComponent.currentDialogueIndex].readingTimeInSeconds
+					this.waitingState = currentState
+	
+					micaTextShape.value = micaComponent.finalPassageDialogueLines[micaComponent.currentDialogueIndex].text
+					if(micaComponent.currentDialogueIndex == 2)
+						book.trapCreature()
+					
+					micaComponent.currentDialogueIndex++;
+				} else {
+					this.waitingState = currentState
+					micaTextShape.value = micaComponent.finalPassageDialogueLines[micaComponent.currentDialogueIndex].text
+				}
+				
 				break;
 		}
 	}	
@@ -199,6 +230,8 @@ engine.addSystem(micaDialogueSystem)
 engine.addSystem(new RadarMicaSystem(micaComponent))
 
 export function grabMicasHead() {
+	if(micaComponent.getCurrentState() != MicaState.GameStart) return
+
 	micaTextShape.visible = false
 	micaTextShape.value = ""
 	micaHeadShape.visible = false
@@ -209,17 +242,19 @@ export function grabMicasHead() {
 }
 
 export function releaseMicasHead() {
-	micaTextShape.visible = true
+	if(micaComponent.getCurrentState() == MicaState.ReadingFinalPassage) return
+	
 	micaHeadShape.visible = true
-
-	micaComponent.setState(MicaState.ReadingFinalPassage)
-
+	micaTextShape.visible = true
+	
 	releaseLeftHand()
+	
+	micaComponent.setState(MicaState.ReadingFinalPassage)
 }
 
 export function resetMicasHead() {
-	micaTextShape.visible = true
 	micaHeadShape.visible = true
+	// micaTextShape.visible = true
 
 	micaComponent.setState(MicaState.AskingForHelp)
 
