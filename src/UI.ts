@@ -62,7 +62,10 @@ class HandsMovingSystem implements ISystem {
 
         if(this.currentSpeed == 0) return
 
-        currentHandsY += this.currentSpeed * dt * this.speedMultiplier * (Vector3.Distance(this.playerLastPos, Camera.instance.position))
+        let deltaMovement = this.currentSpeed * dt * this.speedMultiplier * (Vector3.Distance(this.playerLastPos, Camera.instance.position))
+        
+        if(deltaMovement == 0) return
+        currentHandsY += deltaMovement
 
         if(Math.abs(currentHandsY - this.oscillationPivot) >= this.oscillationLength / 2) {
             currentHandsY = this.oscillationPivot + (this.oscillationLength / 2) * this.speedMultiplier
