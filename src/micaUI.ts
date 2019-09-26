@@ -7,12 +7,12 @@ export function enableMicasHeadOnHand() {
     leftHandImage.hAlign = 'left'
     leftHandImage.vAlign = 'bottom'
     leftHandImage.positionX = '5%'
-    leftHandImage.sourceWidth = 850
-    leftHandImage.sourceHeight = 850
+    leftHandImage.sourceWidth = 425
+    leftHandImage.sourceHeight = 425
     leftHandImage.sourceLeft = 0
     leftHandImage.sourceTop = 0
-    leftHandImage.width = leftHandImage.sourceWidth / 1.5
-    leftHandImage.height = leftHandImage.sourceHeight / 1.5
+    leftHandImage.width = leftHandImage.sourceWidth
+    leftHandImage.height = leftHandImage.sourceHeight
 }
 
 export function releaseLeftHand() {

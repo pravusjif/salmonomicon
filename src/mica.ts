@@ -254,7 +254,7 @@ export function releaseMicasHead() {
 
 export function resetMicasHead() {
 	micaHeadShape.visible = true
-	// micaTextShape.visible = true
+	micaTextShape.visible = true
 
 	micaComponent.setState(MicaState.AskingForHelp)
 
