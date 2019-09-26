@@ -208,6 +208,15 @@ export function grabMicasHead() {
 	micaComponent.setState(MicaState.DetectingPages)
 }
 
+export function releaseMicasHead() {
+	micaTextShape.visible = true
+	micaHeadShape.visible = true
+
+	micaComponent.setState(MicaState.ReadingFinalPassage)
+
+	releaseLeftHand()
+}
+
 export function resetMicasHead() {
 	micaTextShape.visible = true
 	micaHeadShape.visible = true

@@ -4,7 +4,7 @@ import utils from "../node_modules/decentraland-ecs-utils/index"
 import { creature, CreatureState, invokeSound, invokePlace, trapPlace, trapSound } from "./creature";
 import { pageCounterUI, pagesUI, dieScreen } from "./UI";
 import { addCandles, candles } from "./candles";
-import { resetMicasHead, grabMicasHead } from "./mica";
+import { resetMicasHead, grabMicasHead, releaseMicasHead } from "./mica";
 
 
 @Component('page')
@@ -249,6 +249,6 @@ export const book = new Book(
 book.addComponentOrReplace(new OnClick(()=>{
 	if (hasAllPages && creature.currentState == CreatureState.Hunting){
 		book.trapCreature()
-		resetMicasHead()
+		releaseMicasHead()
 	}
 }))
