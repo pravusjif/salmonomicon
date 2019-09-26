@@ -112,8 +112,12 @@ micaHeadEntity.addComponentOrReplace(new OnPointerDown(e=>{
 				micaComponent.setState(MicaState.GameStart)
 			break;
 		case MicaState.GameStart:
-			if(creature.currentState == CreatureState.Dormant && micaComponent.currentDialogueIndex == micaComponent.gameStartDialogueLines.length){
-				startGame()
+			if(creature.currentState == CreatureState.Dormant){
+				if(micaComponent.currentDialogueIndex == micaComponent.gameStartDialogueLines.length){
+					startGame()
+				} else {
+					micaDialogueSystem.waitingState = 0
+				}
 			}
 			break;
 	}
@@ -190,7 +194,8 @@ class MicaDialogueSystem implements ISystem {
 	}	
 }
 
-engine.addSystem(new MicaDialogueSystem())
+let micaDialogueSystem = new MicaDialogueSystem()
+engine.addSystem(micaDialogueSystem)
 engine.addSystem(new RadarMicaSystem(micaComponent))
 
 export function grabMicasHead() {
