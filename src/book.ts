@@ -249,5 +249,6 @@ export const book = new Book(
 book.addComponentOrReplace(new OnClick(()=>{
 	if (hasAllPages && creature.currentState == CreatureState.Hunting){
 		book.trapCreature()
+		resetMicasHead()
 	}
 }))
