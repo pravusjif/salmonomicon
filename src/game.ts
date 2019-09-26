@@ -4,6 +4,7 @@ import {createBuilderScene} from './builderScene'
 import { scatterPages } from '././book'
 import { addCandles } from './candles'
 import { AmbientSound } from './ambient'
+import { releaseLeftHand } from './micaUI'
 
 //// creature
 

@@ -3,8 +3,8 @@ import decentralandEcsUtils from "../node_modules/decentraland-ecs-utils/index"
 
 const canvas = new UICanvas()
 
-export const atlas = new Texture("textures/blood-27051.png")
-export const atlas2 = new Texture("textures/HeadSprites.png")
+export let atlas = new Texture("textures/blood-27051.png")
+export let atlas2 = new Texture("textures/HeadSprites.png")
 let currentHandsY: number = -20
 const handsPanel = new UIContainerRect(canvas)
 handsPanel.isPointerBlocker = false
@@ -12,7 +12,7 @@ handsPanel.width = '100%'
 handsPanel.height = '100%'
 handsPanel.positionY = currentHandsY
 
-export const leftHandImage = new UIImage(handsPanel, atlas)
+export let leftHandImage = new UIImage(handsPanel, atlas)
 leftHandImage.hAlign = 'left'
 leftHandImage.vAlign = 'bottom'
 leftHandImage.positionX = '15%'
@@ -76,20 +76,20 @@ class HandsMovingSystem implements ISystem {
 }
 engine.addSystem(new HandsMovingSystem(300, 30))
 
-export const wrapper = new UIContainerRect(canvas)
+export let wrapper = new UIContainerRect(canvas)
 wrapper.width = `100%`
 wrapper.height = `100%`
 wrapper.isPointerBlocker = false
 wrapper.visible = false
 
-export const redView = new UIContainerRect(canvas)
+export let redView = new UIContainerRect(canvas)
 redView.width = `100%`
 redView.height = `100%`
 redView.isPointerBlocker = false
 redView.visible = false
 redView.color = new Color4(0.8, 0, 0, 0.5)
 
-const beingWatchedText = new UIText(wrapper)
+let beingWatchedText = new UIText(wrapper)
 beingWatchedText.value = "You feel like someone's watching you..."
 beingWatchedText.color = Color4.Red()
 beingWatchedText.outlineColor = Color4.Yellow()

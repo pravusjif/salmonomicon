@@ -3,8 +3,8 @@
 import utils from "../node_modules/decentraland-ecs-utils/index"
 import { creature, CreatureState, invokeSound, invokePlace, trapPlace, trapSound } from "./creature";
 import { pageCounterUI, pagesUI, dieScreen } from "./UI";
-import { addCandles, candlesOnCounter, candles } from "./candles";
-import { resetMicasHead, hideMicasHead } from "./mica";
+import { addCandles, candles } from "./candles";
+import { resetMicasHead, grabMicasHead } from "./mica";
 
 
 @Component('page')
@@ -37,16 +37,19 @@ export let pagePositions: pagePos[] = [
 
 
 export class Page extends Entity {
+	transform: Transform
+	isPicked: boolean = false
+
 	constructor(
 	  transform: TranformConstructorArgs,
 	  model: GLTFShape,
-	  totalPages: number,
-	  isPicked: boolean = false,
+	  totalPages: number
 
 	) {
 	  super();
 	  this.addComponent(model);
-	  this.addComponent(new Transform(transform));
+	  this.transform = new Transform(transform)
+	  this.addComponent(this.transform);
 	  engine.addEntity(this);
 
 	  this.addComponent(new PageComponent())  //???
@@ -75,7 +78,8 @@ export class Page extends Entity {
 		pageCounterUI.value = pageCounter.toString()
 		log("grabbed page ", pageCounter)
 		this.getComponent(GLTFShape).visible = false
-		//engine.removeEntity(page)
+		
+		this.isPicked = true
 	
 		if (pageCounter >= totalPages){
 			log("YOU HAVE ALL PAGES: ", totalPages )
@@ -89,6 +93,7 @@ export class Page extends Entity {
 }
 
 // add pages in random places
+export let neededPages = []
 export function scatterPages(totalPages: number){
 	pageCounter = 0
 	pageCounterUI.value = ""
@@ -112,10 +117,10 @@ export function scatterPages(totalPages: number){
 					position: pagePositions[index].pos,
 					rotation: pagePositions[index].rot.toQuaternion()
 				},
-				new GLTFShape('models/PapyrusOpen_01/PapyrusOpen_01.glb'),
-				totalPages,
-				false
+				new GLTFShape('models/PapyrusOpen_01/PapyrusOpen_01.glb'), 
+				totalPages
 			)
+			neededPages.push(newPage)
 		}
 	}	
 }
@@ -125,7 +130,7 @@ export function startGame(){
 
 	book.invokeCreature()
 
-	hideMicasHead()
+	grabMicasHead()
 }
 
 // RESET GAME

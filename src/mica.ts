@@ -1,7 +1,10 @@
 import utils from "../node_modules/decentraland-ecs-utils/index"
 import { book, resetGame, startGame } from "./book"
 import { creature, CreatureState } from "./creature"
-import { grabMicasHead, releaseLeftHand } from "./micaUI"
+import { 
+	enableMicasHeadOnHand,
+	 releaseLeftHand, 
+	 RadarMicaSystem} from "./micaUI"
 
 export enum MicaState {
 	AskingForHelp,
@@ -22,7 +25,7 @@ class DialogueLine {
 }
 
 @Component('MicaComponent')
-class MicaComponent {
+export class MicaComponent {
 	private currentState: MicaState = MicaState.AskingForHelp
 
 	currentDialogueIndex: number = 0
@@ -93,7 +96,7 @@ micaHeadEntity.addComponent(micaComponent)
 let micaHeadShape = new GLTFShape("models/Mika_Head.glb")
 
 micaHeadEntity.addComponent(micaHeadShape)
-let micaTransform = new Transform({
+export let micaTransform = new Transform({
 	position: new Vector3(31.5, 1.3, 15.3),
 	rotation: Quaternion.Euler(0,180,0),
 	scale: new Vector3(0.5, 0.5, 0.5)
@@ -188,13 +191,16 @@ class MicaDialogueSystem implements ISystem {
 }
 
 engine.addSystem(new MicaDialogueSystem())
+engine.addSystem(new RadarMicaSystem(micaComponent))
 
-export function hideMicasHead() {
+export function grabMicasHead() {
 	micaTextShape.visible = false
 	micaTextShape.value = ""
 	micaHeadShape.visible = false
 
-	grabMicasHead()
+	enableMicasHeadOnHand()
+
+	micaComponent.setState(MicaState.DetectingPages)
 }
 
 export function resetMicasHead() {

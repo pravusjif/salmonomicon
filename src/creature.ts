@@ -1,5 +1,5 @@
 import { wrapper } from "./UI"
-import { pages, pageCounter, resetGame } from "./book"
+import { resetGame } from "./book"
 
 export enum CreatureState {
 	Dormant,
@@ -11,7 +11,6 @@ export enum CreatureState {
 @Component('behavior')
 export class CreatureComponent {
 }
-
 
 let camera = Camera.instance
 camera.rotation.toRotationMatrix
@@ -293,7 +292,7 @@ engine.addSystem(new CreatureSystem())
 export let creature = new Creature(
 	{
 		position: new Vector3(31, -1.5, 25),
-		rotation: Quaternion.Euler(0, 180, 8),
+		rotation: Quaternion.Euler(0, 180, 0),
 		scale: new Vector3(1.5, 1.5, 1.5)
 	},
 	new GLTFShape("models/Chobi.glb")
