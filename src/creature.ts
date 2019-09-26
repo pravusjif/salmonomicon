@@ -42,6 +42,8 @@ export class Creature extends Entity {
 	invokeAnim: AnimationState
 	searchAnim: AnimationState
 	attackAnim: AnimationState
+	searchSound: AudioSource
+	attackSound: AudioSource
 
 	constructor(
 		transform: TranformConstructorArgs,
@@ -65,7 +67,67 @@ export class Creature extends Entity {
 	  this.getComponent(Animator).addClip(this.searchAnim)
 	  this.getComponent(Animator).addClip(this.attackAnim)
 	  this.invokeAnim.play()
+
+	  // sounds
+	  let mumblingClip = new AudioClip("sounds/Search.mp3")
+	  this.addComponent(new AudioSource(mumblingClip))
+	  this.searchSound = this.getComponent(AudioSource)
+
+	  let attackAudioEnt = new Entity()
+	  engine.addEntity(attackAudioEnt)
+	  attackAudioEnt.setParent(this)
+	  let attackClip = new AudioClip("sounds/Attack.mp3")
+	  let attackSource = new AudioSource(attackClip)
+	  this.attackSound = attackSource
+	  attackAudioEnt.addComponent(this.attackSound)
 	} 
+
+	public getInvoked() : void {
+		this.currentState = CreatureState.Hunting
+		this.invokeAnim.playing = true
+		this.attackAnim.playing = false
+		this.searchAnim.playing = false
+		this.waitingForRay = false
+		invokeSound.playOnce()
+		this.searchSound.playing = true
+	}
+	
+	public getTrapped() : void {
+		this.currentState = CreatureState.Trapped
+		this.startLaser()
+		this.transform.position = creature.trappedPosition
+		this.transform.rotation = Quaternion.Euler(0,0,0)
+		this.waitingForRay = false
+		trapSound.playOnce()
+		this.searchSound.playing = false
+		this.attackSound.playing = true
+	}
+
+	public getKilled() : void {
+		this.laserOff()
+		this.currentState = CreatureState.Vanished
+		trapPlace.getComponent(AudioSource).playOnce()
+		
+		this.invokeAnim.playing = true
+		this.attackAnim.playing = false
+		this.searchAnim.playing = false
+		
+		this.searchSound.playing = false
+		this.attackSound.playing = false
+	}
+
+	public getReset() : void {
+		this.laserOff()
+		this.currentState = CreatureState.Dormant
+		
+		this.transform.position = this.initialPosition
+		this.invokeAnim.playing = false
+		this.attackAnim.playing = false
+		this.searchAnim.playing = false
+		
+		this.searchSound.playing = false
+		this.attackSound.playing = false
+	}
 
 	public watchForPlayer(playerPos: Vector3): void {
 		if (this.waitingForRay) return
@@ -97,11 +159,13 @@ export class Creature extends Entity {
 				this.invokeAnim.playing = false
 				this.attackAnim.playing = true
 				this.searchAnim.playing = false
+				this.attackSound.playing = true
 			} else {
 				this.speed = this.originalSpeed
 				this.invokeAnim.playing = false
 				this.attackAnim.playing = false
 				this.searchAnim.playing = true
+				this.attackSound.playing = false
 			}
 
 		} else {
@@ -109,6 +173,7 @@ export class Creature extends Entity {
 			this.invokeAnim.playing = false
 			this.attackAnim.playing = false
 			this.searchAnim.playing = true
+			this.attackSound.playing = false
 		}
 		
 	}
@@ -211,6 +276,7 @@ export class Creature extends Entity {
 		this.invokeAnim.playing = true
 		this.attackAnim.playing = false
 		this.searchAnim.playing = false
+		this.waitingForRay = false
 	}
 }
 

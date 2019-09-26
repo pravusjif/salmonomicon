@@ -1,4 +1,5 @@
 import { creature, CreatureState, trapPlace } from "./creature";
+import { reencarnateMika } from "./mica";
 
 export class Candle extends Entity {
   isOn:boolean = false
@@ -42,9 +43,8 @@ export class Candle extends Entity {
 	candlesOnCounter += 1
 	if (candlesOnCounter == candles.length) {
 		log("YOU WIN")
-		creature.laserOff()
-		creature.currentState = CreatureState.Vanished
-		trapPlace.getComponent(AudioSource).playOnce()
+		creature.getKilled()
+		reencarnateMika()
 	}
   }
 

@@ -155,9 +155,7 @@ export function resetGame(){
 		candle.turnOff()
 		engine.removeEntity(candle)
 	}
-	
-	creature.laserOff()
-	creature.currentState = CreatureState.Dormant
+	creature.getReset()
 
 	// RESET MIKA STATE 
 	resetMicasHead()
@@ -214,24 +212,14 @@ export class Book extends Entity {
 	  engine.addEntity(rayCubeObject) 
 	}
 	public invokeCreature(): void {
-		creature.currentState = CreatureState.Hunting
-		creature.invokeAnim.playing = true
-		creature.attackAnim.playing = false
-		creature.searchAnim.playing = false
-		creature.waitingForRay = false
+		creature.getInvoked()
 		scatterPages(5)
-		this.removeGlow()
-		invokeSound.playOnce()
+		this.removeGlow()		
 	}
 	public trapCreature(): void {
-		creature.currentState = CreatureState.Trapped
-		creature.startLaser()
+		creature.getTrapped()
 		addCandles()
 		this.removeGlow()
-		creature.transform.position = creature.trappedPosition
-		creature.transform.rotation = Quaternion.Euler(0,0,0)
-		creature.waitingForRay = false
-		trapSound.playOnce()
 	}
 
 	public activateGlow(): void {
