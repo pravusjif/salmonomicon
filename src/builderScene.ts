@@ -10,23 +10,15 @@ export function createBuilderScene() {
 	}))
 	engine.addEntity(dome)
 
-	// trees
-	const trees = new Entity()
-	trees.addComponentOrReplace(new GLTFShape('models/Trees.glb'))
-	trees.addComponentOrReplace(new Transform({
+	// Forest
+	const forest = new Entity()
+	forest.addComponentOrReplace(new GLTFShape('models/Forest.glb'))
+	forest.addComponentOrReplace(new Transform({
 		position: new Vector3(32, 0, 32),
+		rotation: Quaternion.Euler(0, 180, 0),
 		scale: new Vector3(1, 1, 1)
 	}))
-	engine.addEntity(trees)
-
-	const trees2 = new Entity()
-	trees2.addComponentOrReplace(new GLTFShape('models/Trees.glb'))
-	trees2.addComponentOrReplace(new Transform({
-		position: new Vector3(32, 0, 32),
-		scale: new Vector3(1, 1, 1),
-		rotation: Quaternion.Euler(0, 90, 0)
-	}))
-	engine.addEntity(trees2)
+	engine.addEntity(forest)
 
 	/// builder stuff
 	const scene = new Entity()
