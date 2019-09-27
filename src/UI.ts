@@ -1,7 +1,7 @@
 import { book } from "./book"
 import decentralandEcsUtils from "../node_modules/decentraland-ecs-utils/index"
 
-const canvas = new UICanvas()
+export const canvas = new UICanvas()
 
 export let atlas = new Texture("textures/blood-27051.png")
 export let atlas2 = new Texture("textures/HeadSprites.png")

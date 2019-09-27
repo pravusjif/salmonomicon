@@ -1,5 +1,7 @@
-import { leftHandImage, atlas2, atlas } from "./UI";
-import { MicaComponent, MicaState } from "./mica";
+import { leftHandImage, atlas2, atlas
+    , canvas
+ } from "./UI";
+import { MicaComponent} from "./mica";
 import { neededPages, Page } from "./book";
 
 export function enableMicasHeadOnHand() {
@@ -27,6 +29,14 @@ export function releaseLeftHand() {
     leftHandImage.width = leftHandImage.sourceWidth * 3
     leftHandImage.height = leftHandImage.sourceHeight * 3
 }
+
+export let radarMicaDialogueUIText = new UIText(canvas)
+radarMicaDialogueUIText.hAlign = 'center'
+radarMicaDialogueUIText.vAlign = 'bottom'
+radarMicaDialogueUIText.positionY = '10%'
+radarMicaDialogueUIText.fontSize = 23
+radarMicaDialogueUIText.color = Color4.Yellow()
+radarMicaDialogueUIText.hTextAlign = 'center'
 
 let camera = Camera.instance
 export class RadarMicaSystem implements ISystem {
