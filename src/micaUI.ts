@@ -1,11 +1,8 @@
-import { leftHandImage, atlas2, atlas
-    , canvas
- } from "./UI";
+import { leftHandImage, canvas} from "./UI";
 import { MicaComponent} from "./mica";
 import { neededPages, Page } from "./book";
 
 export function enableMicasHeadOnHand() {
-    leftHandImage.source = atlas2
     leftHandImage.hAlign = 'left'
     leftHandImage.vAlign = 'bottom'
     leftHandImage.positionX = '5%'
@@ -13,21 +10,20 @@ export function enableMicasHeadOnHand() {
     leftHandImage.sourceHeight = 425
     leftHandImage.sourceLeft = 0
     leftHandImage.sourceTop = 0
-    leftHandImage.width = leftHandImage.sourceWidth
-    leftHandImage.height = leftHandImage.sourceHeight
+    leftHandImage.width = leftHandImage.sourceWidth * 1.4
+    leftHandImage.height = leftHandImage.sourceHeight * 1.4
 }
 
 export function releaseLeftHand() {
-    leftHandImage.source = atlas
     leftHandImage.hAlign = 'left'
     leftHandImage.vAlign = 'bottom'
-    leftHandImage.positionX = '15%'
-    leftHandImage.sourceWidth = 95
-    leftHandImage.sourceHeight = 125
-    leftHandImage.sourceLeft = 462
-    leftHandImage.sourceTop = 566
-    leftHandImage.width = leftHandImage.sourceWidth * 3
-    leftHandImage.height = leftHandImage.sourceHeight * 3
+    leftHandImage.positionX = '10%'
+    leftHandImage.sourceWidth = 425
+    leftHandImage.sourceHeight = 425
+    leftHandImage.sourceLeft = 0
+    leftHandImage.sourceTop = 4 * leftHandImage.sourceWidth
+    leftHandImage.width = leftHandImage.sourceWidth * 1.6
+    leftHandImage.height = leftHandImage.sourceHeight * 1.6
 }
 
 export let radarMicaDialogueUIText = new UIText(canvas)
