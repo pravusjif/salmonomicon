@@ -263,19 +263,24 @@ export function resetMicasHead() {
 
 export function reencarnateMika(){
 
+	micaHeadShape.visible = false
 	micaHeadEntity.getComponent(MicaComponent).setState(MicaState.Reincarnated)
-	micaHeadEntity.addComponentOrReplace(new GLTFShape("models/MikaDance.glb"))
-	let micaTransform = new Transform({
-		position: new Vector3(25, 1.3, 15.3),
-		rotation: Quaternion.Euler(0,0,0),
-		scale: new Vector3(0.5, 0.5, 0.5)
-	})
-	micaHeadEntity.addComponent(new Animator())
-	let danceAnim = new AnimationState("Dance")
-	micaHeadEntity.getComponent(Animator).addClip(danceAnim)
-	danceAnim.play()
 
-	micaHeadEntity.addComponent(new AudioSource(new AudioClip("sounds/champignong.mp3")))
-	micaHeadEntity.getComponent(AudioSource).playing = true
+	let dancingMica = new Entity()
+	dancingMica.addComponent(new GLTFShape("models/MikaDance.glb"))
+	dancingMica.addComponent(new Transform({
+		position: new Vector3(28, 0, 28),
+		rotation: Quaternion.Euler(0,0,0),
+		scale: new Vector3(1.4, 1.4, 1.4)
+	}))
+	dancingMica.addComponent(new Animator())
+	let danceAnim = new AnimationState("Dance")
+	dancingMica.getComponent(Animator).addClip(danceAnim)
+	danceAnim.playing = true
+
+	dancingMica.addComponent(new AudioSource(new AudioClip("sounds/champignong.mp3")))
+	dancingMica.getComponent(AudioSource).playing = true
+
+	engine.addEntity(dancingMica)
 
 }
