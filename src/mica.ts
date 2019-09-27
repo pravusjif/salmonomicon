@@ -266,12 +266,14 @@ export function reencarnateMika(){
 	micaHeadEntity.getComponent(MicaComponent).setState(MicaState.Reincarnated)
 	micaHeadEntity.addComponentOrReplace(new GLTFShape("models/MikaDance.glb"))
 	let micaTransform = new Transform({
-		position: new Vector3(31.5, 1.3, 15.3),
-		rotation: Quaternion.Euler(0,180,0),
-		scale: new Vector3(0.05, 0.05, 0.05)
+		position: new Vector3(25, 1.3, 15.3),
+		rotation: Quaternion.Euler(0,0,0),
+		scale: new Vector3(0.5, 0.5, 0.5)
 	})
-	//micaHeadEntity.addComponent(n	ew Animator())
-	//micaHeadEntity.getComponent(Animator).getClip("Dance").play()
+	micaHeadEntity.addComponent(new Animator())
+	let danceAnim = new AnimationState("Dance")
+	micaHeadEntity.getComponent(Animator).addClip(danceAnim)
+	danceAnim.play()
 
 	micaHeadEntity.addComponent(new AudioSource(new AudioClip("sounds/champignong.mp3")))
 	micaHeadEntity.getComponent(AudioSource).playing = true
