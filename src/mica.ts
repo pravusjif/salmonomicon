@@ -281,7 +281,7 @@ export function reencarnateMika(){
 	dancingMica.addComponent(new Transform({
 		position: new Vector3(28, 0, 28),
 		rotation: Quaternion.Euler(0,0,0),
-		scale: new Vector3(1.4, 1.4, 1.4)
+		scale: new Vector3(1.5, 1.5, 1.5)
 	}))
 	dancingMica.addComponent(new Animator())
 	let danceAnim = new AnimationState("Dance")
