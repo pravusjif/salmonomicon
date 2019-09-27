@@ -4,7 +4,8 @@ import utils from "../node_modules/decentraland-ecs-utils/index"
 import { creature, CreatureState, invokeSound, invokePlace, trapPlace, trapSound } from "./creature";
 import { pageCounterUI, pagesUI, dieScreen } from "./UI";
 import { addCandles, candles } from "./candles";
-import { resetMicasHead, grabMicasHead, releaseMicasHead } from "./mica";
+import { resetMicasHead, grabMicasHead, releaseMicasHead, micaDialogueSystem } from "./mica";
+import { radarMicaDialogueUIText } from "./micaUI";
 
 
 @Component('page')
@@ -52,21 +53,28 @@ export class Page extends Entity {
 	  this.addComponent(this.transform);
 	  engine.addEntity(this);
 
-	  this.addComponent(new PageComponent())  //???
-	  this.addComponent(new utils.TriggerComponent(
-		new utils.TriggerBoxShape(new Vector3(2,2,2), triggerOffset),
-		0, //layer
-		0, //triggeredByLayer
-		null, //onTriggerEnter
-		null, //onTriggerExit
-		() => {  //onCameraEnter	
-			this.grab(totalPages)			
-		 },
-		 () => {
-			this.getComponent(utils.TriggerComponent).enabled = false
-		 },
-		 false
-	))
+	  this.addComponent(new PageComponent()) 
+	  this.addComponent(new OnPointerDown(e => {
+			if (e.hit.length > 3) return
+			this.grab(totalPages)
+	  	}
+
+	  ))
+
+	//   this.addComponent(new utils.TriggerComponent(
+	// 	new utils.TriggerBoxShape(new Vector3(2,2,2), triggerOffset),
+	// 	0, //layer
+	// 	0, //triggeredByLayer
+	// 	null, //onTriggerEnter
+	// 	null, //onTriggerExit
+	// 	() => {  //onCameraEnter	
+	// 		this.grab(totalPages)			
+	// 	 },
+	// 	 () => {
+	// 		this.getComponent(utils.TriggerComponent).enabled = false
+	// 	 },
+	// 	 false
+	// ))
 	}
 
 	public grab(totalPages: number): void {
@@ -88,6 +96,9 @@ export class Page extends Entity {
 			pagesUI.value = "You have them all!"
 			pagesUI.positionX = 75
 			book.activateGlow()
+
+			radarMicaDialogueUIText.value = "Now place me by the book and I shall cast the spell!"
+			micaDialogueSystem.enabled = false;
 		}
 	}
 }
@@ -128,6 +139,8 @@ export function scatterPages(totalPages: number){
 export function startGame(){
 	if(creature.currentState != CreatureState.Dormant) return
 
+	micaDialogueSystem.enabled = true;
+
 	book.invokeCreature()
 
 	grabMicasHead()
@@ -164,6 +177,8 @@ export function resetGame(){
 
 	// RESET MIKA STATE 
 	resetMicasHead()
+
+	micaDialogueSystem.enabled = true;
 }
 
 

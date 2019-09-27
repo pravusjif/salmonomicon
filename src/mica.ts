@@ -1,10 +1,10 @@
-import utils from "../node_modules/decentraland-ecs-utils/index"
-import { book, resetGame, startGame } from "./book"
+import { book, startGame } from "./book"
 import { creature, CreatureState } from "./creature"
 import { 
 	enableMicasHeadOnHand,
 	 releaseLeftHand, 
-	 RadarMicaSystem} from "./micaUI"
+	 RadarMicaSystem,
+	 radarMicaDialogueUIText} from "./micaUI"
 
 export enum MicaState {
 	AskingForHelp,
@@ -59,10 +59,11 @@ export class MicaComponent {
 		]
 
 		this.detectingPagesDialogueLines = [
-			new DialogueLine("Oh, by the way, look out for the creature that's bound to this curse, it will try to kill you", 4),
+			new DialogueLine("Oh, by the way, look out for the creature that's bound to this curse", 3),
+			new DialogueLine("It will try to kill you", 2),
 			new DialogueLine("DON'T look at it directly, or he will come at you faster!", 4),
 			new DialogueLine("And whatever you do... DO NOT LET HIM GET TO YOU", 4),
-			new DialogueLine("", -1)
+			new DialogueLine("Find the pages, following my eyes", -1)
 		]
 
 		this.finalPassageDialogueLines = [
@@ -146,17 +147,18 @@ micaTextEntity.addComponent(micaTextShape)
 micaTextEntity.addComponent(new Transform({
 	position: new Vector3(0, 1.25, 0)
 }))
-// micaTextEntity.addComponent(new Transform({
-// position: new Vector3(0, 1.25, 0)
-// }))
+
 micaTextEntity.setParent(micaHeadEntity)
 engine.addEntity(micaTextEntity)
 
 class MicaDialogueSystem implements ISystem {
+	enabled: boolean = true
 	currentWaitingTime: number = 0
 	waitingState: MicaState
 
 	update(dt: number) {
+		if(!this.enabled) return
+
 		let currentState = micaComponent.getCurrentState()
 
 		if(this.currentWaitingTime > 0) {
@@ -172,14 +174,14 @@ class MicaDialogueSystem implements ISystem {
 		// else if (this.currentWaitingTime == -1) {
 		// 	return
 		// }
-		
+
+		this.waitingState = currentState		
 		switch (currentState) {
 			case MicaState.AskingForHelp:
 				// random index
 				micaComponent.currentDialogueIndex = Math.floor(Scalar.RandomRange(0, micaComponent.helpDialogueLines.length))
 				
 				this.currentWaitingTime = micaComponent.helpDialogueLines[micaComponent.currentDialogueIndex].readingTimeInSeconds
-				this.waitingState = currentState
 				
 				micaTextShape.value = micaComponent.helpDialogueLines[micaComponent.currentDialogueIndex].text
 				
@@ -188,27 +190,32 @@ class MicaDialogueSystem implements ISystem {
 			case MicaState.GameStart:
 				if(micaComponent.currentDialogueIndex < micaComponent.gameStartDialogueLines.length-1){
 					this.currentWaitingTime = micaComponent.gameStartDialogueLines[micaComponent.currentDialogueIndex].readingTimeInSeconds
-					this.waitingState = currentState
 	
 					micaTextShape.value = micaComponent.gameStartDialogueLines[micaComponent.currentDialogueIndex].text
 					
-					// if(micaComponent.currentDialogueIndex)
 					micaComponent.currentDialogueIndex++;
 
 				} else {
-					this.waitingState = currentState
 					micaTextShape.value = micaComponent.gameStartDialogueLines[micaComponent.currentDialogueIndex].text
 				}
 				break;
 
 			case MicaState.DetectingPages:
-			
+				if(micaComponent.currentDialogueIndex < micaComponent.detectingPagesDialogueLines.length-1){
+					this.currentWaitingTime = micaComponent.detectingPagesDialogueLines[micaComponent.currentDialogueIndex].readingTimeInSeconds
+	
+					radarMicaDialogueUIText.value = micaComponent.detectingPagesDialogueLines[micaComponent.currentDialogueIndex].text
+					
+					micaComponent.currentDialogueIndex++;
+				} else {
+					
+					radarMicaDialogueUIText.value = micaComponent.detectingPagesDialogueLines[micaComponent.currentDialogueIndex].text
+				}
 				break;
 		
 			case MicaState.ReadingFinalPassage:
 				if(micaComponent.currentDialogueIndex < micaComponent.finalPassageDialogueLines.length-1){
 					this.currentWaitingTime = micaComponent.finalPassageDialogueLines[micaComponent.currentDialogueIndex].readingTimeInSeconds
-					this.waitingState = currentState
 	
 					micaTextShape.value = micaComponent.finalPassageDialogueLines[micaComponent.currentDialogueIndex].text
 					if(micaComponent.currentDialogueIndex == 2)
@@ -216,7 +223,6 @@ class MicaDialogueSystem implements ISystem {
 					
 					micaComponent.currentDialogueIndex++;
 				} else {
-					this.waitingState = currentState
 					micaTextShape.value = micaComponent.finalPassageDialogueLines[micaComponent.currentDialogueIndex].text
 				}
 				
@@ -225,7 +231,7 @@ class MicaDialogueSystem implements ISystem {
 	}	
 }
 
-let micaDialogueSystem = new MicaDialogueSystem()
+export let micaDialogueSystem = new MicaDialogueSystem()
 engine.addSystem(micaDialogueSystem)
 engine.addSystem(new RadarMicaSystem(micaComponent))
 
@@ -246,8 +252,11 @@ export function releaseMicasHead() {
 	
 	micaHeadShape.visible = true
 	micaTextShape.visible = true
+	radarMicaDialogueUIText.value = ""
 	
 	releaseLeftHand()
+
+	micaDialogueSystem.enabled = true;
 	
 	micaComponent.setState(MicaState.ReadingFinalPassage)
 }
@@ -255,6 +264,7 @@ export function releaseMicasHead() {
 export function resetMicasHead() {
 	micaHeadShape.visible = true
 	micaTextShape.visible = true
+	radarMicaDialogueUIText.value = ""
 
 	micaComponent.setState(MicaState.AskingForHelp)
 
@@ -263,17 +273,24 @@ export function resetMicasHead() {
 
 export function reencarnateMika(){
 
+	micaHeadShape.visible = false
 	micaHeadEntity.getComponent(MicaComponent).setState(MicaState.Reincarnated)
-	micaHeadEntity.addComponentOrReplace(new GLTFShape("models/MikaDance.glb"))
-	let micaTransform = new Transform({
-		position: new Vector3(31.5, 1.3, 15.3),
-		rotation: Quaternion.Euler(0,180,0),
-		scale: new Vector3(0.05, 0.05, 0.05)
-	})
-	//micaHeadEntity.addComponent(n	ew Animator())
-	//micaHeadEntity.getComponent(Animator).getClip("Dance").play()
 
-	micaHeadEntity.addComponent(new AudioSource(new AudioClip("sounds/champignong.mp3")))
-	micaHeadEntity.getComponent(AudioSource).playing = true
+	let dancingMica = new Entity()
+	dancingMica.addComponent(new GLTFShape("models/MikaDance.glb"))
+	dancingMica.addComponent(new Transform({
+		position: new Vector3(28, 0, 28),
+		rotation: Quaternion.Euler(0,0,0),
+		scale: new Vector3(1.4, 1.4, 1.4)
+	}))
+	dancingMica.addComponent(new Animator())
+	let danceAnim = new AnimationState("Dance")
+	dancingMica.getComponent(Animator).addClip(danceAnim)
+	danceAnim.playing = true
+
+	dancingMica.addComponent(new AudioSource(new AudioClip("sounds/champignong.mp3")))
+	dancingMica.getComponent(AudioSource).playing = true
+
+	engine.addEntity(dancingMica)
 
 }
