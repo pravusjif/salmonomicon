@@ -29,7 +29,7 @@ export class Creature extends Entity {
 	spawningSpeed: number = 0.2
 	initialPosition: Vector3 = new Vector3(32, -1.5, 20)
 	targetYPosition: number = 4
-	trappedPosition: Vector3 = new Vector3(24, 1, 24)
+	trappedPosition: Vector3 = new Vector3(32, 1, 32)
 	rotationSpeed: number = 40
 	currentState: CreatureState = CreatureState.Dormant
 	transform: Transform
@@ -271,6 +271,8 @@ export class Creature extends Entity {
 		if (this.currentState == CreatureState.Trapped){
 			this.laserL.getComponent(BoxShape).visible = false
 			this.laserR.getComponent(BoxShape).visible = false
+			this.laserL.getComponent(Transform).scale.z = 0.1
+			this.laserR.getComponent(Transform).scale.z = 0.1
 		}	
 		this.invokeAnim.playing = true
 		this.attackAnim.playing = false
