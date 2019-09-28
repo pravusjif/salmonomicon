@@ -1,6 +1,6 @@
 import { creature, CreatureState, trapPlace } from "./creature";
 import { reencarnateMika, micaTextShape } from "./mica";
-import { domeShape } from "./builderScene";
+import { domeShape, domeEntity } from "./builderScene";
 import { pageCounterUI } from "./UI";
 
 export class Candle extends Entity {
@@ -52,6 +52,7 @@ export class Candle extends Entity {
 		pageCounterUI.value = "YOU WIN!"
 
 		domeShape.withCollisions = false
+		domeEntity.removeComponent(domeShape)
 
 		reencarnateMika()
 	}

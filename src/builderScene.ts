@@ -1,14 +1,14 @@
 
 
-const dome = new Entity()
+export const domeEntity = new Entity()
 export const domeShape = new GLTFShape('models/Dome.glb')
 domeShape.withCollisions = false
-dome.addComponentOrReplace(domeShape)
-dome.addComponentOrReplace(new Transform({
+domeEntity.addComponentOrReplace(domeShape)
+domeEntity.addComponentOrReplace(new Transform({
 	position: new Vector3(32, 0, 32),
 	scale: new Vector3(1, 1, 1)
 }))
-engine.addEntity(dome)
+engine.addEntity(domeEntity)
 
 // Forest
 const forest = new Entity()
