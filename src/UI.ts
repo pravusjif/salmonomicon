@@ -90,7 +90,7 @@ redView.visible = false
 redView.color = new Color4(0.8, 0, 0, 0.5)
 
 let beingWatchedText = new UIText(playerWatchedUIWrapper)
-beingWatchedText.value = "He's watching you!"
+beingWatchedText.value = "It's watching you!"
 beingWatchedText.color = Color4.Red()
 beingWatchedText.outlineColor = Color4.Yellow()
 beingWatchedText.fontSize = 40
@@ -100,40 +100,18 @@ beingWatchedText.hAlign = "center"
 beingWatchedText.vTextAlign = "center"
 beingWatchedText.hTextAlign = "center"
 
-
-
-
-export const pagesUI = new UIText(canvas)
-pagesUI.isPointerBlocker = false
-pagesUI.visible = false
-pagesUI.value = "Pages:"
-pagesUI.color = Color4.Red()
-pagesUI.outlineColor = Color4.Yellow()
-pagesUI.fontSize = 30
-pagesUI.outlineWidth = 0.1
-pagesUI.vAlign = "bottom"
-pagesUI.hAlign = "left"
-pagesUI.vTextAlign = "center"
-pagesUI.hTextAlign = "center"
-pagesUI.positionY = 100
-
 export const pageCounterUI = new UIText(canvas)
 pageCounterUI.isPointerBlocker = false
 pageCounterUI.visible = false
-pageCounterUI.value = ""
+pageCounterUI.value = "Pages 0/5"
 pageCounterUI.color = Color4.Red()
 pageCounterUI.outlineColor = Color4.Yellow()
 pageCounterUI.fontSize = 30
 pageCounterUI.outlineWidth = 0.1
 pageCounterUI.vAlign = "bottom"
-pageCounterUI.hAlign = "left"
+pageCounterUI.hAlign = "center"
 pageCounterUI.vTextAlign = "center"
 pageCounterUI.hTextAlign = "center"
-
-pageCounterUI.positionX = 60
-pageCounterUI.positionY = 100
-
-
 
 export function dieScreen(){
 
