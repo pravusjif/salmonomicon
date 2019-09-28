@@ -65,7 +65,8 @@ export class MicaComponent {
 			new DialogueLine("It wants to kill you", 3),
 			new DialogueLine("DON'T look at it directly, or he will come at you faster!", 4),
 			new DialogueLine("And whatever you do... DO NOT LET HIM GET TO YOU", 4),
-			new DialogueLine("Find the pages, follow my eyes", -1)
+			new DialogueLine("Find the pages, follow my eyes", 3),
+			new DialogueLine("", -1)
 		]
 
 		this.finalPassageDialogueLines = [
@@ -97,6 +98,11 @@ let micaHeadEntity = new Entity()
 
 export let micaComponent = new MicaComponent()
 micaHeadEntity.addComponent(micaComponent)
+
+export function IsMicaComponentOnPedestal(): boolean {
+	let currentState = micaComponent.getCurrentState()
+	return currentState == MicaState.GameStart || currentState == MicaState.ReadingFinalPassage
+}
 
 let micaHeadShape = new GLTFShape("models/Mika_Head.glb")
 
@@ -141,7 +147,7 @@ engine.addEntity(micaHeadEntity)
 
 let micaTextEntity = new Entity()
 
-let micaTextShape = new TextShape()
+export let micaTextShape = new TextShape()
 micaTextShape.billboard = true
 micaTextShape.fontSize = 3
 // micaTextShape.resizeToFit = true

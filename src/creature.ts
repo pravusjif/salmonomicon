@@ -1,5 +1,5 @@
 import { playerWatchedUIWrapper } from "./UI"
-import { resetGame } from "./book"
+import { resetGame, totalPages, pageCounter } from "./book"
 
 export enum CreatureState {
 	Dormant,
@@ -144,7 +144,8 @@ export class Creature extends Entity {
 			if (e.didHit) {
 				playerWatchedUIWrapper.visible = false
 				this.watchingPlayer = false
-			} else {
+			} else if(pageCounter < totalPages){
+			// } else {
 				playerWatchedUIWrapper.visible = true
 				this.watchingPlayer = true
 			}

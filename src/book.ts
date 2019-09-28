@@ -189,6 +189,7 @@ engine.addEntity(pedestal)
 
 
 // book of salmonomicon
+export const totalPages = 5
 
 export class Book extends Entity {
 	glow: BoxShape
@@ -221,7 +222,7 @@ export class Book extends Entity {
 		if(creature.currentState == CreatureState.Hunting) return
 
 		creature.getInvoked()
-		scatterPages(5)
+		scatterPages(totalPages)
 		this.removeGlow()		
 	}
 	public trapCreature(): void {

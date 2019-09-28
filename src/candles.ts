@@ -1,5 +1,5 @@
 import { creature, CreatureState, trapPlace } from "./creature";
-import { reencarnateMika } from "./mica";
+import { reencarnateMika, micaTextShape } from "./mica";
 
 export class Candle extends Entity {
   isOn:boolean = false
@@ -44,6 +44,9 @@ export class Candle extends Entity {
 	if (candlesOnCounter == candles.length) {
 		log("YOU WIN")
 		creature.getKilled()
+
+		micaTextShape.value = ""
+
 		reencarnateMika()
 	}
   }
