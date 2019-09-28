@@ -1,5 +1,5 @@
 import { creature, CreatureState, invokeSound, invokePlace, trapPlace, trapSound } from "./creature";
-import { pageCounterUI, pagesUI, dieScreen, playerWatchedUIWrapper } from "./UI";
+import { pageCounterUI, dieScreen, playerWatchedUIWrapper } from "./UI";
 import { addCandles, candles } from "./candles";
 import { resetMicasHead, grabMicasHead, releaseMicasHead, micaDialogueSystem, radarMica, prepareDancingMika } from "./mica";
 import { radarMicaDialogueUIText } from "./micaUI";
@@ -63,23 +63,15 @@ export class Page extends Entity {
 	public grab(totalPages: number): void {
 		if (this.isPicked) return
 
-		if (pageCounter == 0){
-			pageCounterUI.visible = true
-			pagesUI.visible = true
-		}
 		pageCounter += 1
-		pageCounterUI.value = pageCounter.toString()
-		log("grabbed page ", pageCounter)
+		pageCounterUI.value = "Pages: " + pageCounter.toString() + "/5"
+		
 		this.getComponent(GLTFShape).visible = false
 		
 		this.isPicked = true
 	
 		if (pageCounter >= totalPages){
-			log("YOU HAVE ALL PAGES: ", totalPages )
 			hasAllPages = true
-			pageCounterUI.value = ""
-			pagesUI.value = "You have them all!"
-			pagesUI.positionX = 75
 			book.activateGlow()
 
 			radarMicaDialogueUIText.value = "Now place me by the book and I shall cast the spell!"
@@ -92,7 +84,7 @@ export class Page extends Entity {
 export let neededPages = []
 export function scatterPages(totalPages: number){
 	pageCounter = 0
-	pageCounterUI.value = ""
+	pageCounterUI.value = "Pages: " + pageCounter.toString() + "/5"
 	if (pages.entities.length > 1 ){
 		for (let page of pages.entities){
 			page.getComponent(GLTFShape).visible = true
@@ -132,6 +124,7 @@ export function startGame(){
 
 // RESET GAME
 export function resetGame(){
+	playerWatchedUIWrapper.visible = false
 	
 	if (creature.currentState == CreatureState.Hunting) {
 	
@@ -155,9 +148,8 @@ export function resetGame(){
 	//pageCounter = pages.entities.length
 	hasAllPages = false
 	pageCounter = 0
-	pagesUI.value = "Pages:"
-	pagesUI.positionX = 0
-	pageCounterUI.value = pageCounter.toString()
+	pageCounterUI.visible = false
+	pageCounterUI.value = "Pages: " + pageCounter.toString() + "/5"
 	book.activateGlow()
 
 	//candlesOnCounter = 0
@@ -172,8 +164,6 @@ export function resetGame(){
 	micaDialogueSystem.enabled = true;
 	radarMica.enabled = false
 	animatedUISystem.enabled = false
-
-	playerWatchedUIWrapper.visible = false
 }
 
 

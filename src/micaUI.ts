@@ -1,4 +1,4 @@
-import { leftHandImage, canvas, playerWatchedUIWrapper} from "./UI";
+import { leftHandImage, canvas, playerWatchedUIWrapper, pageCounterUI} from "./UI";
 import { MicaComponent} from "./mica";
 import { neededPages, Page } from "./book";
 import { AnimatedUIImage, AnimationSprite, animatedUISystem } from "./UISpritesAnimation";
@@ -20,6 +20,8 @@ export function enableMicasHeadOnHand() {
     leftHandImage.width = leftHandImage.sourceWidth * 1.4
     leftHandImage.height = leftHandImage.sourceHeight * 1.4
     micaTalkingAnimationEntity.addComponent(micaTalkingAnimation)
+
+    pageCounterUI.visible = true
 
     animatedUISystem.enabled = true
 }
@@ -46,25 +48,41 @@ radarMicaDialogueUIText.hAlign = "center"
 radarMicaDialogueUIText.vTextAlign = "center"
 radarMicaDialogueUIText.hTextAlign = "center"
 
+enum MikaRadarDirection {
+    N,
+    NE,
+    E,
+    SE,
+    S,
+    SW,
+    W,
+    NW,
+    NONE
+}
+
 let camera = Camera.instance
 export class RadarMicaSystem implements ISystem {
     enabled: boolean = false
     micaComponent: MicaComponent
+    currentDirection: MikaRadarDirection = MikaRadarDirection.NONE
 
     constructor(micaComponent: MicaComponent) {
         this.micaComponent = micaComponent
+        this.currentDirection = MikaRadarDirection.NONE
     }
 
     update(dt: number) {
+        if(!this.enabled || this.micaComponent.getCurrentState() != 2) return // if we import anything from ./mica, the script can't be compiled, i think it has to do with circular references
+        
         if(playerWatchedUIWrapper.visible){
             leftHandImage.sourceLeft = 0
             leftHandImage.sourceTop = 3 * leftHandImage.sourceHeight
 
+            this.currentDirection = MikaRadarDirection.NONE
+
             return
         }
 
-        if(!this.enabled || this.micaComponent.getCurrentState() != 2) return // if we import anything from ./mica, the script can't be compiled, i think it has to do with circular references
-        
         let cameraForward = PhysicsCast.instance.getRayFromCamera(1).direction
         let playerPos = camera.position.clone()
         playerPos.y = 0
@@ -83,7 +101,7 @@ export class RadarMicaSystem implements ISystem {
             }
         }
 
-        if(closestPageDistance == 9999){
+        if(closestPageDistance == 9999){ // no avaiable page found
             leftHandImage.sourceLeft = 0
             leftHandImage.sourceTop = 0
 
@@ -97,44 +115,68 @@ export class RadarMicaSystem implements ISystem {
         // log(angle)
         
         if(Math.abs(angle) >= 3){
-            // N
+            if(this.currentDirection == MikaRadarDirection.N) return
+
             leftHandImage.sourceLeft = 2 * leftHandImage.sourceWidth
             leftHandImage.sourceTop = 0 * leftHandImage.sourceHeight
+
+            this.currentDirection = MikaRadarDirection.N
             
         }
         else if(Math.abs(angle) <= 0.2){
-            // S
+            if(this.currentDirection == MikaRadarDirection.S) return
+
             leftHandImage.sourceLeft = leftHandImage.sourceWidth
             leftHandImage.sourceTop = leftHandImage.sourceHeight
+
+            this.currentDirection = MikaRadarDirection.S
         }
         else {
             if(angle > 0){
                 if(angle > 2) {
-                    // NE
+                    if(this.currentDirection == MikaRadarDirection.NE) return
+
                     leftHandImage.sourceLeft = 0
                     leftHandImage.sourceTop = 2 * leftHandImage.sourceHeight
+
+                    this.currentDirection = MikaRadarDirection.NE
                 } else if(angle > 1) {
-                    // E
+                    if(this.currentDirection == MikaRadarDirection.E) return
+
                     leftHandImage.sourceLeft = 0
                     leftHandImage.sourceTop = leftHandImage.sourceHeight
+
+                    this.currentDirection = MikaRadarDirection.E
                 } else if(angle > 0) {
-                    // SE
+                    if(this.currentDirection == MikaRadarDirection.SE) return
+
                     leftHandImage.sourceLeft = 2 * leftHandImage.sourceWidth
                     leftHandImage.sourceTop = 2 * leftHandImage.sourceHeight
+
+                    this.currentDirection = MikaRadarDirection.SE
                 }
             } else {
                 if(angle < -2) {
-                    // NW
+                    if(this.currentDirection == MikaRadarDirection.NW) return
+
                     leftHandImage.sourceLeft = 2 * leftHandImage.sourceWidth
                     leftHandImage.sourceTop = leftHandImage.sourceHeight
+
+                    this.currentDirection = MikaRadarDirection.NW
                 } else if(angle < -1) {
-                    // W
+                    if(this.currentDirection == MikaRadarDirection.W) return
+
                     leftHandImage.sourceLeft = leftHandImage.sourceWidth
                     leftHandImage.sourceTop = 0
+
+                    this.currentDirection = MikaRadarDirection.W
                 } else if(angle < 0) {
-                    // SW
+                    if(this.currentDirection == MikaRadarDirection.SW) return
+
                     leftHandImage.sourceLeft = leftHandImage.sourceWidth
                     leftHandImage.sourceTop = 2 * leftHandImage.sourceHeight
+
+                    this.currentDirection = MikaRadarDirection.SW
                 }
             }
         }

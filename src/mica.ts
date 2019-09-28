@@ -61,15 +61,15 @@ export class MicaComponent {
 		]
 
 		this.detectingPagesDialogueLines = [
-			new DialogueLine("Oh, look out for the creature that's bound to this curse", 3),
-			new DialogueLine("It wants to kill you", 2),
+			new DialogueLine("Oh, look out for the creature that's bound to this curse", 5),
+			new DialogueLine("It wants to kill you", 3),
 			new DialogueLine("DON'T look at it directly, or he will come at you faster!", 4),
 			new DialogueLine("And whatever you do... DO NOT LET HIM GET TO YOU", 4),
-			new DialogueLine("Find the pages, following my eyes", -1)
+			new DialogueLine("Find the pages, follow my eyes", -1)
 		]
 
 		this.finalPassageDialogueLines = [
-			new DialogueLine("Great! Now I must recite the magic words...", 2),
+			new DialogueLine("Great! Now I must recite the magic words...", 3),
 			new DialogueLine("It's been so long since I chanted this, I hope it works...", 3),
 			new DialogueLine("Klaatu... Barada... AHEM-Cof!-Cof!-oktu!", 3),
 			new DialogueLine("Oh shait! It seems it worked half-way", 3),
