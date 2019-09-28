@@ -133,14 +133,18 @@ export function startGame(){
 // RESET GAME
 export function resetGame(){
 	
-	creature.getReset()
-	if (creature.currentState != CreatureState.Vanished &&
-		creature.currentState != CreatureState.Dormant
-		){
-		log("YOU LOOSE")
-		dieScreen()
-	}
+	if (creature.currentState == CreatureState.Hunting) {
 	
+		log("YOU LOOSE")
+		dieScreen("hunted")
+
+	} else if (creature.currentState == CreatureState.Trapped){
+
+		log("YOU LOOSE")
+		dieScreen("laser")
+	}
+	creature.getReset()
+		
 	for (let page of pages.entities) {
 		page.getComponent(GLTFShape).visible = false
 	}
@@ -157,7 +161,6 @@ export function resetGame(){
 		candle.turnOff()
 		engine.removeEntity(candle)
 	}
-
 
 	// RESET MIKA STATE 
 	resetMicasHead()
