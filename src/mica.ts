@@ -108,7 +108,7 @@ let micaHeadShape = new GLTFShape("models/Mika_Head.glb")
 
 micaHeadEntity.addComponent(micaHeadShape)
 export let micaTransform = new Transform({
-	position: new Vector3(31.5, 1.8, 15.3),
+	position: new Vector3(31.5, 1.8, 14.8),
 	rotation: Quaternion.Euler(0,0,0),
 	scale: new Vector3(0.5, 0.5, 0.5)
 })

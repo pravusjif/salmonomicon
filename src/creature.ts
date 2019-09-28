@@ -151,9 +151,8 @@ export class Creature extends Entity {
 			if (e.didHit) {
 				playerWatchedUIWrapper.visible = false
 				this.watchingPlayer = false
-			} else if(pageCounter < totalPages){
-			// } else {
-				playerWatchedUIWrapper.visible = true
+			} else {
+				playerWatchedUIWrapper.visible = pageCounter < totalPages
 				this.watchingPlayer = true
 			}
 		})

@@ -184,7 +184,7 @@ const pedestal = new Entity()
 const pedestalGLTFShape = new GLTFShape('models/Pedestal_01/Pedestal_01.glb')
 pedestal.addComponentOrReplace(pedestalGLTFShape)
 const transform_10 = new Transform({
-  position: new Vector3(31.5, -0.1, 15),
+  position: new Vector3(31.5, -0.1, 14.5),
   scale: new Vector3(0.4, 0.4, 0.4)
 })
 pedestal.addComponentOrReplace(transform_10)
