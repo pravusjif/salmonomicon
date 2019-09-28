@@ -30,7 +30,7 @@ export class Creature extends Entity {
 	initialPosition: Vector3 = new Vector3(32, -1.5, 32)
 	targetYPosition: number = 4
 	trappedPosition: Vector3 = new Vector3(32, 1, 32)
-	rotationSpeed: number = 40
+	rotationSpeed: number = 60
 	currentState: CreatureState = CreatureState.Dormant
 	transform: Transform
 	laserL: IEntity = null
@@ -365,7 +365,7 @@ engine.addSystem(new CreatureSystem())
 // Instance creature
 export let creature = new Creature(
 	{
-		position: new Vector3(31, -1.5, 25),
+		position: new Vector3(32, -1.5, 32),
 		rotation: Quaternion.Euler(0, 180, 0),
 		scale: new Vector3(1.5, 1.5, 1.5)
 	},

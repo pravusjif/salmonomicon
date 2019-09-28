@@ -15,7 +15,8 @@ export class Candle extends Entity {
     
 
 	this.addComponent(offModel);
-    this.addComponent(new Transform(transform));
+	this.addComponent(new Transform(transform))
+	this.getComponent(Transform).scale.setAll(1.1)
 	engine.addEntity(this);
 	
 	//this.onModel = onModel;

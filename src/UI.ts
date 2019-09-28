@@ -156,6 +156,9 @@ pageCounterUI.hAlign = "center"
 pageCounterUI.vTextAlign = "center"
 pageCounterUI.hTextAlign = "center"
 
+
+let wilhemScream = new AudioClip("sounds/WilhelmScream.mp3")
+
 export function dieScreen(deathType: string){
 	let dummyEnt = new Entity()
 	dummyEnt.addComponent(new Transform({

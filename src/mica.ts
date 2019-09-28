@@ -289,8 +289,8 @@ export function prepareDancingMika(){
 
 	dancingMica.addComponent(new GLTFShape("models/MikaDance.glb"))
 	dancingMica.addComponent(new Transform({
-		position: new Vector3(28, -2, 28),
-		rotation: Quaternion.Euler(0,0,0),
+		position: new Vector3(28, -3, 28),
+		rotation: Quaternion.Euler(0, 180, 0),
 		scale: new Vector3(1.5, 1.5, 1.5)
 	}))
 	dancingMica.addComponent(new Animator())
@@ -312,6 +312,6 @@ export function reencarnateMika(){
 
 	dancingMica.getComponent(AudioSource).playing = true
 	danceAnim.playing = true
-	dancingMica.getComponent(Transform).position = new Vector3(28, 0, 28)
+	dancingMica.getComponent(Transform).position = new Vector3(32, 1, 39.8)
 
 }
