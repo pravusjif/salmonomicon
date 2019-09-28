@@ -28,6 +28,7 @@ export class Creature extends Entity {
 	originalSpeed: number = 0.3
 	spawningSpeed: number = 0.2
 	initialPosition: Vector3 = new Vector3(32, -1.5, 32)
+	initialEulerRotation: Vector3 = new Vector3(0, 180, 0)
 	targetYPosition: number = 4
 	trappedPosition: Vector3 = new Vector3(32, 1, 32)
 	rotationSpeed: number = 60
@@ -127,8 +128,13 @@ export class Creature extends Entity {
 	public getReset() : void {
 		this.laserOff()
 		this.currentState = CreatureState.Dormant
+
+		this.speed = this.originalSpeed
 		
 		this.transform.position = this.initialPosition.clone()
+		
+		this.getComponent(Transform).rotation = Quaternion.Euler(this.initialEulerRotation.x, this.initialEulerRotation.y, this.initialEulerRotation.z)
+		
 		this.invokeAnim.playing = false
 		this.attackAnim.playing = false
 		this.searchAnim.playing = false
@@ -156,9 +162,14 @@ export class Creature extends Entity {
 				this.watchingPlayer = false
 			} else {
 				beingWatchedText.visible = pageCounter < totalPages
-				let text = "It's watching you!"
-				if(beingWatchedText.value != text)
-					beingWatchedText.value = text
+
+				if(pageCounter < totalPages){
+					let text = "It's watching you!"
+					if(beingWatchedText.value != text)
+						beingWatchedText.value = text	
+				}  else {
+					beingWatchedText.value = ""
+				}
 				
 				this.watchingPlayer = true
 			}

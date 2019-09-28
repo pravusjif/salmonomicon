@@ -166,6 +166,8 @@ export function resetGame(){
 		engine.removeEntity(candle)
 	}
 
+	book.removeGlow()
+
 	// RESET MIKA STATE 
 	resetMicasHead()
 

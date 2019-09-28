@@ -14,12 +14,14 @@ micaTalkingAnimation.sprites = [
     new AnimationSprite(micaTalkingAnimation.defaultSize, new Vector2(micaTalkingAnimation.defaultSize.x, 3 * micaTalkingAnimation.defaultSize.y)),
     new AnimationSprite(micaTalkingAnimation.defaultSize, new Vector2(2 * micaTalkingAnimation.defaultSize.x, 3 * micaTalkingAnimation.defaultSize.y))
 ]
+animatedUISystem.enabled = false
+micaTalkingAnimationEntity.addComponent(micaTalkingAnimation)
 engine.addEntity(micaTalkingAnimationEntity)
 
 export function enableMicasHeadOnHand() {
     leftHandImage.width = leftHandImage.sourceWidth * 1.4
     leftHandImage.height = leftHandImage.sourceHeight * 1.4
-    micaTalkingAnimationEntity.addComponent(micaTalkingAnimation)
+    animatedUISystem.enabled = true
 
     pageCounterUI.visible = true
 
@@ -36,6 +38,8 @@ export function releaseLeftHand() {
     leftHandImage.sourceTop = 4 * leftHandImage.sourceWidth
     leftHandImage.width = leftHandImage.sourceWidth * 1.6
     leftHandImage.height = leftHandImage.sourceHeight * 1.6
+
+    beingWatchedText.value = ""
 }
 
 export let radarMicaDialogueUIText = new UIText(canvas)
