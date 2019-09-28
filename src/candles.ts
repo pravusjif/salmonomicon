@@ -33,7 +33,7 @@ export class Candle extends Entity {
 
     this.addComponent(
 	  new OnPointerDown(e => {
-		if (e.hit.length > 4 || isOn) return
+		if (e.hit.length > 4 || this.isOn) return
 		  this.turnOn()
 	  })
     )
