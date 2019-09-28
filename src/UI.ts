@@ -1,10 +1,8 @@
-import { book } from "./book"
 import decentralandEcsUtils from "../node_modules/decentraland-ecs-utils/index"
 
 export const canvas = new UICanvas()
 
-export let atlas = new Texture("textures/blood-27051.png")
-export let atlas2 = new Texture("textures/HeadSprites.png")
+export let atlas = new Texture("textures/HeadSprites.png")
 let currentHandsY: number = -20
 const handsPanel = new UIContainerRect(canvas)
 handsPanel.isPointerBlocker = false
@@ -15,26 +13,25 @@ handsPanel.positionY = currentHandsY
 export let leftHandImage = new UIImage(handsPanel, atlas)
 leftHandImage.hAlign = 'left'
 leftHandImage.vAlign = 'bottom'
-leftHandImage.positionX = '15%'
-leftHandImage.positionY = currentHandsY
-leftHandImage.sourceWidth = 95
-leftHandImage.sourceHeight = 125
-leftHandImage.sourceLeft = 462
-leftHandImage.sourceTop = 566
-leftHandImage.width = leftHandImage.sourceWidth * 3
-leftHandImage.height = leftHandImage.sourceHeight * 3
+leftHandImage.positionX = '10%'
+leftHandImage.positionY = currentHandsY - 10
+leftHandImage.sourceWidth = 425
+leftHandImage.sourceHeight = 425
+leftHandImage.sourceLeft = 0
+leftHandImage.sourceTop = 4 * leftHandImage.sourceWidth
+leftHandImage.width = leftHandImage.sourceWidth * 1.6
+leftHandImage.height = leftHandImage.sourceHeight * 1.6
 
 const rightHandImage = new UIImage(handsPanel, atlas)
 rightHandImage.hAlign = 'right'
 rightHandImage.vAlign = 'bottom'
-rightHandImage.positionX = '-15%'
 rightHandImage.positionY = currentHandsY
-rightHandImage.sourceWidth = 102
-rightHandImage.sourceHeight = 130
-rightHandImage.sourceLeft = 791
-rightHandImage.sourceTop = 559
-rightHandImage.width = rightHandImage.sourceWidth * 3
-rightHandImage.height = rightHandImage.sourceHeight * 3
+rightHandImage.sourceWidth = 425
+rightHandImage.sourceHeight = 425
+rightHandImage.sourceLeft = 2 * rightHandImage.sourceWidth
+rightHandImage.sourceTop = 4 * rightHandImage.sourceHeight
+rightHandImage.width = rightHandImage.sourceWidth * 1.6
+rightHandImage.height = rightHandImage.sourceHeight * 1.6
 
 class HandsMovingSystem implements ISystem {
     oscillationSpeed: number
