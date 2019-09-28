@@ -39,8 +39,9 @@ export function releaseLeftHand() {
 }
 
 export let radarMicaDialogueUIText = new UIText(canvas)
-radarMicaDialogueUIText.color = Color4.Red()
-radarMicaDialogueUIText.outlineColor = Color4.Yellow()
+// radarMicaDialogueUIText.color = Color4.Red()
+radarMicaDialogueUIText.color = Color4.Yellow()
+// radarMicaDialogueUIText.outlineColor = Color4.Yellow()
 radarMicaDialogueUIText.fontSize = 40
 radarMicaDialogueUIText.outlineWidth = 0.1
 radarMicaDialogueUIText.vAlign = "top"
