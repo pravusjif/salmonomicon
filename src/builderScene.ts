@@ -36,7 +36,7 @@ export function createBuilderScene() {
 	forestFloor.addComponentOrReplace(gltfShape_3)
 	const transform_4 = new Transform({
 		position: new Vector3(32, 0, 32),
-		rotation: new Quaternion(0, 0, 0, 1),
+		rotation: Quaternion.Euler(0, 180, 0),
 		scale: new Vector3(1, 1, 1)
 	})
 	forestFloor.addComponentOrReplace(transform_4)
