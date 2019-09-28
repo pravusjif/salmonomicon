@@ -87,22 +87,6 @@ wrapper.height = `100%`
 wrapper.isPointerBlocker = false
 wrapper.visible = false
 
-
-export let playerWatchedUIWrapper = new UIContainerRect(canvas)
-playerWatchedUIWrapper.width = `100%`
-playerWatchedUIWrapper.height = `100%`
-playerWatchedUIWrapper.isPointerBlocker = false
-playerWatchedUIWrapper.visible = false
-
-
-// export let redView = new UIContainerRect(canvas)
-// redView.width = `100%`
-// redView.height = `100%`
-// redView.isPointerBlocker = false
-// redView.visible = false
-// redView.color = new Color4(0.8, 0, 0, 0.5)
-
-
 export let huntedDeath = new UIImage(canvas,huntedDeathTexture)
 huntedDeath.width = 1024
 huntedDeath.height = 1024
@@ -114,9 +98,6 @@ huntedDeath.sourceLeft = 0
 huntedDeath.sourceTop = 0
 huntedDeath.isPointerBlocker = false
 huntedDeath.visible = false
-
-
-
 
 export let laserDeath = new UIImage(canvas,laserDeathTexture)
 laserDeath.width = 1024
@@ -131,8 +112,7 @@ laserDeath.positionY = 20
 laserDeath.isPointerBlocker = false
 laserDeath.visible = false
 
-
-let beingWatchedText = new UIText(playerWatchedUIWrapper)
+export let beingWatchedText = new UIText(canvas)
 beingWatchedText.value = "It's watching you!"
 beingWatchedText.color = Color4.Red()
 beingWatchedText.outlineColor = Color4.Yellow()
@@ -142,6 +122,7 @@ beingWatchedText.vAlign = "top"
 beingWatchedText.hAlign = "center"
 beingWatchedText.vTextAlign = "center"
 beingWatchedText.hTextAlign = "center"
+beingWatchedText.visible = false
 
 export const pageCounterUI = new UIText(canvas)
 pageCounterUI.isPointerBlocker = false

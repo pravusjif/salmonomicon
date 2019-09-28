@@ -1,4 +1,4 @@
-import { leftHandImage, canvas, playerWatchedUIWrapper, pageCounterUI} from "./UI";
+import { leftHandImage, canvas, pageCounterUI, beingWatchedText} from "./UI";
 import { MicaComponent} from "./mica";
 import { neededPages, Page } from "./book";
 import { AnimatedUIImage, AnimationSprite, animatedUISystem } from "./UISpritesAnimation";
@@ -75,7 +75,7 @@ export class RadarMicaSystem implements ISystem {
     update(dt: number) {
         if(!this.enabled || this.micaComponent.getCurrentState() != 2) return // if we import anything from ./mica, the script can't be compiled, i think it has to do with circular references
         
-        if(playerWatchedUIWrapper.visible){
+        if(beingWatchedText.visible){
             leftHandImage.sourceLeft = 0
             leftHandImage.sourceTop = 3 * leftHandImage.sourceHeight
 

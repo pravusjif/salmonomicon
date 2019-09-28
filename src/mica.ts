@@ -6,7 +6,7 @@ import {
 	 RadarMicaSystem,
 	 radarMicaDialogueUIText} from "./micaUI"
 import { animatedUISystem } from "./UISpritesAnimation"
-import { playerWatchedUIWrapper } from "./UI"
+import { beingWatchedText } from "./UI"
 
 export enum MicaState {
 	AskingForHelp,
@@ -168,7 +168,7 @@ class MicaDialogueSystem implements ISystem {
 	update(dt: number) {
 		if(!this.enabled) return
 
-		if(playerWatchedUIWrapper.visible) {
+		if(beingWatchedText.visible) {
 			radarMicaDialogueUIText.value = ""
 			return
 		}

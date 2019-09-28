@@ -1,5 +1,5 @@
-import { playerWatchedUIWrapper } from "./UI"
 import { resetGame, totalPages, pageCounter } from "./book"
+import { beingWatchedText } from "./UI"
 
 export enum CreatureState {
 	Dormant,
@@ -141,7 +141,7 @@ export class Creature extends Entity {
 	}
 
 	public watchForPlayer(playerPos: Vector3): void {
-		if (this.waitingForRay || creature.currentState != CreatureState.Hunting) return
+		if (this.waitingForRay || this.currentState != CreatureState.Hunting) return
 		
 		this.waitingForRay = true
 		const rayToPlayer: Ray = PhysicsCast.instance.getRayFromPositions(this.transform.position, playerPos)
@@ -149,10 +149,17 @@ export class Creature extends Entity {
 		PhysicsCast.instance.hitFirst(rayToPlayer, (e) => {
 			this.waitingForRay = false
 			if (e.didHit) {
-				playerWatchedUIWrapper.visible = false
+				beingWatchedText.visible = false
+				let text = ""
+				if(beingWatchedText.value != text)
+					beingWatchedText.value = text
 				this.watchingPlayer = false
 			} else {
-				playerWatchedUIWrapper.visible = pageCounter < totalPages
+				beingWatchedText.visible = pageCounter < totalPages
+				let text = "It's watching you!"
+				if(beingWatchedText.value != text)
+					beingWatchedText.value = text
+				
 				this.watchingPlayer = true
 			}
 		})

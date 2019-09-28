@@ -1,5 +1,5 @@
 import { creature, CreatureState } from "./creature";
-import { pageCounterUI, dieScreen, playerWatchedUIWrapper } from "./UI";
+import { pageCounterUI, dieScreen, beingWatchedText } from "./UI";
 import { addCandles, candles } from "./candles";
 import { resetMicasHead, grabMicasHead, releaseMicasHead, micaDialogueSystem, radarMica, prepareDancingMika } from "./mica";
 import { radarMicaDialogueUIText } from "./micaUI";
@@ -130,7 +130,8 @@ export function startGame(){
 
 // RESET GAME
 export function resetGame(){
-	playerWatchedUIWrapper.visible = false
+	beingWatchedText.value = ""
+	beingWatchedText.visible = false
 	domeShape.withCollisions = false
 	
 	if (creature.currentState == CreatureState.Hunting) {
