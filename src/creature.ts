@@ -1,4 +1,4 @@
-import { wrapper } from "./UI"
+import { playerWatchedUIWrapper } from "./UI"
 import { resetGame } from "./book"
 
 export enum CreatureState {
@@ -134,17 +134,18 @@ export class Creature extends Entity {
 	}
 
 	public watchForPlayer(playerPos: Vector3): void {
-		if (this.waitingForRay) return
+		if (this.waitingForRay || creature.currentState != CreatureState.Hunting) return
+		
 		this.waitingForRay = true
 		const rayToPlayer: Ray = PhysicsCast.instance.getRayFromPositions(this.transform.position, playerPos)
 
 		PhysicsCast.instance.hitFirst(rayToPlayer, (e) => {
 			this.waitingForRay = false
 			if (e.didHit) {
-				wrapper.visible = false
+				playerWatchedUIWrapper.visible = false
 				this.watchingPlayer = false
 			} else {
-				wrapper.visible = true
+				playerWatchedUIWrapper.visible = true
 				this.watchingPlayer = true
 			}
 		})

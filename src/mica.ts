@@ -5,6 +5,8 @@ import {
 	 releaseLeftHand, 
 	 RadarMicaSystem,
 	 radarMicaDialogueUIText} from "./micaUI"
+import { animatedUISystem } from "./UISpritesAnimation"
+import { playerWatchedUIWrapper } from "./UI"
 
 export enum MicaState {
 	AskingForHelp,
@@ -59,20 +61,20 @@ export class MicaComponent {
 		]
 
 		this.detectingPagesDialogueLines = [
-			new DialogueLine("Oh, by the way, look out for the creature that's bound to this curse", 3),
-			new DialogueLine("It will try to kill you", 2),
+			new DialogueLine("Oh, look out for the creature that's bound to this curse", 3),
+			new DialogueLine("It wants to kill you", 2),
 			new DialogueLine("DON'T look at it directly, or he will come at you faster!", 4),
 			new DialogueLine("And whatever you do... DO NOT LET HIM GET TO YOU", 4),
 			new DialogueLine("Find the pages, following my eyes", -1)
 		]
 
 		this.finalPassageDialogueLines = [
-			new DialogueLine("Great! Now I just need to recite the magic words and be done with this damn curse!", 5),
-			new DialogueLine("Here I go... It's been so long since I chanted this, I hope it works...", 4),
-			new DialogueLine("Klaatu... Barada... AHEM-Cof!-Cof!-oktu!", 6),
+			new DialogueLine("Great! Now I must recite the magic words...", 2),
+			new DialogueLine("It's been so long since I chanted this, I hope it works...", 3),
+			new DialogueLine("Klaatu... Barada... AHEM-Cof!-Cof!-oktu!", 3),
 			new DialogueLine("Oh shait! It seems it worked half-way", 3),
-			new DialogueLine("The creature is trapped in the pentagram, but...", 3),
-			new DialogueLine("You have to light the candles to finish sending him back!", -1),
+			new DialogueLine("It's trapped in the pentagram, but...", 3),
+			new DialogueLine("Light the candles to finish sending him back!", -1),
 		]
 	}
 
@@ -160,6 +162,11 @@ class MicaDialogueSystem implements ISystem {
 	update(dt: number) {
 		if(!this.enabled) return
 
+		if(playerWatchedUIWrapper.visible) {
+			radarMicaDialogueUIText.value = ""
+			return
+		}
+
 		let currentState = micaComponent.getCurrentState()
 
 		if(this.currentWaitingTime > 0) {
@@ -171,10 +178,7 @@ class MicaDialogueSystem implements ISystem {
 	
 				if(this.currentWaitingTime > 0) return
 			}
-		} 
-		// else if (this.currentWaitingTime == -1) {
-		// 	return
-		// }
+		}
 
 		this.waitingState = currentState		
 		switch (currentState) {
@@ -196,7 +200,7 @@ class MicaDialogueSystem implements ISystem {
 					
 					micaComponent.currentDialogueIndex++;
 
-				} else {
+				} else if(micaTextShape.value != micaComponent.gameStartDialogueLines[micaComponent.currentDialogueIndex].text) {
 					micaTextShape.value = micaComponent.gameStartDialogueLines[micaComponent.currentDialogueIndex].text
 				}
 				break;
@@ -208,9 +212,11 @@ class MicaDialogueSystem implements ISystem {
 					radarMicaDialogueUIText.value = micaComponent.detectingPagesDialogueLines[micaComponent.currentDialogueIndex].text
 					
 					micaComponent.currentDialogueIndex++;
-				} else {
-					
+				} else if(radarMicaDialogueUIText.value != micaComponent.detectingPagesDialogueLines[micaComponent.currentDialogueIndex].text){
 					radarMicaDialogueUIText.value = micaComponent.detectingPagesDialogueLines[micaComponent.currentDialogueIndex].text
+
+					radarMica.enabled = true
+					animatedUISystem.enabled = false
 				}
 				break;
 		
@@ -219,11 +225,11 @@ class MicaDialogueSystem implements ISystem {
 					this.currentWaitingTime = micaComponent.finalPassageDialogueLines[micaComponent.currentDialogueIndex].readingTimeInSeconds
 	
 					micaTextShape.value = micaComponent.finalPassageDialogueLines[micaComponent.currentDialogueIndex].text
-					if(micaComponent.currentDialogueIndex == 2)
+					if(micaComponent.currentDialogueIndex == 3)
 						book.trapCreature()
 					
 					micaComponent.currentDialogueIndex++;
-				} else {
+				} else if(micaTextShape.value != micaComponent.finalPassageDialogueLines[micaComponent.currentDialogueIndex].text){
 					micaTextShape.value = micaComponent.finalPassageDialogueLines[micaComponent.currentDialogueIndex].text
 				}
 				
@@ -234,7 +240,8 @@ class MicaDialogueSystem implements ISystem {
 
 export let micaDialogueSystem = new MicaDialogueSystem()
 engine.addSystem(micaDialogueSystem)
-engine.addSystem(new RadarMicaSystem(micaComponent))
+export let radarMica = new RadarMicaSystem(micaComponent)
+engine.addSystem(radarMica)
 
 export function grabMicasHead() {
 	if(micaComponent.getCurrentState() != MicaState.GameStart) return

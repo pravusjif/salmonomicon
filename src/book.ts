@@ -1,11 +1,9 @@
-
-
-import utils from "../node_modules/decentraland-ecs-utils/index"
 import { creature, CreatureState, invokeSound, invokePlace, trapPlace, trapSound } from "./creature";
-import { pageCounterUI, pagesUI, dieScreen } from "./UI";
+import { pageCounterUI, pagesUI, dieScreen, playerWatchedUIWrapper } from "./UI";
 import { addCandles, candles } from "./candles";
-import { resetMicasHead, grabMicasHead, releaseMicasHead, micaDialogueSystem } from "./mica";
+import { resetMicasHead, grabMicasHead, releaseMicasHead, micaDialogueSystem, radarMica } from "./mica";
 import { radarMicaDialogueUIText } from "./micaUI";
+import { animatedUISystem } from "./UISpritesAnimation";
 
 
 @Component('page')
@@ -166,6 +164,10 @@ export function resetGame(){
 	resetMicasHead()
 
 	micaDialogueSystem.enabled = true;
+	radarMica.enabled = false
+	animatedUISystem.enabled = false
+
+	playerWatchedUIWrapper.visible = false
 }
 
 

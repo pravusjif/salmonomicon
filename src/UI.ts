@@ -88,6 +88,13 @@ wrapper.isPointerBlocker = false
 wrapper.visible = false
 
 
+export let playerWatchedUIWrapper = new UIContainerRect(canvas)
+playerWatchedUIWrapper.width = `100%`
+playerWatchedUIWrapper.height = `100%`
+playerWatchedUIWrapper.isPointerBlocker = false
+playerWatchedUIWrapper.visible = false
+
+
 // export let redView = new UIContainerRect(canvas)
 // redView.width = `100%`
 // redView.height = `100%`
@@ -125,11 +132,11 @@ laserDeath.isPointerBlocker = false
 laserDeath.visible = false
 
 
-let beingWatchedText = new UIText(wrapper)
-beingWatchedText.value = "You feel like someone's watching you..."
+let beingWatchedText = new UIText(playerWatchedUIWrapper)
+beingWatchedText.value = "He's watching you!"
 beingWatchedText.color = Color4.Red()
 beingWatchedText.outlineColor = Color4.Yellow()
-beingWatchedText.fontSize = 45
+beingWatchedText.fontSize = 40
 beingWatchedText.outlineWidth = 0.1
 beingWatchedText.vAlign = "top"
 beingWatchedText.hAlign = "center"
