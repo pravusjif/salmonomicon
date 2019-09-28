@@ -1,4 +1,4 @@
-import { creature, CreatureState, invokeSound, invokePlace, trapPlace, trapSound } from "./creature";
+import { creature, CreatureState } from "./creature";
 import { pageCounterUI, dieScreen, playerWatchedUIWrapper } from "./UI";
 import { addCandles, candles } from "./candles";
 import { resetMicasHead, grabMicasHead, releaseMicasHead, micaDialogueSystem, radarMica, prepareDancingMika } from "./mica";
@@ -176,7 +176,7 @@ rayMaterial.metallic = 1
 rayMaterial.roughness = 0.5
 //rayMaterial.alpha = 0.2
 //rayMaterial.hasAlpha = true
-rayMaterial.transparencyMode = TransparencyMode.ALPHA_BLEND
+rayMaterial.transparencyMode = 2
 rayMaterial.albedoColor = new Color4(2, 2, 3, 0.3)
 
 
