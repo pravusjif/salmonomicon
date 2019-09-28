@@ -29,15 +29,15 @@ export function enableMicasHeadOnHand() {
 }
 
 export function releaseLeftHand() {
-    leftHandImage.hAlign = 'left'
-    leftHandImage.vAlign = 'bottom'
-    leftHandImage.positionX = '10%'
-    leftHandImage.sourceWidth = 425
-    leftHandImage.sourceHeight = 425
     leftHandImage.sourceLeft = 0
     leftHandImage.sourceTop = 4 * leftHandImage.sourceWidth
-    leftHandImage.width = leftHandImage.sourceWidth * 1.6
-    leftHandImage.height = leftHandImage.sourceHeight * 1.6
+
+    beingWatchedText.value = ""
+}
+
+export function GrabLighter() {
+    leftHandImage.sourceLeft = leftHandImage.sourceWidth
+    leftHandImage.sourceTop = 4 * leftHandImage.sourceHeight
 
     beingWatchedText.value = ""
 }

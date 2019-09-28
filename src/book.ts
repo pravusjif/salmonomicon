@@ -130,10 +130,6 @@ export function startGame(){
 
 // RESET GAME
 export function resetGame(){
-	beingWatchedText.value = ""
-	beingWatchedText.visible = false
-	domeShape.withCollisions = false
-	
 	if (creature.currentState == CreatureState.Hunting) {
 	
 		log("YOU LOOSE")
@@ -145,7 +141,10 @@ export function resetGame(){
 		dieScreen("laser")
 	}
 	creature.getReset()
-		
+	
+	beingWatchedText.value = ""
+	beingWatchedText.visible = false
+	domeShape.withCollisions = false
 	
 	for (let i = 0 ; i < neededPages.length; i ++){	
 		let page = neededPages[i] as Page

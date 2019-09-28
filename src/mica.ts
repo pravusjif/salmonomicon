@@ -4,7 +4,8 @@ import {
 	enableMicasHeadOnHand,
 	 releaseLeftHand, 
 	 RadarMicaSystem,
-	 radarMicaDialogueUIText} from "./micaUI"
+	 radarMicaDialogueUIText,
+	 GrabLighter} from "./micaUI"
 import { animatedUISystem } from "./UISpritesAnimation"
 import { beingWatchedText } from "./UI"
 
@@ -237,6 +238,8 @@ class MicaDialogueSystem implements ISystem {
 					micaComponent.currentDialogueIndex++;
 				} else if(micaTextShape.value != micaComponent.finalPassageDialogueLines[micaComponent.currentDialogueIndex].text){
 					micaTextShape.value = micaComponent.finalPassageDialogueLines[micaComponent.currentDialogueIndex].text
+
+					GrabLighter()
 				}
 				
 				break;
