@@ -11,6 +11,7 @@ export class AnimationSprite {
 @Component('animatedUI')
 export class AnimatedUIImage {
     imageComponent: UIImage
+    updateUIImageSize: boolean = true
     currentIndex: number = 0
     sprites: AnimationSprite[]
     defaultSize: Vector2
@@ -40,9 +41,12 @@ export class AnimatedUIImage {
 }
 
 export class AnimatedUISystem implements ISystem {
+    enabled: boolean = false
     animations: ComponentGroup = engine.getComponentGroup(AnimatedUIImage)
 
     update(dt: number) {
+        if(!this.enabled) return
+
         for (let animationEntity of this.animations.entities) {
             let animationData = animationEntity.getComponent(AnimatedUIImage)
 
@@ -60,8 +64,11 @@ export class AnimatedUISystem implements ISystem {
             animationData.imageComponent.sourceHeight = animationData.sprites[animationData.currentIndex].size.y
             animationData.imageComponent.sourceLeft = animationData.sprites[animationData.currentIndex].position.x
             animationData.imageComponent.sourceTop = animationData.sprites[animationData.currentIndex].position.y
-            animationData.imageComponent.width = animationData.imageComponent.sourceWidth
-            animationData.imageComponent.height = animationData.imageComponent.sourceHeight
+
+            if(animationData.updateUIImageSize) {
+                animationData.imageComponent.width = animationData.imageComponent.sourceWidth
+                animationData.imageComponent.height = animationData.imageComponent.sourceHeight
+            }
 
             animationData.currentIndex++;
             if(animationData.currentIndex == animationData.sprites.length)
@@ -71,7 +78,8 @@ export class AnimatedUISystem implements ISystem {
         }
     }
 }
-engine.addSystem(new AnimatedUISystem())
+export let animatedUISystem = new AnimatedUISystem()
+engine.addSystem(animatedUISystem)
 
 /* const handAnimationEntity = new Entity()
 const handAnimation = new AnimatedUIImage();

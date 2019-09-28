@@ -5,6 +5,7 @@ import {
 	 releaseLeftHand, 
 	 RadarMicaSystem,
 	 radarMicaDialogueUIText} from "./micaUI"
+import { animatedUISystem } from "./UISpritesAnimation"
 
 export enum MicaState {
 	AskingForHelp,
@@ -195,7 +196,7 @@ class MicaDialogueSystem implements ISystem {
 					
 					micaComponent.currentDialogueIndex++;
 
-				} else {
+				} else if(micaTextShape.value != micaComponent.gameStartDialogueLines[micaComponent.currentDialogueIndex].text) {
 					micaTextShape.value = micaComponent.gameStartDialogueLines[micaComponent.currentDialogueIndex].text
 				}
 				break;
@@ -207,9 +208,11 @@ class MicaDialogueSystem implements ISystem {
 					radarMicaDialogueUIText.value = micaComponent.detectingPagesDialogueLines[micaComponent.currentDialogueIndex].text
 					
 					micaComponent.currentDialogueIndex++;
-				} else {
-					
+				} else if(radarMicaDialogueUIText.value != micaComponent.detectingPagesDialogueLines[micaComponent.currentDialogueIndex].text){
 					radarMicaDialogueUIText.value = micaComponent.detectingPagesDialogueLines[micaComponent.currentDialogueIndex].text
+
+					radarMica.enabled = true
+					animatedUISystem.enabled = false
 				}
 				break;
 		
@@ -222,7 +225,7 @@ class MicaDialogueSystem implements ISystem {
 						book.trapCreature()
 					
 					micaComponent.currentDialogueIndex++;
-				} else {
+				} else if(micaTextShape.value != micaComponent.finalPassageDialogueLines[micaComponent.currentDialogueIndex].text){
 					micaTextShape.value = micaComponent.finalPassageDialogueLines[micaComponent.currentDialogueIndex].text
 				}
 				
@@ -233,7 +236,8 @@ class MicaDialogueSystem implements ISystem {
 
 export let micaDialogueSystem = new MicaDialogueSystem()
 engine.addSystem(micaDialogueSystem)
-engine.addSystem(new RadarMicaSystem(micaComponent))
+export let radarMica = new RadarMicaSystem(micaComponent)
+engine.addSystem(radarMica)
 
 export function grabMicasHead() {
 	if(micaComponent.getCurrentState() != MicaState.GameStart) return

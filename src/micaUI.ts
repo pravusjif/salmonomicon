@@ -1,17 +1,27 @@
 import { leftHandImage, canvas} from "./UI";
 import { MicaComponent} from "./mica";
 import { neededPages, Page } from "./book";
+import { AnimatedUIImage, AnimationSprite, animatedUISystem } from "./UISpritesAnimation";
+
+const micaTalkingAnimationEntity = new Entity()
+const micaTalkingAnimation = new AnimatedUIImage();
+micaTalkingAnimation.imageComponent = leftHandImage
+micaTalkingAnimation.secondsBetweenFrames = 0.3
+micaTalkingAnimation.defaultSize = new Vector2(425, 425)
+micaTalkingAnimation.updateUIImageSize = false
+micaTalkingAnimation.sprites = [
+    new AnimationSprite(micaTalkingAnimation.defaultSize, new Vector2(0,0)),
+    new AnimationSprite(micaTalkingAnimation.defaultSize, new Vector2(micaTalkingAnimation.defaultSize.x, 3 * micaTalkingAnimation.defaultSize.y)),
+    new AnimationSprite(micaTalkingAnimation.defaultSize, new Vector2(2 * micaTalkingAnimation.defaultSize.x, 3 * micaTalkingAnimation.defaultSize.y))
+]
+engine.addEntity(micaTalkingAnimationEntity)
 
 export function enableMicasHeadOnHand() {
-    leftHandImage.hAlign = 'left'
-    leftHandImage.vAlign = 'bottom'
-    leftHandImage.positionX = '5%'
-    leftHandImage.sourceWidth = 425
-    leftHandImage.sourceHeight = 425
-    leftHandImage.sourceLeft = 0
-    leftHandImage.sourceTop = 0
     leftHandImage.width = leftHandImage.sourceWidth * 1.4
     leftHandImage.height = leftHandImage.sourceHeight * 1.4
+    micaTalkingAnimationEntity.addComponent(micaTalkingAnimation)
+
+    animatedUISystem.enabled = true
 }
 
 export function releaseLeftHand() {
@@ -36,6 +46,7 @@ radarMicaDialogueUIText.hTextAlign = 'center'
 
 let camera = Camera.instance
 export class RadarMicaSystem implements ISystem {
+    enabled: boolean = false
     micaComponent: MicaComponent
 
     constructor(micaComponent: MicaComponent) {
@@ -43,7 +54,7 @@ export class RadarMicaSystem implements ISystem {
     }
 
     update(dt: number) {
-        if(this.micaComponent.getCurrentState() != 2) return // if we import anything from ./mica, the script can't be compiled, i think it has to do with circular references
+        if(!this.enabled || this.micaComponent.getCurrentState() != 2) return // if we import anything from ./mica, the script can't be compiled, i think it has to do with circular references
         
         let cameraForward = PhysicsCast.instance.getRayFromCamera(1).direction
         let playerPos = camera.position.clone()
