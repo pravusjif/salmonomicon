@@ -4,6 +4,7 @@ import { addCandles, candles } from "./candles";
 import { resetMicasHead, grabMicasHead, releaseMicasHead, micaDialogueSystem, radarMica, prepareDancingMika } from "./mica";
 import { radarMicaDialogueUIText } from "./micaUI";
 import { animatedUISystem } from "./UISpritesAnimation";
+import { domeShape } from "./builderScene";
 
 
 @Component('page')
@@ -118,6 +119,8 @@ export function scatterPages(totalPages: number){
 export function startGame(){
 	if(creature.currentState != CreatureState.Dormant) return
 
+	domeShape.withCollisions = true
+
 	micaDialogueSystem.enabled = true;
 
 	book.invokeCreature()
@@ -128,6 +131,7 @@ export function startGame(){
 // RESET GAME
 export function resetGame(){
 	playerWatchedUIWrapper.visible = false
+	domeShape.withCollisions = false
 	
 	if (creature.currentState == CreatureState.Hunting) {
 	

@@ -1,26 +1,10 @@
 import { atlas } from './UI'
 import { CreatureComponent, CreatureSystem } from './creature'
-import {createBuilderScene} from './builderScene'
 import { scatterPages } from '././book'
 import { addCandles } from './candles'
 import { AmbientSound } from './ambient'
 import { releaseLeftHand } from './micaUI'
 
-//// creature
-
-
-
-
-
-
-createBuilderScene()
-
-//scatterPages(5)
-
-
-// spawnMica()
-
-//addCandles()
 
 
 let crickets1 = new AmbientSound(
