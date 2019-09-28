@@ -1,7 +1,7 @@
 import { creature, CreatureState, invokeSound, invokePlace, trapPlace, trapSound } from "./creature";
 import { pageCounterUI, dieScreen, playerWatchedUIWrapper } from "./UI";
 import { addCandles, candles } from "./candles";
-import { resetMicasHead, grabMicasHead, releaseMicasHead, micaDialogueSystem, radarMica } from "./mica";
+import { resetMicasHead, grabMicasHead, releaseMicasHead, micaDialogueSystem, radarMica, prepareDancingMika } from "./mica";
 import { radarMicaDialogueUIText } from "./micaUI";
 import { animatedUISystem } from "./UISpritesAnimation";
 
@@ -20,18 +20,21 @@ let triggerOffset = new Vector3(0, 2, 0)
 export class pagePos { pos: Vector3 ; rot: Vector3 }
 
 export let pagePositions: pagePos[] = [
-	{pos: new Vector3(22,1.5,7), rot: new Vector3(0,0, 90) },
-	{pos: new Vector3(15,1.5,15), rot: new Vector3(0,0, 90) },
-	{pos: new Vector3(17,1.5,9), rot: new Vector3(0,0, 90) },
-	{pos: new Vector3(18,1.5,18), rot: new Vector3(0,0, 90) },
-	{pos: new Vector3(19,1.5,12), rot: new Vector3(0,0, 90) },
-	{pos: new Vector3(15,1.5,8), rot: new Vector3(0,0, 90) },
-	{pos: new Vector3(24,1.5,8), rot: new Vector3(0,0, 90) },
-	{pos: new Vector3(18,1.5,10), rot: new Vector3(0,0, 90) },
-	{pos: new Vector3(12,1.5,20), rot: new Vector3(0,0, 90) },
-	{pos: new Vector3(15,1.5,20), rot: new Vector3(0,0, 90) },
-	{pos: new Vector3(17,1.5,22), rot: new Vector3(0,0, 90) },
-	{pos: new Vector3(8,1.5,8), rot: new Vector3(0,0, 90) }
+	{pos: new Vector3(32.6, 1.12, 46.7), rot: new Vector3(0, 0, 0) },
+	{pos: new Vector3(34.24, 0.65, 55.64), rot: new Vector3(0, 0, 0) },
+	{pos: new Vector3(22.13, 1.12, 52.5), rot: new Vector3(0,0, 0) },
+	{pos: new Vector3(32, 0.07, 32), rot: new Vector3(0, 0, 0) },
+	 {pos: new Vector3(15.16, 0.3, 35), rot: new Vector3(0, 0, 0) },
+
+	{pos: new Vector3(51, 3 , 49.15), rot: new Vector3(90, 45.22, 0) },
+	{pos: new Vector3(41.59, 4.59, 53.45), rot: new Vector3( 72, 129.8, 1.2)},
+	{pos: new Vector3(49.44, 2.15, 31.62), rot: new Vector3(90, -84.13, 0) },
+	{pos: new Vector3(53.48, 1.1, 22.27), rot: new Vector3(0, 0, 8.58) },
+	{pos: new Vector3(55.21, 0.42, 8.84), rot: new Vector3(0, 0, 0) },
+	{pos: new Vector3(17.28, 2.91, 16.42), rot: new Vector3(0,0, -90)},
+	{pos: new Vector3(25.34, 2.91 ,39.49), rot: new Vector3(0,-90, -90) },
+	{pos: new Vector3(32.72, 0.2, 23.49), rot: new Vector3(0,0, 0)},
+	{pos: new Vector3(17.87, 0.85 ,50.54), rot: new Vector3(0,0, 0) }
 ]
 
 
@@ -62,7 +65,7 @@ export class Page extends Entity {
 
 	public grab(totalPages: number): void {
 		if (this.isPicked) return
-		
+
 		pageCounter += 1
 		pageCounterUI.value = "Pages: " + pageCounter.toString() + "/5"
 		
@@ -229,6 +232,7 @@ export class Book extends Entity {
 		if(creature.currentState == CreatureState.Trapped) return
 
 		creature.getTrapped()
+		prepareDancingMika()
 		addCandles()
 		this.removeGlow()
 	}

@@ -15,7 +15,8 @@ export class Candle extends Entity {
     
 
 	this.addComponent(offModel);
-    this.addComponent(new Transform(transform));
+	this.addComponent(new Transform(transform))
+	this.getComponent(Transform).scale.setAll(1.1)
 	engine.addEntity(this);
 	
 	//this.onModel = onModel;
@@ -60,11 +61,11 @@ export class Candle extends Entity {
 }
 
 let candlePositions: TranformConstructorArgs [] = [
-	{position: new Vector3(25, 1, 25)},
-	{position: new Vector3(20, 1, 25)},
-	{position: new Vector3(25, 1, 20)},
-	{position: new Vector3(20, 1, 20)},
-	{position: new Vector3(23, 1, 20)},
+	{position: new Vector3(29.86, 0.1, 34.52)},
+	{position: new Vector3(33.81, 0.1, 34.58)},
+	{position: new Vector3(35, 0.1, 31.14)},
+	{position: new Vector3(32, 0.1, 29.12)},
+	{position: new Vector3(29, 0.1, 31.05)},
 ]
 
 export let candlesOnCounter: number = 0

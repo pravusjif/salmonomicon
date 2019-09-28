@@ -36,6 +36,57 @@ export function createBuilderScene() {
 
 	engine.addEntity(fog)
 
+
+	// Flys
+	const flys1 = new Entity()
+	flys1.addComponentOrReplace(new GLTFShape('models/flys.glb'))
+	flys1.addComponentOrReplace(new Transform({
+		position: new Vector3(38, 0.5, 37),
+		scale: new Vector3(1, 1, 1)
+	}))
+
+	const flys1Anim = new Animator();
+	flys1.addComponent(flys1Anim);
+	let flys1Animation = new AnimationState("fly", { speed: 1 })
+	flys1Anim.addClip(flys1Animation);
+	flys1Animation.play()
+
+	engine.addEntity(flys1)
+
+
+	// Flys
+	const flys2 = new Entity()
+	flys2.addComponentOrReplace(new GLTFShape('models/flys.glb'))
+	flys2.addComponentOrReplace(new Transform({
+		position: new Vector3(55, 1, 14),
+		scale: new Vector3(1, 1, 1)
+	}))
+
+	const flys2Anim = new Animator();
+	flys2.addComponent(flys2Anim);
+	let flys2Animation = new AnimationState("fly", { speed: 0.9 })
+	flys2Anim.addClip(flys2Animation);
+	flys2Animation.play()
+
+	engine.addEntity(flys2)
+
+	// Flys3
+	const flys3 = new Entity()
+	flys3.addComponentOrReplace(new GLTFShape('models/flys.glb'))
+	flys3.addComponentOrReplace(new Transform({
+		position: new Vector3(28, 2, 48),
+		scale: new Vector3(1, 1, 1)
+	}))
+
+	const flys3Anim = new Animator();
+	flys3.addComponent(flys3Anim);
+	let flys3Animation = new AnimationState("fly", { speed: 0.8 })
+	flys3Anim.addClip(flys3Animation);
+	flys3Animation.play()
+
+	engine.addEntity(flys3)
+
+
 	/// builder stuff
 	const scene = new Entity()
 	const transform = new Transform({
