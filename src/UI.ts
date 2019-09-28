@@ -155,6 +155,7 @@ pageCounterUI.vAlign = "bottom"
 pageCounterUI.hAlign = "center"
 pageCounterUI.vTextAlign = "center"
 pageCounterUI.hTextAlign = "center"
+pageCounterUI.positionY = 10
 
 
 let wilhemScream = new AudioClip("sounds/WilhelmScream.mp3")

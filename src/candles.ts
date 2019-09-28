@@ -1,6 +1,7 @@
 import { creature, CreatureState, trapPlace } from "./creature";
 import { reencarnateMika, micaTextShape } from "./mica";
 import { domeShape } from "./builderScene";
+import { pageCounterUI } from "./UI";
 
 export class Candle extends Entity {
   isOn:boolean = false
@@ -48,6 +49,7 @@ export class Candle extends Entity {
 		creature.getKilled()
 
 		micaTextShape.value = ""
+		pageCounterUI.value = "YOU WIN!"
 
 		domeShape.withCollisions = false
 
