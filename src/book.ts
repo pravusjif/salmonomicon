@@ -60,21 +60,6 @@ export class Page extends Entity {
 	  	}
 
 	  ))
-
-	//   this.addComponent(new utils.TriggerComponent(
-	// 	new utils.TriggerBoxShape(new Vector3(2,2,2), triggerOffset),
-	// 	0, //layer
-	// 	0, //triggeredByLayer
-	// 	null, //onTriggerEnter
-	// 	null, //onTriggerExit
-	// 	() => {  //onCameraEnter	
-	// 		this.grab(totalPages)			
-	// 	 },
-	// 	 () => {
-	// 		this.getComponent(utils.TriggerComponent).enabled = false
-	// 	 },
-	// 	 false
-	// ))
 	}
 
 	public grab(totalPages: number): void {
@@ -111,7 +96,6 @@ export function scatterPages(totalPages: number){
 	if (pages.entities.length > 1 ){
 		for (let page of pages.entities){
 			page.getComponent(GLTFShape).visible = true
-			page.getComponent(utils.TriggerComponent).enabled = true
 		}
 	}else {
 		let usedPositions: number[] = []
@@ -149,6 +133,7 @@ export function startGame(){
 // RESET GAME
 export function resetGame(){
 	
+	creature.getReset()
 	if (creature.currentState != CreatureState.Vanished &&
 		creature.currentState != CreatureState.Dormant
 		){
@@ -158,9 +143,8 @@ export function resetGame(){
 	
 	for (let page of pages.entities) {
 		page.getComponent(GLTFShape).visible = false
-		page.getComponent(utils.TriggerComponent).enabled = true
 	}
-	pageCounter = pages.entities.length
+	//pageCounter = pages.entities.length
 	hasAllPages = false
 	pageCounter = 0
 	pagesUI.value = "Pages:"
@@ -173,7 +157,7 @@ export function resetGame(){
 		candle.turnOff()
 		engine.removeEntity(candle)
 	}
-	creature.getReset()
+
 
 	// RESET MIKA STATE 
 	resetMicasHead()
@@ -186,9 +170,10 @@ export function resetGame(){
 const rayMaterial = new Material()
 rayMaterial.metallic = 1
 rayMaterial.roughness = 0.5
-rayMaterial.alpha = 0.2
-rayMaterial.hasAlpha = true
-rayMaterial.albedoColor = new Color4(2, 2, 3, 0.1)
+//rayMaterial.alpha = 0.2
+//rayMaterial.hasAlpha = true
+rayMaterial.transparencyMode = TransparencyMode.ALPHA_BLEND
+rayMaterial.albedoColor = new Color4(2, 2, 3, 0.3)
 
 
 const pedestal = new Entity()

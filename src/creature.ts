@@ -27,7 +27,7 @@ export class Creature extends Entity {
 	speed: number = 0.3
 	originalSpeed: number = 0.3
 	spawningSpeed: number = 0.2
-	initialPosition: Vector3 = new Vector3(32, -1.5, 20)
+	initialPosition: Vector3 = new Vector3(32, -1.5, 32)
 	targetYPosition: number = 4
 	trappedPosition: Vector3 = new Vector3(32, 1, 32)
 	rotationSpeed: number = 40
@@ -106,26 +106,31 @@ export class Creature extends Entity {
 		this.laserOff()
 		this.currentState = CreatureState.Vanished
 		trapPlace.getComponent(AudioSource).playOnce()
-		
+		this.transform.position = this.initialPosition.clone()
+
 		this.invokeAnim.playing = true
 		this.attackAnim.playing = false
 		this.searchAnim.playing = false
 		
 		this.searchSound.playing = false
 		this.attackSound.playing = false
+
+		
 	}
 
 	public getReset() : void {
 		this.laserOff()
 		this.currentState = CreatureState.Dormant
 		
-		this.transform.position = this.initialPosition
+		this.transform.position = this.initialPosition.clone()
 		this.invokeAnim.playing = false
 		this.attackAnim.playing = false
 		this.searchAnim.playing = false
 		
 		this.searchSound.playing = false
 		this.attackSound.playing = false
+
+		log("CREATURE RESETTING")
 	}
 
 	public watchForPlayer(playerPos: Vector3): void {
