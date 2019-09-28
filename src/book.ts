@@ -1,5 +1,5 @@
 import { creature, CreatureState, invokeSound, invokePlace, trapPlace, trapSound } from "./creature";
-import { pageCounterUI, pagesUI, dieScreen } from "./UI";
+import { pageCounterUI, pagesUI, dieScreen, playerWatchedUIWrapper } from "./UI";
 import { addCandles, candles } from "./candles";
 import { resetMicasHead, grabMicasHead, releaseMicasHead, micaDialogueSystem, radarMica } from "./mica";
 import { radarMicaDialogueUIText } from "./micaUI";
@@ -163,6 +163,8 @@ export function resetGame(){
 	micaDialogueSystem.enabled = true;
 	radarMica.enabled = false
 	animatedUISystem.enabled = false
+
+	playerWatchedUIWrapper.visible = false
 }
 
 
