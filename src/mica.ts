@@ -102,10 +102,11 @@ let micaHeadShape = new GLTFShape("models/Mika_Head.glb")
 
 micaHeadEntity.addComponent(micaHeadShape)
 export let micaTransform = new Transform({
-	position: new Vector3(31.5, 1.3, 15.3),
-	rotation: Quaternion.Euler(0,180,0),
+	position: new Vector3(31.5, 1.8, 15.3),
+	rotation: Quaternion.Euler(0,0,0),
 	scale: new Vector3(0.5, 0.5, 0.5)
 })
+//micaHeadEntity.addComponent(new Billboard())
 micaHeadEntity.addComponent(micaTransform)
 micaHeadEntity.addComponentOrReplace(new OnPointerDown(e=>{
 	if(e.hit.length > 3) return

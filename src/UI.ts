@@ -76,18 +76,61 @@ class HandsMovingSystem implements ISystem {
 }
 engine.addSystem(new HandsMovingSystem(300, 30))
 
+
+let huntedDeathTexture = new Texture("textures/ChobiHead.png",{hasAlpha: true})
+let laserDeathTexture = new Texture("textures/BurnSprite.png",{hasAlpha: true})
+
+
+export let wrapper = new UIContainerRect(canvas)
+wrapper.width = `100%`
+wrapper.height = `100%`
+wrapper.isPointerBlocker = false
+wrapper.visible = false
+
+
 export let playerWatchedUIWrapper = new UIContainerRect(canvas)
 playerWatchedUIWrapper.width = `100%`
 playerWatchedUIWrapper.height = `100%`
 playerWatchedUIWrapper.isPointerBlocker = false
 playerWatchedUIWrapper.visible = false
 
-export let redView = new UIContainerRect(canvas)
-redView.width = `100%`
-redView.height = `100%`
-redView.isPointerBlocker = false
-redView.visible = false
-redView.color = new Color4(0.8, 0, 0, 0.5)
+
+// export let redView = new UIContainerRect(canvas)
+// redView.width = `100%`
+// redView.height = `100%`
+// redView.isPointerBlocker = false
+// redView.visible = false
+// redView.color = new Color4(0.8, 0, 0, 0.5)
+
+
+export let huntedDeath = new UIImage(canvas,huntedDeathTexture)
+huntedDeath.width = 1024
+huntedDeath.height = 1024
+huntedDeath.vAlign = `center`
+huntedDeath.hAlign = `center`
+huntedDeath.sourceWidth = 1024
+huntedDeath.sourceHeight = 1024
+huntedDeath.sourceLeft = 0
+huntedDeath.sourceTop = 0
+huntedDeath.isPointerBlocker = false
+huntedDeath.visible = false
+
+
+
+
+export let laserDeath = new UIImage(canvas,laserDeathTexture)
+laserDeath.width = 1024
+laserDeath.height = 1024
+laserDeath.vAlign = `center`
+laserDeath.hAlign = `center`
+laserDeath.sourceWidth = 1024
+laserDeath.sourceHeight = 1024
+laserDeath.sourceLeft = 0
+laserDeath.sourceTop = 0
+laserDeath.positionY = 20
+laserDeath.isPointerBlocker = false
+laserDeath.visible = false
+
 
 let beingWatchedText = new UIText(playerWatchedUIWrapper)
 beingWatchedText.value = "It's watching you!"
@@ -113,15 +156,38 @@ pageCounterUI.hAlign = "center"
 pageCounterUI.vTextAlign = "center"
 pageCounterUI.hTextAlign = "center"
 
-export function dieScreen(){
+export function dieScreen(deathType: string){
+	let dummyEnt = new Entity()
+	dummyEnt.addComponent(new Transform({
+		position: Camera.instance.position.clone()
+	}))
+	dummyEnt.addComponent(new AudioSource(wilhemScream))
+	dummyEnt.getComponent(AudioSource).playOnce()
 
-redView.visible = true
-let dummyEnt = new Entity()
-engine.addEntity(dummyEnt)
-dummyEnt.addComponent(new decentralandEcsUtils.Delay(2000,
-	() => {
-		redView.visible = false
+	if (deathType == "hunted"){
+		huntedDeath.visible = true
+		dummyEnt.addComponent(new decentralandEcsUtils.Delay(3000,
+			() => {
+				huntedDeath.visible = false
+			}
+		))		
+	} else if (deathType == "laser"){
+		laserDeath.visible = true
+		dummyEnt.addComponent(new decentralandEcsUtils.Delay(3000,
+			() => {
+				laserDeath.visible = false
+			}
+		))
 	}
-))
+	engine.addEntity(dummyEnt)
+
+	// redView.visible = true
+	// let dummyEnt = new Entity()
+	// engine.addEntity(dummyEnt)
+	// dummyEnt.addComponent(new decentralandEcsUtils.Delay(2000,
+	// 	() => {
+	// 		redView.visible = false
+	// 	}
+	// ))
 
 }

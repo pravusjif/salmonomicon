@@ -19,11 +19,11 @@ export class Candle extends Entity {
 	engine.addEntity(this);
 	
 	//this.onModel = onModel;
+	onModel.visible = false;
     const onEntity = new Entity()
     onEntity.addComponent(onModel)
     onEntity.setParent(this)
 
-	onModel.visible = false;
 	this.isOn = isOn
 	this.onModel = onModel
 	this.offModel = offModel

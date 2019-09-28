@@ -61,6 +61,8 @@ export class Page extends Entity {
 	}
 
 	public grab(totalPages: number): void {
+		if (this.isPicked) return
+		
 		pageCounter += 1
 		pageCounterUI.value = "Pages: " + pageCounter.toString() + "/5"
 		
@@ -124,16 +126,24 @@ export function startGame(){
 export function resetGame(){
 	playerWatchedUIWrapper.visible = false
 	
-	creature.getReset()
-	if (creature.currentState != CreatureState.Vanished &&
-		creature.currentState != CreatureState.Dormant
-		){
-		log("YOU LOOSE")
-		dieScreen()
-	}
+	if (creature.currentState == CreatureState.Hunting) {
 	
-	for (let page of pages.entities) {
+		log("YOU LOOSE")
+		dieScreen("hunted")
+
+	} else if (creature.currentState == CreatureState.Trapped){
+
+		log("YOU LOOSE")
+		dieScreen("laser")
+	}
+	creature.getReset()
+		
+	
+	for (let i = 0 ; i < neededPages.length; i ++){	
+		let page = neededPages[i] as Page
+		page.isPicked = false
 		page.getComponent(GLTFShape).visible = false
+
 	}
 	//pageCounter = pages.entities.length
 	hasAllPages = false
@@ -147,7 +157,6 @@ export function resetGame(){
 		candle.turnOff()
 		engine.removeEntity(candle)
 	}
-
 
 	// RESET MIKA STATE 
 	resetMicasHead()
@@ -242,7 +251,8 @@ export const book = new Book(
 	new GLTFShape('models/Book_05/Book_05.glb')
 )
 
-book.addComponentOrReplace(new OnClick(()=>{
+book.addComponentOrReplace(new OnPointerDown(e=>{
+	if (e.hit.length > 4) {return}
 	if (hasAllPages && creature.currentState == CreatureState.Hunting){
 		// book.trapCreature()
 		releaseMicasHead()

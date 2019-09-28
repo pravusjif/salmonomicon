@@ -20,6 +20,22 @@ export function createBuilderScene() {
 	}))
 	engine.addEntity(forest)
 
+	// Fog
+	const fog = new Entity()
+	fog.addComponentOrReplace(new GLTFShape('models/Fog.glb'))
+	fog.addComponentOrReplace(new Transform({
+		position: new Vector3(32, 0, 32),
+		scale: new Vector3(1, 1, 1)
+	}))
+
+	const fogAnim = new Animator();
+	fog.addComponent(fogAnim);
+	let fogAnimation = new AnimationState("fog", { speed: 0.15 })
+	fogAnim.addClip(fogAnimation);
+	fogAnimation.play()
+
+	engine.addEntity(fog)
+
 	/// builder stuff
 	const scene = new Entity()
 	const transform = new Transform({
