@@ -61,6 +61,8 @@ export class Page extends Entity {
 	}
 
 	public grab(totalPages: number): void {
+		if (this.isPicked) return
+		
 		if (pageCounter == 0){
 			pageCounterUI.visible = true
 			pagesUI.visible = true
@@ -143,8 +145,12 @@ export function resetGame(){
 	}
 	creature.getReset()
 		
-	for (let page of pages.entities) {
+	
+	for (let i = 0 ; i < neededPages.length; i ++){	
+		let page = neededPages[i] as Page
+		page.isPicked = false
 		page.getComponent(GLTFShape).visible = false
+
 	}
 	//pageCounter = pages.entities.length
 	hasAllPages = false
@@ -255,7 +261,8 @@ export const book = new Book(
 	new GLTFShape('models/Book_05/Book_05.glb')
 )
 
-book.addComponentOrReplace(new OnClick(()=>{
+book.addComponentOrReplace(new OnPointerDown(e=>{
+	if (e.hit.length > 4) {return}
 	if (hasAllPages && creature.currentState == CreatureState.Hunting){
 		// book.trapCreature()
 		releaseMicasHead()
