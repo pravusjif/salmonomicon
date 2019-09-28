@@ -1,7 +1,7 @@
 import { creature, CreatureState, invokeSound, invokePlace, trapPlace, trapSound } from "./creature";
 import { pageCounterUI, pagesUI, dieScreen, playerWatchedUIWrapper } from "./UI";
 import { addCandles, candles } from "./candles";
-import { resetMicasHead, grabMicasHead, releaseMicasHead, micaDialogueSystem, radarMica } from "./mica";
+import { resetMicasHead, grabMicasHead, releaseMicasHead, micaDialogueSystem, radarMica, prepareDancingMika } from "./mica";
 import { radarMicaDialogueUIText } from "./micaUI";
 import { animatedUISystem } from "./UISpritesAnimation";
 
@@ -62,7 +62,7 @@ export class Page extends Entity {
 
 	public grab(totalPages: number): void {
 		if (this.isPicked) return
-		
+
 		if (pageCounter == 0){
 			pageCounterUI.visible = true
 			pagesUI.visible = true
@@ -238,6 +238,7 @@ export class Book extends Entity {
 		if(creature.currentState == CreatureState.Trapped) return
 
 		creature.getTrapped()
+		prepareDancingMika()
 		addCandles()
 		this.removeGlow()
 	}
