@@ -41,7 +41,7 @@ export function createBuilderScene() {
 	const flys1 = new Entity()
 	flys1.addComponentOrReplace(new GLTFShape('models/flys.glb'))
 	flys1.addComponentOrReplace(new Transform({
-		position: new Vector3(32, 0.5, 32),
+		position: new Vector3(38, 0.5, 37),
 		scale: new Vector3(1, 1, 1)
 	}))
 
@@ -64,7 +64,7 @@ export function createBuilderScene() {
 
 	const flys2Anim = new Animator();
 	flys2.addComponent(flys2Anim);
-	let flys2Animation = new AnimationState("fly", { speed: 1 })
+	let flys2Animation = new AnimationState("fly", { speed: 0.9 })
 	flys2Anim.addClip(flys2Animation);
 	flys2Animation.play()
 
@@ -74,13 +74,13 @@ export function createBuilderScene() {
 	const flys3 = new Entity()
 	flys3.addComponentOrReplace(new GLTFShape('models/flys.glb'))
 	flys3.addComponentOrReplace(new Transform({
-		position: new Vector3(28, 1.5, 48),
+		position: new Vector3(28, 2, 48),
 		scale: new Vector3(1, 1, 1)
 	}))
 
 	const flys3Anim = new Animator();
 	flys3.addComponent(flys3Anim);
-	let flys3Animation = new AnimationState("fly", { speed: 1 })
+	let flys3Animation = new AnimationState("fly", { speed: 0.8 })
 	flys3Anim.addClip(flys3Animation);
 	flys3Animation.play()
 
