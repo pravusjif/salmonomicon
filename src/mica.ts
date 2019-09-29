@@ -231,13 +231,15 @@ class MicaDialogueSystem implements ISystem {
 				if(micaComponent.currentDialogueIndex < micaComponent.finalPassageDialogueLines.length-1){
 					this.currentWaitingTime = micaComponent.finalPassageDialogueLines[micaComponent.currentDialogueIndex].readingTimeInSeconds
 	
-					micaTextShape.value = micaComponent.finalPassageDialogueLines[micaComponent.currentDialogueIndex].text
+					// micaTextShape.value = micaComponent.finalPassageDialogueLines[micaComponent.currentDialogueIndex].text
+					radarMicaDialogueUIText.value = micaComponent.finalPassageDialogueLines[micaComponent.currentDialogueIndex].text
 					if(micaComponent.currentDialogueIndex == 3)
 						book.trapCreature()
 					
 					micaComponent.currentDialogueIndex++;
 				} else if(micaTextShape.value != micaComponent.finalPassageDialogueLines[micaComponent.currentDialogueIndex].text){
-					micaTextShape.value = micaComponent.finalPassageDialogueLines[micaComponent.currentDialogueIndex].text
+					// micaTextShape.value = micaComponent.finalPassageDialogueLines[micaComponent.currentDialogueIndex].text
+					radarMicaDialogueUIText.value = micaComponent.finalPassageDialogueLines[micaComponent.currentDialogueIndex].text
 
 					GrabLighter()
 				}
