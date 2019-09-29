@@ -35,6 +35,7 @@ export class Creature extends Entity {
 	transform: Transform
 	laserL: IEntity = null
 	laserR: IEntity = null
+	laserLen: number = 20
 	beingWatched: boolean = false
 	watchingPlayer: boolean = false
 	waitingForRay: boolean = false
@@ -238,38 +239,47 @@ export class Creature extends Entity {
 		let newRay: Ray = {
 			origin: this.transform.position,
 			direction: Vector3.Forward().rotate(this.transform.rotation),
-			distance: 15
+			distance: 20
 		}
 
 		PhysicsCast.instance.hitFirst(newRay, (e) => {
-			let laserLen: number
+			
 			let playerSafe: boolean = false
 			if (e.didHit){
 				//debugCube.getComponent(Transform).position.set(e.hitPoint.x, e.hitPoint.y, e.hitPoint.z)
 				let hitPoint = new Vector3(e.hitPoint.x, e.hitPoint.y, e.hitPoint.z)
-				laserLen = Vector3.Distance(this.transform.position, hitPoint) - 2
-				this.drawLaserLength(laserLen)
+				this.laserLen = Vector3.Distance(this.transform.position, hitPoint) - 2
+				this.drawLaserLength(this.laserLen)
 				//log(" laserLen: ", laserLen, " id: ", e.entity.entityId)
 			} else {
-				laserLen = 15
-				this.drawLaserLength(laserLen)
+				this.laserLen = 20
+				this.drawLaserLength(this.laserLen)
 			}
 			const rayToPlayer: Ray = PhysicsCast.instance.getRayFromPositions(this.transform.position, playerPos)
-			PhysicsCast.instance.hitFirst(rayToPlayer, (e) => {
-				if(e.didHit){
-					playerSafe = true
-				} else {
-					let angle = Vector3.GetAngleBetweenVectors(
-						new Vector3(rayToPlayer.direction.x, rayToPlayer.direction.y, rayToPlayer.direction.z),
-						new Vector3(newRay.direction.x, newRay.direction.y, newRay.direction.z)
-						, Vector3.Up()
-						)
-					if (Math.abs(angle) < 0.2	 && rayToPlayer.distance < laserLen + 0.5){
-						log("PLAYER HIT,  laserLen: ", laserLen, " player distance: ",  rayToPlayer.distance)
-						resetGame()
-					}
-				}
-			})
+			// PhysicsCast.instance.hitFirst(rayToPlayer, (e) => {
+			// 	if(e.didHit){
+			// 		playerSafe = true
+			// 	} else {
+			// 		let angle = Vector3.GetAngleBetweenVectors(
+			// 			new Vector3(rayToPlayer.direction.x, rayToPlayer.direction.y, rayToPlayer.direction.z),
+			// 			new Vector3(newRay.direction.x, newRay.direction.y, newRay.direction.z)
+			// 			, Vector3.Up()
+			// 			)
+			// 		if (Math.abs(angle) < 0.2	 && rayToPlayer.distance < laserLen + 0.5){
+			// 			log("PLAYER HIT,  laserLen: ", laserLen, " player distance: ",  rayToPlayer.distance)
+			// 			resetGame()
+			// 		}
+			// 	}
+			// })
+			let angle = Vector3.GetAngleBetweenVectors(
+				new Vector3(rayToPlayer.direction.x, rayToPlayer.direction.y, rayToPlayer.direction.z),
+				new Vector3(newRay.direction.x, newRay.direction.y, newRay.direction.z)
+				, Vector3.Up()
+				)
+			if (Math.abs(angle) < 0.2	 && rayToPlayer.distance < this.laserLen + 0.5){
+				log("PLAYER HIT,  laserLen: ", this.laserLen, " player distance: ",  rayToPlayer.distance)
+				resetGame()
+			}
 
 			
 			//log(laserLen)
