@@ -78,6 +78,14 @@ export class MicaComponent {
 			new DialogueLine("It's trapped in the pentagram, but...", 3),
 			new DialogueLine("Light the candles to finish sending him back!", -1),
 		]
+
+		this.gameFinishedDialogueLines = [
+			new DialogueLine("We did it!", 3),
+			new DialogueLine("Thank you so much!", 3),
+			new DialogueLine("I admit this was not the state I pictured my body would be in...", 5),
+			new DialogueLine("But after 300 years what can you expect, right? HA!", 5),
+			new DialogueLine("Join me in this victory dance!", 4),
+		]
 	}
 
 	getCurrentState() : MicaState {
@@ -227,24 +235,36 @@ class MicaDialogueSystem implements ISystem {
 				}
 				break;
 		
-			case MicaState.ReadingFinalPassage:
-				if(micaComponent.currentDialogueIndex < micaComponent.finalPassageDialogueLines.length-1){
-					this.currentWaitingTime = micaComponent.finalPassageDialogueLines[micaComponent.currentDialogueIndex].readingTimeInSeconds
+				case MicaState.ReadingFinalPassage:
+					if(micaComponent.currentDialogueIndex < micaComponent.finalPassageDialogueLines.length-1){
+						this.currentWaitingTime = micaComponent.finalPassageDialogueLines[micaComponent.currentDialogueIndex].readingTimeInSeconds
+		
+						// micaTextShape.value = micaComponent.finalPassageDialogueLines[micaComponent.currentDialogueIndex].text
+						radarMicaDialogueUIText.value = micaComponent.finalPassageDialogueLines[micaComponent.currentDialogueIndex].text
+						if(micaComponent.currentDialogueIndex == 3)
+							book.trapCreature()
+						
+						micaComponent.currentDialogueIndex++;
+					} else if(micaTextShape.value != micaComponent.finalPassageDialogueLines[micaComponent.currentDialogueIndex].text){
+						// micaTextShape.value = micaComponent.finalPassageDialogueLines[micaComponent.currentDialogueIndex].text
+						radarMicaDialogueUIText.value = micaComponent.finalPassageDialogueLines[micaComponent.currentDialogueIndex].text
 	
-					// micaTextShape.value = micaComponent.finalPassageDialogueLines[micaComponent.currentDialogueIndex].text
-					radarMicaDialogueUIText.value = micaComponent.finalPassageDialogueLines[micaComponent.currentDialogueIndex].text
-					if(micaComponent.currentDialogueIndex == 3)
-						book.trapCreature()
+						GrabLighter()
+					}
+					
+					break;
+				
+				case MicaState.Reincarnated:
+					this.currentWaitingTime = micaComponent.gameFinishedDialogueLines[micaComponent.currentDialogueIndex].readingTimeInSeconds
+	
+					reincarnatedMicaTextShape.value = micaComponent.gameFinishedDialogueLines[micaComponent.currentDialogueIndex].text
 					
 					micaComponent.currentDialogueIndex++;
-				} else if(micaTextShape.value != micaComponent.finalPassageDialogueLines[micaComponent.currentDialogueIndex].text){
-					// micaTextShape.value = micaComponent.finalPassageDialogueLines[micaComponent.currentDialogueIndex].text
-					radarMicaDialogueUIText.value = micaComponent.finalPassageDialogueLines[micaComponent.currentDialogueIndex].text
 
-					GrabLighter()
-				}
+					if(micaComponent.currentDialogueIndex == micaComponent.gameFinishedDialogueLines.length)
+						micaComponent.currentDialogueIndex = 0
 				
-				break;
+					break;
 		}
 	}	
 }
@@ -272,6 +292,7 @@ export function releaseMicasHead() {
 	micaHeadShape.visible = true
 	micaTextShape.visible = true
 	radarMicaDialogueUIText.value = ""
+	animatedUISystem.enabled = false
 	
 	releaseLeftHand()
 
@@ -284,6 +305,7 @@ export function resetMicasHead() {
 	micaHeadShape.visible = true
 	micaTextShape.visible = true
 	radarMicaDialogueUIText.value = ""
+	animatedUISystem.enabled = false
 
 	micaComponent.setState(MicaState.AskingForHelp)
 
@@ -293,6 +315,19 @@ export function resetMicasHead() {
 
 let dancingMica = new Entity()
 let danceAnim = new AnimationState("Dance")
+
+let reincarnatedMicaTextEntity = new Entity()
+
+export let reincarnatedMicaTextShape = new TextShape()
+reincarnatedMicaTextShape.billboard = true
+reincarnatedMicaTextShape.fontSize = 2
+reincarnatedMicaTextShape.color = Color3.Yellow()
+reincarnatedMicaTextEntity.addComponent(reincarnatedMicaTextShape)
+reincarnatedMicaTextEntity.addComponent(new Transform({
+	position: new Vector3(0, 2, 0)
+}))
+
+reincarnatedMicaTextEntity.setParent(dancingMica)
 
 export function prepareDancingMika(){
 
@@ -311,7 +346,7 @@ export function prepareDancingMika(){
 	dancingMica.addComponent(new AudioSource(new AudioClip("sounds/champignong.mp3")))
 
 	engine.addEntity(dancingMica)
-
+	engine.addEntity(reincarnatedMicaTextEntity)
 }
 
 

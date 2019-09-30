@@ -1,5 +1,5 @@
 import { creature, CreatureState, trapPlace } from "./creature";
-import { reencarnateMika, micaTextShape } from "./mica";
+import { reencarnateMika, micaTextShape, micaComponent, MicaState } from "./mica";
 import { domeShape, domeEntity } from "./builderScene";
 import { pageCounterUI } from "./UI";
 import { radarMicaDialogueUIText } from "./micaUI";
@@ -55,6 +55,8 @@ export class Candle extends Entity {
 
 		domeShape.withCollisions = false
 		domeEntity.removeComponent(domeShape)
+
+		micaComponent.setState(MicaState.Reincarnated)
 
 		reencarnateMika()
 	}
