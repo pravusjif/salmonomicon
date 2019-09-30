@@ -147,7 +147,14 @@ export class Creature extends Entity {
 	}
 
 	public watchForPlayer(playerPos: Vector3): void {
-		if (this.waitingForRay || this.currentState != CreatureState.Hunting) return
+		if (this.waitingForRay) return
+
+		if(this.currentState != CreatureState.Hunting){
+			if(beingWatchedText.value == "It's watching you!")
+				beingWatchedText.value = ""
+				
+			return
+		}
 		
 		this.waitingForRay = true
 		const rayToPlayer: Ray = PhysicsCast.instance.getRayFromPositions(this.transform.position, playerPos)

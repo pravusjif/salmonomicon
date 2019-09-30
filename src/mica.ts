@@ -175,6 +175,9 @@ class MicaDialogueSystem implements ISystem {
 	waitingState: MicaState
 
 	update(dt: number) {
+		let currentState = micaComponent.getCurrentState()
+		// log("micaState: " + currentState)
+		// log("creatureState: " + creature.currentState)
 		if(!this.enabled) return
 
 		if(beingWatchedText.visible) {
@@ -182,7 +185,7 @@ class MicaDialogueSystem implements ISystem {
 			return
 		}
 
-		let currentState = micaComponent.getCurrentState()
+		// let currentState = micaComponent.getCurrentState()
 
 		if(this.currentWaitingTime > 0) {
 			if(currentState != this.waitingState) {
