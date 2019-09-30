@@ -329,6 +329,8 @@ reincarnatedMicaTextEntity.addComponent(new Transform({
 
 reincarnatedMicaTextEntity.setParent(dancingMica)
 
+let champignonAudioEntity = new Entity()
+
 export function prepareDancingMika(){
 
 	if (engine.entities[dancingMica.uuid]){return}
@@ -342,11 +344,16 @@ export function prepareDancingMika(){
 	dancingMica.addComponent(new Animator())
 	dancingMica.getComponent(Animator).addClip(danceAnim)
 	
-
-	dancingMica.addComponent(new AudioSource(new AudioClip("sounds/champignong.mp3")))
+	champignonAudioEntity.addComponent(new Transform({
+		position: new Vector3(24, 1, 37)
+	}))
+	
+	champignonAudioEntity.addComponent(new AudioSource(new AudioClip("sounds/champignong.mp3")))
+	// dancingMica.addComponent(new AudioSource(new AudioClip("sounds/champignong.mp3")))
 
 	engine.addEntity(dancingMica)
 	engine.addEntity(reincarnatedMicaTextEntity)
+	engine.addEntity(champignonAudioEntity)
 }
 
 
@@ -356,7 +363,8 @@ export function reencarnateMika(){
 	micaHeadShape.visible = false
 	micaHeadEntity.getComponent(MicaComponent).setState(MicaState.Reincarnated)	
 
-	dancingMica.getComponent(AudioSource).playing = true
+	champignonAudioEntity.getComponent(AudioSource).playing = true
+	// dancingMica.getComponent(AudioSource).playing = true
 	danceAnim.playing = true
 	dancingMica.getComponent(Transform).position = new Vector3(32, 1, 39.8)
 
