@@ -1,8 +1,10 @@
 {
-  "display": {
-    "title": "interactive-text",
+   "display": {
+    "title": "The book of Salmonomicon",
+  "description": "In this bizarre horror-themed game help Mika out and defeat a terrible creature.",
+  "navmapThumbnail": "https://github.com/pravusjif/salmonomicon/blob/master/screenshot/Salmonomicon.jpg",
     "favicon": "favicon_asset"
-  },
+   },
   "contact": {
     "name": "author-name",
     "email": ""
