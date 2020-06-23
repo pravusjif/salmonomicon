@@ -180,7 +180,8 @@ export class Creature extends Entity {
 				
 				this.watchingPlayer = true
 			}
-		})
+		},
+		1)
 	}	
 
 	public adjustSpeed(cameraForward: ReadOnlyVector3, playerPos: Vector3): void {
@@ -294,12 +295,12 @@ export class Creature extends Entity {
 						resetGame()
 					}
 				}
-			})
+			}, 3)
 
 			
 			//log(laserLen)
 			this.waitingForRay = false
-		})
+		}, 2)
 	}
 
 	public drawLaserLength(laserLen: number): void {
