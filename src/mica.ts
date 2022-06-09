@@ -151,6 +151,9 @@ micaHeadEntity.addComponentOrReplace(new OnPointerDown(e=>{
 	// if (creature.currentState == CreatureState.Vanished){
 	// 	resetGame()
 	// }
+}, {
+	hoverText: "Talk",
+	distance: 3
 }))
 engine.addEntity(micaHeadEntity)
 

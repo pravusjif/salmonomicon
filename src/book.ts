@@ -64,8 +64,10 @@ export class Page extends Entity {
     this.addComponent(new PageComponent())
     this.addComponent(
       new OnPointerDown((e) => {
-        if (e.hit.length > 3) return
         this.grab(totalPages)
+      }, {
+        hoverText: "Grab",
+        distance: 3
       })
     )
   }
@@ -261,12 +263,10 @@ export const book = new Book(
 
 book.addComponentOrReplace(
   new OnPointerDown((e) => {
-    if (e.hit.length > 4) {
-      return
-    }
-    if (hasAllPages && creature.currentState == CreatureState.Hunting) {
-      // book.trapCreature()
-      releaseMicasHead()
-    }
+    if (hasAllPages && creature.currentState != CreatureState.Hunting) return 
+      
+    releaseMicasHead()
+  }, {
+    distance: 4
   })
 )

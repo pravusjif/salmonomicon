@@ -15,7 +15,6 @@ export class Candle extends Entity {
 	isOn: boolean = false
   ) {
     super();
-    
 
 	this.addComponent(offModel);
 	this.addComponent(new Transform(transform))
@@ -32,11 +31,14 @@ export class Candle extends Entity {
 	this.onModel = onModel
 	this.offModel = offModel
 
-
     this.addComponent(
 	  new OnPointerDown(e => {
-		if (e.hit.length > 4 || this.isOn) return
+		  if (this.isOn) return
+		  
 		  this.turnOn()
+	  }, {
+		  hoverText: "Light",
+		  distance: 4
 	  })
     )
   }
@@ -46,7 +48,6 @@ export class Candle extends Entity {
 	this.offModel.visible = false
 	candlesOnCounter += 1
 	if (candlesOnCounter == candles.length) {
-		log("YOU WIN")
 		creature.getKilled()
 
 		micaTextShape.value = ""
