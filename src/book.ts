@@ -85,7 +85,7 @@ export class Page extends Entity {
       book.activateGlow()
 
       radarMicaDialogueUIText.value =
-        'Now place me by the book and I shall cast the spell!'
+        'Now place me by the book, I will cast the spell!'
       micaDialogueSystem.enabled = false
     }
   }
