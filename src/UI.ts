@@ -3,7 +3,7 @@ import decentralandEcsUtils from "../node_modules/decentraland-ecs-utils/index"
 export const canvas = new UICanvas()
 
 export let atlas = new Texture("textures/HeadSprites.png")
-let currentHandsY: number = -20
+let currentHandsY: number = -35
 const handsPanel = new UIContainerRect(canvas)
 handsPanel.isPointerBlocker = false
 handsPanel.width = '100%'
@@ -13,7 +13,7 @@ handsPanel.positionY = currentHandsY
 export let leftHandImage = new UIImage(handsPanel, atlas)
 leftHandImage.hAlign = 'left'
 leftHandImage.vAlign = 'bottom'
-leftHandImage.positionX = '10%'
+leftHandImage.positionX = '5%'
 leftHandImage.positionY = currentHandsY - 10
 leftHandImage.sourceWidth = 425
 leftHandImage.sourceHeight = 425
@@ -25,6 +25,7 @@ leftHandImage.height = leftHandImage.sourceHeight * 1.6
 const rightHandImage = new UIImage(handsPanel, atlas)
 rightHandImage.hAlign = 'right'
 rightHandImage.vAlign = 'bottom'
+rightHandImage.positionX = '-5%'
 rightHandImage.positionY = currentHandsY
 rightHandImage.sourceWidth = 425
 rightHandImage.sourceHeight = 425

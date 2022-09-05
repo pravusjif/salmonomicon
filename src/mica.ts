@@ -14,7 +14,7 @@ export enum MicaState {
 	GameStart,
 	DetectingPages,
 	ReadingFinalPassage,
-	Reincarnated // nice to have: Mica with a newly spawned body, but it's a woman's body and he says something like "Well... it's better than not having a body at all!"
+	Reincarnated // alternative ending: Mica with a newly spawned body, but it's a woman's body and he says something like "Well... it's better than not having a body at all!"
 }
 
 class DialogueLine {
@@ -57,22 +57,22 @@ export class MicaComponent {
 			new DialogueLine("Hi! I'm Mika, nice to meet you", 4),
 			new DialogueLine("I've been cursed and lost my body", 4),
 			new DialogueLine("Will you help me please?", 2),
-			new DialogueLine("I must retrieve pages from my book, the Salmonomicon", 4),
-			new DialogueLine("Take me with you, I'll lead the way!", -1)
+			new DialogueLine("I must retrieve pages from my book,\nthe Salmonomicon", 4),
+			new DialogueLine("Take me with you,\nI'll lead the way!", -1) // This text is not working for some reason...
 		]
 
 		this.detectingPagesDialogueLines = [
-			new DialogueLine("Oh, look out for the creature that's bound to this curse", 5),
-			new DialogueLine("It wants to kill you", 3),
-			new DialogueLine("DON'T look at it directly, or he will come at you faster!", 4),
-			new DialogueLine("And whatever you do... DO NOT LET HIM GET TO YOU", 4),
+			new DialogueLine("Oh, look out for the creature\nthat's bound to this curse", 5),
+			new DialogueLine("It'll want to kill you", 3),
+			new DialogueLine("DON'T look at it directly,\nor he will come at you faster!", 4),
+			new DialogueLine("And whatever you do...\nDO NOT LET HIM GET TO YOU", 4),
 			new DialogueLine("Find the pages, follow my eyes", 3),
 			new DialogueLine("", -1)
 		]
 
 		this.finalPassageDialogueLines = [
 			new DialogueLine("Great! Now I must recite the magic words...", 3),
-			new DialogueLine("It's been so long since I chanted this, I hope it works...", 3),
+			new DialogueLine("It's been so long since I chanted this,\nI hope it works...", 3),
 			new DialogueLine("Klaatu... Barada... AHEM-Cof!-Cof!-oktu!", 3),
 			new DialogueLine("Oh shait! It seems it worked half-way", 3),
 			new DialogueLine("It's trapped in the pentagram, but...", 3),
@@ -151,6 +151,9 @@ micaHeadEntity.addComponentOrReplace(new OnPointerDown(e=>{
 	// if (creature.currentState == CreatureState.Vanished){
 	// 	resetGame()
 	// }
+}, {
+	hoverText: "Talk",
+	distance: 3
 }))
 engine.addEntity(micaHeadEntity)
 

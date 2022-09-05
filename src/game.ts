@@ -22,3 +22,18 @@ let owl1 = new AmbientSound(
 	"sounds/owl1.mp3",
 	30000
 )
+
+// 1st Person Camera Area covering the whole scene
+const modArea = new Entity()
+modArea.addComponent(
+	new Transform({
+		position: new Vector3(8 * 4, 4, 8 * 4),
+	})
+)
+modArea.addComponent(
+	new CameraModeArea({
+		area: { box: new Vector3(64, 8, 64) },
+		cameraMode: CameraMode.FirstPerson,
+	})
+)
+engine.addEntity(modArea)

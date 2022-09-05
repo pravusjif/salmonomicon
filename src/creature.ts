@@ -34,6 +34,7 @@ export class Creature extends Entity {
 	rotationSpeed: number = 60
 	currentState: CreatureState = CreatureState.Dormant
 	transform: Transform
+	laserLength: number = 10
 	laserL: IEntity = null
 	laserR: IEntity = null
 	beingWatched: boolean = false
@@ -52,40 +53,40 @@ export class Creature extends Entity {
 		speed: number = 0.3,
 		currentState: CreatureState = CreatureState.Dormant
 	) {
-	  super();
-	  this.addComponent(model)
-	  this.addComponent(new Transform(transform))
-	  this.addComponent(new CreatureComponent())
-	  engine.addEntity(this)
-	  this.currentState = currentState
-	  this.transform = this.getComponent(Transform)
-
-	  // animations
-	  this.invokeAnim = new AnimationState("Invoke")
-	  this.searchAnim = new AnimationState("Search")
-	  this.attackAnim = new AnimationState("Attack")
-	  this.raysAnim = new AnimationState("Rays")
-
-	  this.addComponent(new Animator()).addClip(this.invokeAnim)
-	  this.getComponent(Animator).addClip(this.searchAnim)
-	  this.getComponent(Animator).addClip(this.attackAnim)
-	  this.invokeAnim.play()
-
-	  // sounds
-	  let mumblingClip = new AudioClip("sounds/Search.mp3")
-	  this.addComponent(new AudioSource(mumblingClip))
-	  this.searchSound = this.getComponent(AudioSource)
-
-	  let attackAudioEnt = new Entity()
-	  engine.addEntity(attackAudioEnt)
-	  attackAudioEnt.setParent(this)
-	  let attackClip = new AudioClip("sounds/Attack.mp3")
-	  let attackSource = new AudioSource(attackClip)
-	  this.attackSound = attackSource
-	  attackAudioEnt.addComponent(this.attackSound)
+		super();
+		this.addComponent(model)
+		this.addComponent(new Transform(transform))
+		this.addComponent(new CreatureComponent())
+		engine.addEntity(this)
+		this.currentState = currentState
+		this.transform = this.getComponent(Transform)
+		
+		// animations
+		this.invokeAnim = new AnimationState("Invoke")
+		this.searchAnim = new AnimationState("Search")
+		this.attackAnim = new AnimationState("Attack")
+		this.raysAnim = new AnimationState("Rays")
+		
+		this.addComponent(new Animator()).addClip(this.invokeAnim)
+		this.getComponent(Animator).addClip(this.searchAnim)
+		this.getComponent(Animator).addClip(this.attackAnim)
+		this.invokeAnim.play()
+		
+		// sounds
+		let mumblingClip = new AudioClip("sounds/Search.mp3")
+		this.addComponent(new AudioSource(mumblingClip))
+		this.searchSound = this.getComponent(AudioSource)
+		
+		let attackAudioEnt = new Entity()
+		engine.addEntity(attackAudioEnt)
+		attackAudioEnt.setParent(this)
+		let attackClip = new AudioClip("sounds/Attack.mp3")
+		let attackSource = new AudioSource(attackClip)
+		this.attackSound = attackSource
+		attackAudioEnt.addComponent(this.attackSound)
 	} 
 
-	public getInvoked() : void {
+	public getInvoked() : void {		
 		this.currentState = CreatureState.Hunting
 		this.invokeAnim.playing = true
 		this.attackAnim.playing = false
@@ -97,7 +98,6 @@ export class Creature extends Entity {
 	}
 	
 	public getTrapped() : void {
-		this.currentState = CreatureState.Trapped
 		this.startLaser()
 		this.transform.position = creature.trappedPosition
 		this.transform.rotation = Quaternion.Euler(0,0,0)
@@ -106,6 +106,7 @@ export class Creature extends Entity {
 		this.searchSound.playing = false
 		this.attackSound.playing = false
 		this.raysAnim.playing = true
+		this.currentState = CreatureState.Trapped
 	}
 
 	public getKilled() : void {
@@ -121,8 +122,6 @@ export class Creature extends Entity {
 		
 		this.searchSound.playing = false
 		this.attackSound.playing = false
-
-		
 	}
 
 	public getReset() : void {
@@ -185,7 +184,6 @@ export class Creature extends Entity {
 	}	
 
 	public adjustSpeed(cameraForward: ReadOnlyVector3, playerPos: Vector3): void {
-
 		let viewAngle = Math.abs(Vector3.GetAngleBetweenVectors(
 			new Vector3(cameraForward.x, cameraForward.y, cameraForward.z), 
 			this.transform.position.subtract(playerPos), Vector3.Up())
@@ -216,12 +214,10 @@ export class Creature extends Entity {
 			this.searchAnim.playing = true
 			this.attackSound.playing = false
 		}
-		
 	}
 
 	public startLaser(): void {
-
-		if (this.laserL){
+		if (this.laserL) {
 			this.laserL.getComponent(BoxShape).visible = true
 			this.laserR.getComponent(BoxShape).visible = true
 		} else {
@@ -230,7 +226,7 @@ export class Creature extends Entity {
 			laserL.getComponent(BoxShape).withCollisions = false
 			laserL.addComponent(new Transform({
 				scale: new Vector3(0.05 ,0.05, 10 ),
-				position: new Vector3(-0.065, 0.55, 5.2)
+				position: new Vector3(-0.065, 0.472, 0)
 			}))
 			laserL.addComponent(rayMaterial)
 			laserL.setParent(this)
@@ -242,7 +238,7 @@ export class Creature extends Entity {
 			laserR.getComponent(BoxShape).withCollisions = false
 			laserR.addComponent(new Transform({
 				scale: new Vector3(0.05 ,0.05, 10 ),
-				position: new Vector3(0.065, 0.55, 5.2)
+				position: new Vector3(0.065, 0.472, 0)
 			}))
 			laserR.addComponent(rayMaterial)
 			laserR.setParent(this)
@@ -264,25 +260,23 @@ export class Creature extends Entity {
 		let newRay: Ray = {
 			origin: this.transform.position,
 			direction: Vector3.Forward().rotate(this.transform.rotation),
-			distance: 15
+			distance: this.laserLength
 		}
 
 		PhysicsCast.instance.hitFirst(newRay, (e) => {
-			let laserLen: number
 			let playerSafe: boolean = false
 			if (e.didHit){
-				//debugCube.getComponent(Transform).position.set(e.hitPoint.x, e.hitPoint.y, e.hitPoint.z)
 				let hitPoint = new Vector3(e.hitPoint.x, e.hitPoint.y, e.hitPoint.z)
-				laserLen = Vector3.Distance(this.transform.position, hitPoint) - 2
-				this.drawLaserLength(laserLen)
-				//log(" laserLen: ", laserLen, " id: ", e.entity.entityId)
+				this.drawLaserLength(Vector3.Distance(this.transform.position, hitPoint) - 1)
 			} else {
-				laserLen = 15
-				this.drawLaserLength(laserLen)
+				this.drawLaserLength(this.laserLength)
 			}
+			
 			const rayToPlayer: Ray = PhysicsCast.instance.getRayFromPositions(this.transform.position, playerPos)
+			rayToPlayer.direction = new Vector3(rayToPlayer.direction.x, 0, rayToPlayer.direction.z)
+			
 			PhysicsCast.instance.hitFirst(rayToPlayer, (e) => {
-				if(e.didHit){
+				if(e.didHit){ // hit an obstacle between the creature and the player
 					playerSafe = true
 				} else {
 					let angle = Vector3.GetAngleBetweenVectors(
@@ -290,15 +284,13 @@ export class Creature extends Entity {
 						new Vector3(newRay.direction.x, newRay.direction.y, newRay.direction.z)
 						, Vector3.Up()
 						)
-					if (Math.abs(angle) < 0.2	 && rayToPlayer.distance < laserLen + 0.5){
-						log("PLAYER HIT,  laserLen: ", laserLen, " player distance: ",  rayToPlayer.distance)
+					if (Math.abs(angle) < 0.2 && rayToPlayer.distance < this.laserLength + 5){
+						log("PLAYER HIT,  laserLen: ", this.laserLength, " player distance: ",  rayToPlayer.distance)
 						resetGame()
 					}
 				}
 			}, 3)
 
-			
-			//log(laserLen)
 			this.waitingForRay = false
 		}, 2)
 	}
@@ -306,8 +298,8 @@ export class Creature extends Entity {
 	public drawLaserLength(laserLen: number): void {
 		this.laserL.getComponent(Transform).scale.z = laserLen
 		this.laserR.getComponent(Transform).scale.z = laserLen
-		this.laserL.getComponent(Transform).position.z = laserLen/2 + 0.5
-		this.laserR.getComponent(Transform).position.z = laserLen/2 + 0.5
+		this.laserL.getComponent(Transform).position.z = laserLen/2 + 0.3
+		this.laserR.getComponent(Transform).position.z = laserLen/2 + 0.3
 	}
 
 	public laserOff () :void {
@@ -336,8 +328,6 @@ export class CreatureSystem {
 		this.playerPos = camera.position.clone()
 
 		for (let creature of creatures) {
-
-			//let creatureComponent = creature.getComponent(CreatureComponent)
 			let creatureTransform = creature.getComponent(Transform)
 
 			switch (creature.currentState) {
@@ -373,7 +363,7 @@ export class CreatureSystem {
 
 					let cameraForward = PhysicsCast.instance.getRayFromCamera(1).direction
 					creature.adjustSpeed(cameraForward, this.playerPos)
-
+					
 					break;
 
 				//////  TRAPPED //////
@@ -400,7 +390,7 @@ engine.addSystem(new CreatureSystem())
 
 
 
-// Instance creature
+// Instantiate creature
 export let creature = new Creature(
 	{
 		position: new Vector3(32, -1.5, 32),
